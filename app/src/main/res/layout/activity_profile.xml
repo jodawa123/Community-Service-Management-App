@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/blob_scene_haikei__1_"
+    android:padding="16dp"
+    android:scrollbars="none">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Profile Image -->
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:contentDescription="Profile Picture"
+            android:scaleType="centerCrop"
+            android:src="@drawable/baseline_person_24" />
+
+        <!-- User Name -->
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/profile_image"
+            android:layout_centerHorizontal="true"
+            android:hint="User Name"
+            android:textColor="@color/blue"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <!-- Site Section -->
+        <LinearLayout
+            android:id="@+id/site_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_name"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/editbg2"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:visibility="visible">
+
+            <!-- Drop Name and Button -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/drop_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Drop"
+                    android:textColor="@color/yellow"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/drop_site_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false" />
+            </LinearLayout>
+
+            <!-- Picked Site Name -->
+            <TextView
+                android:id="@+id/picked_site_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_weight="1"
+                android:text="Selected Site: "
+                android:textColor="@color/yellow"
+                android:textSize="20sp" />
+
+            <!-- Available Slots -->
+            <TextView
+                android:id="@+id/available_slots"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:text="Slots: "
+                android:textColor="@color/yellow"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <!-- Calendar Section -->
+        <CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/site_section"
+            android:layout_marginTop="20dp"
+            android:background="@color/yellow"
+            android:elevation="30dp"
+            android:firstDayOfWeek="2"
+            android:focusedMonthDateColor="@color/blue"
+            android:visibility="visible" />
+
+        <!-- Countdown Section -->
+        <LinearLayout
+            android:id="@+id/hours_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/calendarView"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/editbg2"
+            android:orientation="vertical"
+            android:padding="15dp"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/weeksRemaining"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Weeks Remaining: 30"
+                android:textColor="@color/yellow"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/hoursRemaining"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Hours Remaining: 90"
+                android:textColor="@color/yellow"
+                android:textSize="17sp" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</ScrollView>

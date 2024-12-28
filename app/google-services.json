@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "583964486006",
+    "project_id": "cs-3700",
+    "storage_bucket": "cs-3700.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:583964486006:android:b21f717db3563728b9f257",
+        "android_client_info": {
+          "package_name": "com.example.cs3700"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAejHaqAw2E-PTANCIazcIn2m_4vQeXZ-c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

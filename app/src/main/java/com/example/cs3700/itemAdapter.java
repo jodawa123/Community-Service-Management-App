@@ -1,0 +1,195 @@
+package com.example.cs3700;
+
+import android.content.Context;
+import android.content.Intent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.RadioButton;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+
+import java.util.ArrayList;
+
+public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
+    private Context context;
+    private ArrayList<model> modelArrayList;
+    private String categoryName; // Dynamically pass the category name
+    private int selectedPosition = -1;
+    private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+    private final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+    private String userSelectedSite = null; // Track user's selected site
+    private String searchQuery;
+
+    public itemAdapter(Context context, ArrayList<model> modelArrayList, String categoryName, String userSelectedSite,String searchQuery) {
+        this.context = context;
+        this.modelArrayList = modelArrayList;
+        this.categoryName = categoryName;
+        this.userSelectedSite = userSelectedSite; // Pass the user's selected site
+        this.searchQuery=searchQuery;
+        fetchUserSelection(); // Optional: Can be skipped if passed via constructor
+    }
+
+    private void fetchUserSelection() {
+        if (currentUser != null) {
+            firestore.collection("UserSelections")
+                    .document(currentUser.getUid())
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists() && documentSnapshot.contains("selectedSite")) {
+                            userSelectedSite = documentSnapshot.getString("selectedSite");
+                            notifyDataSetChanged(); // Update the UI
+                        }
+                    });
+        }
+    }
+
+    @NonNull
+    @Override
+    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.items, parent, false);
+        return new Holder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull Holder holder, int position) {
+        model currentModel = modelArrayList.get(position);
+
+        holder.siteTitle.setText(currentModel.getHead());
+        holder.studentsNeeded.setText(currentModel.getAvailableSlots() + "/" + currentModel.getTotalSlots());
+        holder.siteDescription.setText(currentModel.getDescription());
+
+        // Highlight and animate the searched item
+        if (searchQuery != null && currentModel.getHead().toLowerCase().contains(searchQuery.toLowerCase())) {
+            Animation animation = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.pulsating_animation);
+            holder.itemView.startAnimation(animation);
+            holder.itemView.setBackgroundResource(R.color.blue); // Optional: Highlight color
+        } else {
+            holder.itemView.clearAnimation();
+        }
+
+        boolean isSiteAlreadyPicked = currentModel.getHead().equals(userSelectedSite);
+
+        holder.radioButton.setChecked(position == selectedPosition || isSiteAlreadyPicked);
+        holder.radioButton.setEnabled(!isSiteAlreadyPicked && currentModel.getAvailableSlots() > 0);
+
+        holder.radioButton.setOnClickListener(v -> {
+            if (userSelectedSite != null) {
+                Toast.makeText(context, "You have already selected a site: " + userSelectedSite, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (currentModel.getAvailableSlots() > 0) {
+                queryAndUpdateSite(currentModel, position);
+            } else {
+                Toast.makeText(context, "No available slots for this site", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void queryAndUpdateSite(model currentModel, int position) {
+        if (currentUser == null) {
+            Toast.makeText(context, "You must be logged in to pick a site", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Query Firestore to find the correct document by the 'head' field
+        firestore.collection(categoryName)
+                .whereEqualTo("head", currentModel.getHead())
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (!querySnapshot.isEmpty()) {
+                        DocumentSnapshot document = querySnapshot.getDocuments().get(0);
+                        DocumentReference siteRef = document.getReference();
+
+                        int newAvailableSlots = currentModel.getAvailableSlots() - 1;
+                        currentModel.setAvailableSlots(newAvailableSlots);
+
+                        // Update available slots in Firestore
+                        siteRef.update("availableSlots", newAvailableSlots)
+                                .addOnSuccessListener(aVoid -> saveUserSelection(currentModel, position))
+                                .addOnFailureListener(e -> Toast.makeText(context, "Failed to update slots: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    } else {
+                        Toast.makeText(context, "No matching site found", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(context, "Error querying site: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void saveUserSelection(model currentModel, int position) {
+        // Save user's site selection
+        firestore.collection("UserSelections")
+                .document(currentUser.getUid())
+                .set(new UserSelection(currentModel.getHead()))
+                .addOnSuccessListener(aVoid -> {
+                    userSelectedSite = currentModel.getHead();
+                    int previousPosition = selectedPosition;
+                    selectedPosition = position;
+
+                    notifyItemChanged(previousPosition);
+                    notifyItemChanged(selectedPosition);
+
+                    Toast.makeText(context, "You selected: " + currentModel.getHead(), Toast.LENGTH_SHORT).show();
+
+                    // Launch Profile activity and pass the selected site name
+                    Intent intent = new Intent(context, Profile.class);
+                    intent.putExtra("CATEGORY_NAME", categoryName);
+                    intent.putExtra("SELECTED_SITE", currentModel.getHead());
+                    context.startActivity(intent);
+
+                })
+                .addOnFailureListener(e -> Toast.makeText(context, "Failed to save user selection: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    @Override
+    public int getItemCount() {
+        return modelArrayList.size();
+    }
+
+    public static class Holder extends RecyclerView.ViewHolder {
+        TextView siteTitle, studentsNeeded, siteDescription;
+        RadioButton radioButton;
+
+        public Holder(@NonNull View itemView) {
+            super(itemView);
+            siteTitle = itemView.findViewById(R.id.site_title);
+            studentsNeeded = itemView.findViewById(R.id.students_needed);
+            siteDescription = itemView.findViewById(R.id.site_description);
+            radioButton = itemView.findViewById(R.id.site_radio_button);
+        }
+    }
+
+    public static class UserSelection {
+        private String selectedSite;
+
+        public UserSelection(String selectedSite) {
+            this.selectedSite = selectedSite;
+        }
+
+        public String getSelectedSite() {
+            return selectedSite;
+        }
+
+        public void setSelectedSite(String selectedSite) {
+            this.selectedSite = selectedSite;
+        }
+    }
+    /*@Override
+    public void onViewRecycled(@NonNull Holder holder) {
+        super.onViewRecycled(holder);
+        holder.itemView.clearAnimation();
+    }*/
+
+}
