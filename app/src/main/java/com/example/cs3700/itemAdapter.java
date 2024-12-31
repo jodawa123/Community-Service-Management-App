@@ -104,7 +104,6 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
             Toast.makeText(context, "You must be logged in to pick a site", Toast.LENGTH_SHORT).show();
             return;
         }
-
         // Query Firestore to find the correct document by the 'head' field
         firestore.collection(categoryName)
                 .whereEqualTo("head", currentModel.getHead())

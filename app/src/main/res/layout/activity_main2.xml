@@ -20,7 +20,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="270dp">
+                android:layout_height="259dp">
 
 
                 <TextView
@@ -28,10 +28,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="56dp"
                     android:text="Hello"
                     android:textColor="@color/blue"
-                    android:textSize="24sp"
+                    android:textSize="22sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -51,11 +51,12 @@
 
                 <ImageView
                     android:id="@+id/profileImage"
-                    android:layout_width="146dp"
-                    android:layout_height="144dp"
-                    android:layout_marginTop="56dp"
-                    android:layout_marginEnd="32dp"
+                    android:layout_width="122dp"
+                    android:layout_height="114dp"
+                    android:layout_marginTop="72dp"
+                    android:layout_marginEnd="48dp"
                     android:contentDescription="Profile Image"
+                    android:padding="5dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/hello"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -104,7 +105,7 @@
                 android:layout_marginTop="8dp"
                 android:text="Categories"
                 android:textColor="@color/blue"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <GridLayout
@@ -140,7 +141,8 @@
                         android:gravity="center"
                         android:text="Hospice"
                         android:textColor="@color/blue"
-                        android:textSize="20sp" />
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -165,7 +167,8 @@
                         android:gravity="center"
                         android:text="Special needs"
                         android:textColor="@color/yellow"
-                        android:textSize="20sp" />
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <!-- Category Item 4 -->
@@ -192,7 +195,8 @@
                         android:gravity="center"
                         android:text="Health centers"
                         android:textColor="@color/yellow"
-                        android:textSize="20sp" />
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
 
@@ -219,7 +223,8 @@
                         android:gravity="center"
                         android:text="Children Home"
                         android:textColor="@color/blue"
-                        android:textSize="20sp" />
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -246,7 +251,8 @@
                         android:gravity="center"
                         android:text="Rehabilitation"
                         android:textColor="@color/blue"
-                        android:textSize="20sp" />
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -272,7 +278,8 @@
                         android:gravity="center"
                         android:text="Rescue Homes"
                         android:textColor="@color/yellow"
-                        android:textSize="20sp" />
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <!-- Add similar blocks for other categories below -->

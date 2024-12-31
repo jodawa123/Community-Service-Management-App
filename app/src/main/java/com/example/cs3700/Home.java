@@ -8,13 +8,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Home extends AppCompatActivity {
@@ -23,7 +21,6 @@ public class Home extends AppCompatActivity {
     ImageView profileImage;
     TextView textView6;
     private String selectedCategory;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,15 +37,12 @@ public class Home extends AppCompatActivity {
         profileImage=findViewById(R.id.profileImage);
         textView6=findViewById(R.id.textView6);
 
-
-
         ImageView imageHospice = findViewById(R.id.imageHospice);
         ImageView imageRehab = findViewById(R.id.imageRehab);
         ImageView imageHealth = findViewById(R.id.imageHealth);
         ImageView imageChildren = findViewById(R.id.imageChildren);
         ImageView imageRescue = findViewById(R.id.imageRescue);
         ImageView imageSpecial = findViewById(R.id.imageSpecial);
-
 
         imageHospice.setOnClickListener(v -> {selectedCategory = "Hospice";openCategory(selectedCategory);});
         imageSpecial.setOnClickListener(v -> {selectedCategory = "SpecialNeeds";openCategory(selectedCategory);});
@@ -79,7 +73,6 @@ public class Home extends AppCompatActivity {
         });
 
     }
-
     private void openCategory(String categoryName) {
         Intent intent = new Intent(Home.this, Recycle.class);
         intent.putExtra("CATEGORY_NAME", categoryName);
