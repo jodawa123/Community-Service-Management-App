@@ -13,9 +13,8 @@
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="184dp"
-        android:layout_marginTop="4dp"
         android:fontFamily="@font/alatsi"
         android:text="Sites "
         android:textColor="@color/blue"
@@ -32,5 +31,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textView4"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="53dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_arrow_back_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

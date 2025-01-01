@@ -2,6 +2,7 @@ package com.example.cs3700;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +29,7 @@ public class Recycle extends AppCompatActivity {
     String selectedCategory;        // Category passed from the intent
     FirebaseUser currentUser;
     String searchQuery;
+    ImageView imageView3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +41,8 @@ public class Recycle extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
         // Initialize components
+        imageView3=findViewById(R.id.imageView3);
         recyclerView = findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         modelArrayList = new ArrayList<>();
@@ -50,6 +52,10 @@ public class Recycle extends AppCompatActivity {
         selectedCategory = getIntent().getStringExtra("CATEGORY_NAME");
         searchQuery = getIntent().getStringExtra("SEARCH_QUERY");
 
+        imageView3.setOnClickListener(view -> {
+            Intent intent = new Intent(Recycle.this,Home.class);
+            startActivity(intent);
+        });
 
         if (selectedCategory != null) {
             Toast.makeText(this, "Category: " + selectedCategory, Toast.LENGTH_SHORT).show();
@@ -59,7 +65,6 @@ public class Recycle extends AppCompatActivity {
             Toast.makeText(this, "No category provided", Toast.LENGTH_SHORT).show();
         }
     }
-
     // Fetch the user's already selected site from Firestore
     private void fetchUserSelectedSite() {
         if (currentUser != null) {
@@ -82,7 +87,6 @@ public class Recycle extends AppCompatActivity {
             fetchSitesFromFirestore(); // Fetch sites if the user is not logged in
         }
     }
-
     // Fetch sites for the selected category from Firestore
     private void fetchSitesFromFirestore() {
         firestore.collection(selectedCategory)

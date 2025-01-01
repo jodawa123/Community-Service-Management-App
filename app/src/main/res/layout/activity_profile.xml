@@ -12,6 +12,15 @@
         android:layout_height="wrap_content">
 
         <!-- Profile Image -->
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="63dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="38dp"
+            android:layout_toRightOf="@id/user_name"
+            app:srcCompat="@drawable/baseline_arrow_forward_24" />
+
         <TextView
             android:id="@+id/user_name"
             android:layout_width="wrap_content"
@@ -22,12 +31,13 @@
             android:text="PROFILE"
             android:textColor="@color/blue"
             android:textSize="50sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+           />
 
         <ImageView
             android:id="@+id/profile_image"
-            android:layout_width="180dp"
-            android:layout_height="180dp"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
             android:layout_below="@id/user_name"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
@@ -60,6 +70,7 @@
                     android:id="@+id/drop_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/aclonica"
                     android:text="Drop"
                     android:textColor="@color/yellow"
                     android:textSize="16sp" />
@@ -92,6 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
+                android:fontFamily="@font/aclonica"
                 android:text="Slots: "
                 android:textColor="@color/yellow"
                 android:textSize="16sp" />
@@ -158,6 +170,8 @@
                 android:textColor="@color/yellow"
                 android:textSize="17sp" />
         </LinearLayout>
+
+
 
 
     </RelativeLayout>

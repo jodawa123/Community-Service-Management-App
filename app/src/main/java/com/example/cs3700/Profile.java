@@ -1,11 +1,13 @@
 package com.example.cs3700;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.CalendarView;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,9 +26,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class Profile extends AppCompatActivity {
 
-    private TextView user_name, pickedSiteName, availableSlots, hoursRemaining, weeksRemainingText,pick;
+    private TextView pickedSiteName, availableSlots, hoursRemaining, weeksRemainingText,pick;
     private RadioButton dropSiteButton;
     private FirebaseFirestore firestore;
     private String selectedCategory, selectedSite, name;
@@ -42,6 +45,7 @@ public class Profile extends AppCompatActivity {
     private int totalHoursRemaining;
     private FirebaseUser currentUser;
     private DocumentReference userRef;
+    private ImageView imageView4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +58,14 @@ public class Profile extends AppCompatActivity {
         pick=findViewById(R.id.pick);
         pick.setAnimation(ani);
         // Initialize Views
-        user_name = findViewById(R.id.user_name);
+
         pickedSiteName = findViewById(R.id.picked_site_name);
         availableSlots = findViewById(R.id.available_slots);
         dropSiteButton = findViewById(R.id.drop_site_button);
         calendarView = findViewById(R.id.calendarView);
         hoursRemaining = findViewById(R.id.hoursRemaining);
         weeksRemainingText = findViewById(R.id.weeksRemaining);
+        imageView4=findViewById(R.id.imageView4);
 
         siteSection = findViewById(R.id.site_section);
         hoursSection = findViewById(R.id.hours_section);
@@ -71,6 +76,11 @@ public class Profile extends AppCompatActivity {
 
         selectedCategory = getIntent().getStringExtra("CATEGORY_NAME");
         selectedSite = getIntent().getStringExtra("SELECTED_SITE");
+
+        imageView4.setOnClickListener(view -> {
+            Intent intent = new Intent(Profile.this,Home.class);
+            startActivity(intent);
+        });
 
         // Initialize User Reference
         if (currentUser != null) {

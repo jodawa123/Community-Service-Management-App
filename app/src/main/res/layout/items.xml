@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="14dp"
     android:layout_marginVertical="8dp"
+    app:cardBackgroundColor="@color/yellow"
     app:cardCornerRadius="15dp"
-    app:cardElevation="15dp"
-    app:cardBackgroundColor="@color/yellow">
+    app:cardElevation="20dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -19,14 +18,15 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true">
+            android:layout_centerVertical="true"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/add_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/alatsi"
                 android:gravity="center"
                 android:text="Add"
                 android:textColor="@color/blue"
@@ -46,6 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="60dp"
+            android:fontFamily="@font/aclonica"
             android:hint="Site Name"
             android:textColor="@color/blue"
             android:textSize="20sp"
@@ -59,6 +60,7 @@
             android:layout_below="@id/site_title"
             android:layout_marginStart="60dp"
             android:layout_marginTop="4dp"
+            android:fontFamily="@font/alatsi"
             android:hint="Description goes here"
             android:textColor="@color/black"
             android:textSize="16sp" />
@@ -70,6 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
+            android:fontFamily="@font/alatsi"
             android:text="8/8"
             android:textColor="@color/black"
             android:textSize="16sp"
