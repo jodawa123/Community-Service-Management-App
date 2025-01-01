@@ -1,3 +1,4 @@
+
 package com.example.cs3700;
 
 import android.content.Context;
@@ -19,26 +20,30 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
-    private Context context;
-    private ArrayList<model> modelArrayList;
-    private String categoryName; // Dynamically pass the category name
+    private final Context context;
+    private List<model> modelArrayList; // Use List for easier handling of filtering
+    private final List<model> originalList; // Backup of the full dataset
+    private final String categoryName; // Dynamically pass the category name
     private int selectedPosition = -1;
     private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     private String userSelectedSite = null; // Track user's selected site
     private String searchQuery;
+    private int highlightPosition = -1;
 
-    public itemAdapter(Context context, ArrayList<model> modelArrayList, String categoryName, String userSelectedSite,String searchQuery) {
+    public itemAdapter(Context context, ArrayList<model> modelArrayList, String categoryName, String userSelectedSite, String searchQuery,int highlightPosition) {
         this.context = context;
         this.modelArrayList = modelArrayList;
+        this.originalList = new ArrayList<>(modelArrayList); // Backup the original list
         this.categoryName = categoryName;
         this.userSelectedSite = userSelectedSite; // Pass the user's selected site
-        this.searchQuery=searchQuery;
+        this.searchQuery = searchQuery;
+        this.highlightPosition = highlightPosition;
         fetchUserSelection(); // Optional: Can be skipped if passed via constructor
     }
 
@@ -72,10 +77,11 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
         holder.siteDescription.setText(currentModel.getDescription());
 
         // Highlight and animate the searched item
-        if (searchQuery != null && currentModel.getHead().toLowerCase().contains(searchQuery.toLowerCase())) {
+        // Highlight and animate the searched item
+        if (position==highlightPosition) {
             Animation animation = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.pulsating_animation);
             holder.itemView.startAnimation(animation);
-            holder.itemView.setBackgroundResource(R.color.blue); // Optional: Highlight color
+             // Optional: Highlight color
         } else {
             holder.itemView.clearAnimation();
         }
@@ -104,7 +110,7 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
             Toast.makeText(context, "You must be logged in to pick a site", Toast.LENGTH_SHORT).show();
             return;
         }
-        // Query Firestore to find the correct document by the 'head' field
+
         firestore.collection(categoryName)
                 .whereEqualTo("head", currentModel.getHead())
                 .get()
@@ -116,7 +122,6 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
                         int newAvailableSlots = currentModel.getAvailableSlots() - 1;
                         currentModel.setAvailableSlots(newAvailableSlots);
 
-                        // Update available slots in Firestore
                         siteRef.update("availableSlots", newAvailableSlots)
                                 .addOnSuccessListener(aVoid -> saveUserSelection(currentModel, position))
                                 .addOnFailureListener(e -> Toast.makeText(context, "Failed to update slots: " + e.getMessage(), Toast.LENGTH_SHORT).show());
@@ -128,7 +133,6 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
     }
 
     private void saveUserSelection(model currentModel, int position) {
-        // Save user's site selection
         firestore.collection("UserSelections")
                 .document(currentUser.getUid())
                 .set(new UserSelection(currentModel.getHead()))
@@ -142,7 +146,6 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
 
                     Toast.makeText(context, "You selected: " + currentModel.getHead(), Toast.LENGTH_SHORT).show();
 
-                    // Launch Profile activity and pass the selected site name
                     Intent intent = new Intent(context, Profile.class);
                     intent.putExtra("CATEGORY_NAME", categoryName);
                     intent.putExtra("SELECTED_SITE", currentModel.getHead());
@@ -155,6 +158,23 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
     @Override
     public int getItemCount() {
         return modelArrayList.size();
+    }
+
+    // Method to filter the list based on a search query
+    public void filter(String query) {
+        searchQuery = query; // Update the searchQuery field
+        if (query == null || query.isEmpty()) {
+            modelArrayList = new ArrayList<>(originalList); // Reset to the original list
+        } else {
+            List<model> filteredList = new ArrayList<>();
+            for (model item : originalList) {
+                if (item.getHead().toLowerCase().contains(query.toLowerCase())) {
+                    filteredList.add(item);
+                }
+            }
+            modelArrayList = filteredList;
+        }
+        notifyDataSetChanged(); // Notify the RecyclerView of the dataset change
     }
 
     public static class Holder extends RecyclerView.ViewHolder {
@@ -185,10 +205,4 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
             this.selectedSite = selectedSite;
         }
     }
-    /*@Override
-    public void onViewRecycled(@NonNull Holder holder) {
-        super.onViewRecycled(holder);
-        holder.itemView.clearAnimation();
-    }*/
-
 }

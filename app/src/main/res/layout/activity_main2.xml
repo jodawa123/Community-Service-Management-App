@@ -86,6 +86,7 @@
                         android:fontFamily="@font/aclonica"
                         android:hint="Search For..."
                         android:padding="5dp"
+                        android:textColor="@color/blue"
                         android:textSize="16sp" />
 
                     <ImageView
@@ -147,8 +148,7 @@
                         android:gravity="center"
                         android:text="Special needs"
                         android:textColor="@color/blue"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <!-- Category Item 4 -->
@@ -176,8 +176,7 @@
                         android:gravity="center"
                         android:text="Health centers"
                         android:textColor="@color/yellow"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textSize="16sp" />
                 </LinearLayout>
 
 
@@ -205,8 +204,7 @@
                         android:gravity="center"
                         android:text="Children Home"
                         android:textColor="@color/yellow"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -234,8 +232,7 @@
                         android:gravity="center"
                         android:text="Rehabilitation"
                         android:textColor="@color/blue"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -262,8 +259,7 @@
                         android:gravity="center"
                         android:text="Rescue Homes"
                         android:textColor="@color/blue"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textSize="16sp" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="180dp"
@@ -289,8 +285,7 @@
                         android:gravity="center"
                         android:text="Hospice"
                         android:textColor="@color/yellow"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textSize="16sp" />
                 </LinearLayout>
 
             </GridLayout>

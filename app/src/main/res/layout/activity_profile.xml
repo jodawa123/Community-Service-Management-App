@@ -15,9 +15,10 @@
 
         <ImageView
             android:id="@+id/imageView4"
-            android:layout_width="63dp"
-            android:layout_height="48dp"
-            android:layout_marginLeft="38dp"
+            android:layout_width="53dp"
+            android:layout_height="44dp"
+            android:layout_marginLeft="47dp"
+            android:layout_marginTop="18dp"
             android:layout_toRightOf="@id/user_name"
             app:srcCompat="@drawable/baseline_arrow_forward_24" />
 
@@ -111,17 +112,17 @@
 
         <TextView
             android:id="@+id/pick"
-            android:layout_width="wrap_content"
-            android:layout_height="69dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@id/site_section"
-            android:layout_marginTop="20dp"
-            android:fontFamily="@font/alatsi"
-            android:padding="20dp"
             android:layout_centerHorizontal="true"
-            android:text="PICK YOUR START DATE IN THE CALENDER BELOW"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/aclonica"
+            android:padding="20dp"
+            android:text="PICK YOUR START DATE IN THE CALENDER"
             android:textAlignment="center"
             android:textColor="@color/blue"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textStyle="bold" />
 
 

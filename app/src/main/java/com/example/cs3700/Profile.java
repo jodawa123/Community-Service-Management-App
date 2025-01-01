@@ -105,14 +105,11 @@ public class Profile extends AppCompatActivity {
                 Calendar selectedDate = Calendar.getInstance();
                 selectedDate.set(year, month, dayOfMonth);
                 startDate = selectedDate.getTime();
-
                 // Save the selected date
                 initializeCountdown(startDate);
                 saveStateToFirebase();
-
                 // Highlight the selected date
                 calendarView.setDate(startDate.getTime(), true, true);
-
                 // Disable further interactions
                 calendarView.setEnabled(false);
                 Toast.makeText(this, "Start date set to: "+ startDate, Toast.LENGTH_SHORT).show();
@@ -120,9 +117,6 @@ public class Profile extends AppCompatActivity {
                 Toast.makeText(this, "You already have a start date.", Toast.LENGTH_SHORT).show();
             }
         });
-        calendarView.setDate(Calendar.getInstance().getTimeInMillis(), false, true);
-
-
         dropSiteButton.setOnClickListener(v -> dropSelectedSite());
     }
 
@@ -144,7 +138,6 @@ public class Profile extends AppCompatActivity {
                         initializeCountdown(startDate);
                         updateCountdownUI();
                     }
-
                     // Fetch details if category is available
                     if (selectedCategory != null) {
                         fetchSiteDetails();
@@ -152,7 +145,8 @@ public class Profile extends AppCompatActivity {
                         showSiteDetails();
                     }
                 } else {
-                    Toast.makeText(this, "No saved state found.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "No saved site.", Toast.LENGTH_SHORT).show();
+                    hideSiteDetails();
                 }
             }).addOnFailureListener(e -> Toast.makeText(this, "Error loading state.", Toast.LENGTH_SHORT).show());
         }
@@ -330,6 +324,7 @@ public class Profile extends AppCompatActivity {
         this.startDate = start;
         totalHoursRemaining = TOTAL_REQUIRED_HOURS;
         totalWeeksRemaining = 10;
+        updateCountdownUI();
     }
     private void updateCountdownUI() {
         if (startDate == null) {
@@ -340,8 +335,11 @@ public class Profile extends AppCompatActivity {
         Calendar startCalendar = Calendar.getInstance();
         startCalendar.setTime(startDate);
 
+        // Calculate the difference in milliseconds
         long diffInMillis = currentCalendar.getTimeInMillis() - startCalendar.getTimeInMillis();
-        int weeksPassed = (int) (diffInMillis / (1000 * 60 * 60 * 24 * 7));
+
+        // If the start date is in the future, set weeksPassed to 0
+        int weeksPassed = diffInMillis > 0 ? (int) (diffInMillis / (1000 * 60 * 60 * 24 * 7)) : 0;
 
         totalWeeksRemaining = Math.max(0, 10 - weeksPassed);
         totalHoursRemaining = Math.max(0, totalWeeksRemaining * HOURS_PER_WEEK);

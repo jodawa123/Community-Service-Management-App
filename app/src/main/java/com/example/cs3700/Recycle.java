@@ -1,7 +1,9 @@
 package com.example.cs3700;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -30,19 +32,19 @@ public class Recycle extends AppCompatActivity {
     FirebaseUser currentUser;
     String searchQuery;
     ImageView imageView3;
+    int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recycle);
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
         // Initialize components
-        imageView3=findViewById(R.id.imageView3);
+        imageView3 = findViewById(R.id.imageView3);
         recyclerView = findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         modelArrayList = new ArrayList<>();
@@ -51,17 +53,17 @@ public class Recycle extends AppCompatActivity {
 
         selectedCategory = getIntent().getStringExtra("CATEGORY_NAME");
         searchQuery = getIntent().getStringExtra("SEARCH_QUERY");
+        position = getIntent().getIntExtra("SITE_POSITION", -1);
 
         imageView3.setOnClickListener(view -> {
-            Intent intent = new Intent(Recycle.this,Home.class);
+            Intent intent = new Intent(Recycle.this, Home.class);
             startActivity(intent);
         });
 
         if (selectedCategory != null) {
             Toast.makeText(this, "Category: " + selectedCategory, Toast.LENGTH_SHORT).show();
             fetchUserSelectedSite(); // Fetch user's selected site
-        }
-        else {
+        } else {
             Toast.makeText(this, "No category provided", Toast.LENGTH_SHORT).show();
         }
     }
@@ -111,8 +113,15 @@ public class Recycle extends AppCompatActivity {
                         }
 
                         // Initialize adapter with the user's selected site and category
-                        adapter = new itemAdapter(this, modelArrayList, selectedCategory, userSelectedSite,searchQuery);
+                        adapter = new itemAdapter(this, modelArrayList, selectedCategory, userSelectedSite, searchQuery,position);
                         recyclerView.setAdapter(adapter);
+                        // Filter the list based on the search query
+                        if (searchQuery != null && !searchQuery.isEmpty()) {
+                            adapter.filter(searchQuery);
+                        }
+                        if (position != -1) {
+                            recyclerView.scrollToPosition(position);
+                        }
                     } else {
                         Toast.makeText(this, "No data found for this category", Toast.LENGTH_SHORT).show();
                     }
@@ -121,5 +130,4 @@ public class Recycle extends AppCompatActivity {
                     Toast.makeText(this, "Error loading data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
-
 }
