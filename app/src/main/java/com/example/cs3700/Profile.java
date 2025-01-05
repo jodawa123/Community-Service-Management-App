@@ -13,14 +13,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.drive.Drive;
+import com.google.android.gms.tasks.Task;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.http.FileContent;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,6 +38,9 @@ import java.util.Map;
 
 
 public class Profile extends AppCompatActivity {
+
+    private static final String TAG = "Profile";
+    private static final int REQUEST_CODE_SIGN_IN = 100;
 
     private TextView pickedSiteName, availableSlots, hoursRemaining, weeksRemainingText,pick;
     private RadioButton dropSiteButton;
@@ -46,6 +59,9 @@ public class Profile extends AppCompatActivity {
     private FirebaseUser currentUser;
     private DocumentReference userRef;
     private ImageView imageView4;
+    private GoogleSignInClient googleSignInClient;
+    private Drive googleDriveService;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

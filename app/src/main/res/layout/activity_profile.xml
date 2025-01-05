@@ -46,22 +46,19 @@
             android:scaleType="centerCrop"
             android:src="@drawable/user" />
 
-        <!-- User Name -->
 
-
-        <!-- Site Section -->
         <LinearLayout
             android:id="@+id/site_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/profile_image"
             android:layout_marginTop="30dp"
-            android:background="@drawable/editbg2"
+            android:background="@color/blue"
             android:orientation="horizontal"
             android:padding="10dp"
             android:visibility="visible">
 
-            <!-- Drop Name and Button -->
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -83,7 +80,8 @@
                     android:checked="false" />
             </LinearLayout>
 
-            <!-- Picked Site Name -->
+
+
             <TextView
                 android:id="@+id/picked_site_name"
                 android:layout_width="0dp"
@@ -94,7 +92,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/alatsi"
                 android:text="Selected Site: "
-                android:textColor="@color/yellow"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <!-- Available Slots -->
@@ -110,11 +108,205 @@
                 android:textSize="16sp" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/documents_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/site_section"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:padding="15dp"
+            android:background="@color/blue">
+
+            <TextView
+                android:id="@+id/documents_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/alatsi"
+                android:text="Site Documents"
+                android:textAlignment="center"
+                android:textColor="@color/yellow"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:background="@color/white"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:id="@+id/doc1_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/alatsi"
+                    android:text="Document 1: Introduction\nletter Female"
+                    android:textColor="@color/blue"
+                    android:textSize="16sp" />
+
+                   <ImageView
+                    android:id="@+id/doc1_preview"
+                    android:layout_width="53dp"
+                    android:layout_height="37dp"
+                    android:layout_marginLeft="50dp"
+                    android:text="Preview"
+                    app:srcCompat="@drawable/baseline_preview_24" />
+
+                    <ImageView
+                        android:id="@+id/doc1_download"
+                        android:layout_width="50dp"
+                        android:layout_height="37dp"
+                        app:srcCompat="@drawable/baseline_download_24"
+                        android:layout_marginLeft="5dp" />
+
+                </LinearLayout>
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:background="@color/white"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:id="@+id/doc2_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/alatsi"
+                    android:text="Document 2: Introduction\n letter Male"
+                    android:textColor="@color/blue"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/doc2_preview"
+                    android:layout_width="53dp"
+                    android:layout_height="37dp"
+                    android:layout_marginLeft="47dp"
+                    android:text="Preview"
+                    app:srcCompat="@drawable/baseline_preview_24" />
+
+                <ImageView
+                    android:id="@+id/doc2_download"
+                    android:layout_width="50dp"
+                    android:layout_height="37dp"
+                    app:srcCompat="@drawable/baseline_download_24"
+                    android:layout_marginLeft="5dp" />
+
+
+                </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:background="@color/white"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:id="@+id/doc3_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/alatsi"
+                    android:text="Document 3: Daily diary"
+                    android:textColor="@color/blue"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/doc3_preview"
+                    android:layout_width="53dp"
+                    android:layout_height="37dp"
+                    android:layout_marginLeft="62dp"
+                    android:text="Preview"
+                    app:srcCompat="@drawable/baseline_preview_24" />
+
+                <ImageView
+                    android:id="@+id/doc3_download"
+                    android:layout_width="50dp"
+                    android:layout_height="37dp"
+                    app:srcCompat="@drawable/baseline_download_24"
+                    android:layout_marginLeft="5dp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/doc4_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/alatsi"
+                    android:text="Document 4: Supervisor's\n evalution form"
+                    android:textColor="@color/blue"
+                    android:textSize="16sp" />
+                <ImageView
+                    android:id="@+id/doc4_preview"
+                    android:layout_width="53dp"
+                    android:layout_height="37dp"
+                    android:layout_marginLeft="51dp"
+                    android:text="Preview"
+                    app:srcCompat="@drawable/baseline_preview_24" />
+
+                <ImageView
+                    android:id="@+id/doc4_download"
+                    android:layout_width="50dp"
+                    android:layout_height="37dp"
+                    app:srcCompat="@drawable/baseline_download_24"
+                    android:layout_marginLeft="5dp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/doc5_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/alatsi"
+                    android:text="Document 5: Community\n service guidlines"
+                    android:textColor="@color/blue"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/doc5_preview"
+                    android:layout_width="53dp"
+                    android:layout_height="37dp"
+                    android:layout_marginLeft="59dp"
+                    android:text="Preview"
+                    app:srcCompat="@drawable/baseline_preview_24" />
+
+                <ImageView
+                    android:id="@+id/doc5_download"
+                    android:layout_width="50dp"
+                    android:layout_height="37dp"
+                    app:srcCompat="@drawable/baseline_download_24"
+                    android:layout_marginLeft="5dp" />
+
+            </LinearLayout>
+
+            </LinearLayout>
+
         <TextView
             android:id="@+id/pick"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/site_section"
+            android:layout_below="@id/documents_section"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:fontFamily="@font/aclonica"
@@ -171,9 +363,6 @@
                 android:textColor="@color/yellow"
                 android:textSize="17sp" />
         </LinearLayout>
-
-
-
 
     </RelativeLayout>
 </ScrollView>
