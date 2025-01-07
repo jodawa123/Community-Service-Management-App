@@ -16,12 +16,18 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import io.github.muddz.styleabletoast.StyleableToast;
 
 public class login extends AppCompatActivity {
     EditText identity, pass;
     Button btnLogin;
-    TextView signUpText; // TextView for Sign Up navigation
-    FirebaseAuth firebaseAuth;  // Firebase Authentication instance
+    TextView signUpText;
+    FirebaseAuth firebaseAuth;
+    DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,15 +41,16 @@ public class login extends AppCompatActivity {
             return insets;
         });
 
-        // Initialize Firebase Authentication
+        // Initialize Firebase Authentication and Database Reference
         firebaseAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference("users");
 
         identity = findViewById(R.id.identity);
         pass = findViewById(R.id.pass);
         btnLogin = findViewById(R.id.btnLogin);
         signUpText = findViewById(R.id.signUpText);
 
-        // Login button click
+        // Login button click listener
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,7 +59,7 @@ public class login extends AppCompatActivity {
 
                 // Check if fields are empty
                 if (email.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(login.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                    StyleableToast.makeText(login.this, "Please fill all fields", R.style.mytoast).show();
                     return;
                 }
 
@@ -62,14 +69,39 @@ public class login extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 // Login success
                                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                                Toast.makeText(login.this, "Login Successful!", Toast.LENGTH_SHORT).show();
+                                if (user != null) {
+                                    // Check if email is verified
+                                    if (user.isEmailVerified()) {
+                                        String userId = user.getUid();
 
-                                // Proceed to next activity
-                                startActivity(new Intent(login.this, Home.class));
-                                finish();
+                                        // Fetch username from Firebase Realtime Database
+                                        databaseReference.child(userId).get().addOnCompleteListener(dbTask -> {
+                                            if (dbTask.isSuccessful() && dbTask.getResult() != null) {
+                                                DataSnapshot snapshot = dbTask.getResult();
+                                                String username = snapshot.child("name").getValue(String.class);
+
+                                                if (username != null && !username.isEmpty()) {
+                                                    // Pass username to Home activity
+                                                    Intent intent = new Intent(login.this, Home.class);
+                                                    intent.putExtra("username", username);
+                                                    startActivity(intent);
+                                                    finish();
+                                                } else {
+                                                    StyleableToast.makeText(login.this, "Username not found in database", R.style.mytoast).show();
+                                                }
+                                            } else {
+                                                StyleableToast.makeText(login.this, "Failed to retrieve user data: " + dbTask.getException().getMessage(), R.style.mytoast).show();
+                                            }
+                                        });
+                                    } else {
+                                        // Email not verified
+                                        StyleableToast.makeText(login.this, "Please verify your email before logging in", R.style.mytoast).show();
+                                        firebaseAuth.signOut();
+                                    }
+                                }
                             } else {
                                 // Login failed
-                                Toast.makeText(login.this, "Login Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                StyleableToast.makeText(login.this, "Login Failed: " + task.getException().getMessage(), R.style.mytoast).show();
                             }
                         });
             }

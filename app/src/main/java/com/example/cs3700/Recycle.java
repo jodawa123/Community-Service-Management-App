@@ -21,6 +21,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+import io.github.muddz.styleabletoast.StyleableToast;
+
 public class Recycle extends AppCompatActivity {
 
     RecyclerView recyclerView;
@@ -82,7 +84,7 @@ public class Recycle extends AppCompatActivity {
                         fetchSitesFromFirestore(); // Fetch sites after getting the user's selected site
                     })
                     .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Failed to fetch user selection: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        StyleableToast.makeText(this, "Failed to fetch user selection: " + e.getMessage(), R.style.mytoast).show();
                         fetchSitesFromFirestore(); // Fetch sites even if there's an error
                     });
         } else {
@@ -100,14 +102,16 @@ public class Recycle extends AppCompatActivity {
                             String head = siteSnapshot.getString("head");
                             Long availableSlots = siteSnapshot.getLong("availableSlots");
                             Long totalSlots = siteSnapshot.getLong("totalSlots");
-                            String description = siteSnapshot.getString("description");
+                            String description = siteSnapshot.getString("details");
+                            String contact=siteSnapshot.getString("contact");
 
                             if (head != null && availableSlots != null && totalSlots != null && description != null) {
                                 modelArrayList.add(new model(
                                         head,
                                         availableSlots.intValue(),
                                         totalSlots.intValue(),
-                                        description
+                                        description,
+                                        contact
                                 ));
                             }
                         }

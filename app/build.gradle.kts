@@ -31,9 +31,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
-
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -41,14 +39,9 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
     implementation(libs.firebase.firestore)
-    implementation(libs.play.services)
-    implementation(libs.play.services.maps)
-    implementation ("com.google.android.gms:play-services-auth:20.6.0")
-    implementation ("com.google.api-client:google-api-client-android:1.33.2")
-    implementation ("com.google.api-client:google-api-client-gson:1.33.2")
-    implementation ("com.google.http-client:google-http-client-android:1.42.3")
-    implementation ("com.google.http-client:google-http-client-gson:1.42.3")
-    implementation("com.google.apis:google-api-services-drive:v3-rev20230120-1.33.2")
+    implementation (libs.styleabletoast)
+    implementation (libs.library)
+    implementation (libs.pinview)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

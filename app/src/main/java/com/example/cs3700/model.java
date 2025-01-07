@@ -5,12 +5,14 @@ public class model {
     private int availableSlots;
     private int totalSlots;
     private String description;
+    private String contact;
 
-    public model(String head, int availableSlots, int totalSlots, String description) {
+    public model(String head, int availableSlots, int totalSlots, String description,String contact) {
         this.head = head;
         this.availableSlots = availableSlots;
         this.totalSlots = totalSlots;
         this.description = description;
+        this.contact=contact;
     }
 
     public String getHead() {
@@ -31,5 +33,8 @@ public class model {
 
     public String getDescription() {
         return description;
+    }
+    public String getContact() {
+        return contact;
     }
 }

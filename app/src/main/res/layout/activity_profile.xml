@@ -30,7 +30,7 @@
             android:layout_marginTop="20dp"
             android:fontFamily="@font/alatsi"
             android:text="PROFILE"
-            android:textColor="@color/blue"
+            android:textColor="@color/gray"
             android:textSize="50sp"
             android:textStyle="bold"
            />
@@ -84,7 +84,7 @@
 
             <TextView
                 android:id="@+id/picked_site_name"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
@@ -124,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:fontFamily="@font/alatsi"
-                android:text="Site Documents"
+                android:text="What is expected of you?"
                 android:textAlignment="center"
                 android:textColor="@color/yellow"
                 android:textSize="18sp" />
@@ -142,7 +142,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/alatsi"
-                    android:text="Document 1: Introduction\nletter Female"
+                    android:text="Community service\n guidlines"
                     android:textColor="@color/blue"
                     android:textSize="16sp" />
 
@@ -150,7 +150,7 @@
                     android:id="@+id/doc1_preview"
                     android:layout_width="53dp"
                     android:layout_height="37dp"
-                    android:layout_marginLeft="50dp"
+                    android:layout_marginLeft="70dp"
                     android:text="Preview"
                     app:srcCompat="@drawable/baseline_preview_24" />
 
@@ -159,146 +159,9 @@
                         android:layout_width="50dp"
                         android:layout_height="37dp"
                         app:srcCompat="@drawable/baseline_download_24"
-                        android:layout_marginLeft="5dp" />
+                        android:layout_marginLeft="10dp" />
 
                 </LinearLayout>
-            
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="8dp"
-                android:background="@color/white"
-                android:layout_marginBottom="8dp">
-
-                <TextView
-                    android:id="@+id/doc2_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/alatsi"
-                    android:text="Document 2: Introduction\n letter Male"
-                    android:textColor="@color/blue"
-                    android:textSize="16sp" />
-
-                <ImageView
-                    android:id="@+id/doc2_preview"
-                    android:layout_width="53dp"
-                    android:layout_height="37dp"
-                    android:layout_marginLeft="47dp"
-                    android:text="Preview"
-                    app:srcCompat="@drawable/baseline_preview_24" />
-
-                <ImageView
-                    android:id="@+id/doc2_download"
-                    android:layout_width="50dp"
-                    android:layout_height="37dp"
-                    app:srcCompat="@drawable/baseline_download_24"
-                    android:layout_marginLeft="5dp" />
-
-
-                </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="8dp"
-                android:background="@color/white"
-                android:layout_marginBottom="8dp">
-
-                <TextView
-                    android:id="@+id/doc3_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/alatsi"
-                    android:text="Document 3: Daily diary"
-                    android:textColor="@color/blue"
-                    android:textSize="16sp" />
-
-                <ImageView
-                    android:id="@+id/doc3_preview"
-                    android:layout_width="53dp"
-                    android:layout_height="37dp"
-                    android:layout_marginLeft="62dp"
-                    android:text="Preview"
-                    app:srcCompat="@drawable/baseline_preview_24" />
-
-                <ImageView
-                    android:id="@+id/doc3_download"
-                    android:layout_width="50dp"
-                    android:layout_height="37dp"
-                    app:srcCompat="@drawable/baseline_download_24"
-                    android:layout_marginLeft="5dp" />
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:background="@color/white"
-                android:orientation="horizontal"
-                android:padding="8dp">
-
-                <TextView
-                    android:id="@+id/doc4_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/alatsi"
-                    android:text="Document 4: Supervisor's\n evalution form"
-                    android:textColor="@color/blue"
-                    android:textSize="16sp" />
-                <ImageView
-                    android:id="@+id/doc4_preview"
-                    android:layout_width="53dp"
-                    android:layout_height="37dp"
-                    android:layout_marginLeft="51dp"
-                    android:text="Preview"
-                    app:srcCompat="@drawable/baseline_preview_24" />
-
-                <ImageView
-                    android:id="@+id/doc4_download"
-                    android:layout_width="50dp"
-                    android:layout_height="37dp"
-                    app:srcCompat="@drawable/baseline_download_24"
-                    android:layout_marginLeft="5dp" />
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:background="@color/white"
-                android:orientation="horizontal"
-                android:padding="8dp">
-
-                <TextView
-                    android:id="@+id/doc5_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/alatsi"
-                    android:text="Document 5: Community\n service guidlines"
-                    android:textColor="@color/blue"
-                    android:textSize="16sp" />
-
-                <ImageView
-                    android:id="@+id/doc5_preview"
-                    android:layout_width="53dp"
-                    android:layout_height="37dp"
-                    android:layout_marginLeft="59dp"
-                    android:text="Preview"
-                    app:srcCompat="@drawable/baseline_preview_24" />
-
-                <ImageView
-                    android:id="@+id/doc5_download"
-                    android:layout_width="50dp"
-                    android:layout_height="37dp"
-                    app:srcCompat="@drawable/baseline_download_24"
-                    android:layout_marginLeft="5dp" />
-
-            </LinearLayout>
 
             </LinearLayout>
 

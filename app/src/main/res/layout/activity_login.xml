@@ -10,8 +10,8 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="406dp"
-        android:layout_height="464dp"
+        android:layout_width="409dp"
+        android:layout_height="407dp"
         android:layout_marginStart="62dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="63dp"
@@ -75,6 +75,7 @@
         android:fontFamily="@font/aclonica"
         android:text="Login"
         android:textColor="@color/blue"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -83,18 +84,32 @@
         app:layout_constraintVertical_bias="0.159" />
 
     <TextView
+        android:id="@+id/forgot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="168dp"
+        android:fontFamily="@font/alatsi"
+        android:text="Forgot password"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnLogin" />
+
+    <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginStart="108dp"
+        android:layout_marginBottom="16dp"
         android:fontFamily="@font/alatsi"
+        android:layout_marginTop="10dp"
         android:text="Don't have an account?"
         android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnLogin"
-        app:layout_constraintVertical_bias="0.259" />
+        app:layout_constraintTop_toBottomOf="@+id/forgot" />
 
     <TextView
         android:id="@+id/signUpText"

@@ -11,10 +11,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -75,6 +73,7 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
         holder.siteTitle.setText(currentModel.getHead());
         holder.studentsNeeded.setText(currentModel.getAvailableSlots() + "/" + currentModel.getTotalSlots());
         holder.siteDescription.setText(currentModel.getDescription());
+        holder.phone.setText(currentModel.getContact());
 
         // Highlight and animate the searched item
         // Highlight and animate the searched item
@@ -178,7 +177,7 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
     }
 
     public static class Holder extends RecyclerView.ViewHolder {
-        TextView siteTitle, studentsNeeded, siteDescription;
+        TextView siteTitle, studentsNeeded, siteDescription,phone;
         RadioButton radioButton;
 
         public Holder(@NonNull View itemView) {
@@ -187,6 +186,7 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
             studentsNeeded = itemView.findViewById(R.id.students_needed);
             siteDescription = itemView.findViewById(R.id.site_description);
             radioButton = itemView.findViewById(R.id.site_radio_button);
+            phone=itemView.findViewById(R.id.site_phone);
         }
     }
 

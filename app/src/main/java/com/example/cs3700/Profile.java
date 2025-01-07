@@ -13,43 +13,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.drive.Drive;
-import com.google.android.gms.tasks.Task;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.http.FileContent;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.github.muddz.styleabletoast.StyleableToast;
+
 
 public class Profile extends AppCompatActivity {
 
-    private static final String TAG = "Profile";
-    private static final int REQUEST_CODE_SIGN_IN = 100;
-
     private TextView pickedSiteName, availableSlots, hoursRemaining, weeksRemainingText,pick;
-    private RadioButton dropSiteButton;
     private FirebaseFirestore firestore;
-    private String selectedCategory, selectedSite, name;
+    private String selectedCategory, selectedSite;
     private int currentAvailableSlots;
-    private Animation ani;
-    private View siteSection;
-    private View hoursSection;
+    private View siteSection,hoursSection,documents_section;
     private CalendarView calendarView;
     private static final int TOTAL_REQUIRED_HOURS = 90;
     private static final int HOURS_PER_WEEK = 9;
@@ -59,8 +42,7 @@ public class Profile extends AppCompatActivity {
     private FirebaseUser currentUser;
     private DocumentReference userRef;
     private ImageView imageView4;
-    private GoogleSignInClient googleSignInClient;
-    private Drive googleDriveService;
+
 
 
     @Override
@@ -70,14 +52,14 @@ public class Profile extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
 
-        ani= AnimationUtils.loadAnimation(this,R.anim.pulsating_animation);
+        Animation ani = AnimationUtils.loadAnimation(this, R.anim.pulsating_animation);
         pick=findViewById(R.id.pick);
         pick.setAnimation(ani);
         // Initialize Views
 
         pickedSiteName = findViewById(R.id.picked_site_name);
         availableSlots = findViewById(R.id.available_slots);
-        dropSiteButton = findViewById(R.id.drop_site_button);
+        RadioButton dropSiteButton = findViewById(R.id.drop_site_button);
         calendarView = findViewById(R.id.calendarView);
         hoursRemaining = findViewById(R.id.hoursRemaining);
         weeksRemainingText = findViewById(R.id.weeksRemaining);
@@ -128,9 +110,9 @@ public class Profile extends AppCompatActivity {
                 calendarView.setDate(startDate.getTime(), true, true);
                 // Disable further interactions
                 calendarView.setEnabled(false);
-                Toast.makeText(this, "Start date set to: "+ startDate, Toast.LENGTH_SHORT).show();
+                StyleableToast.makeText(this, "Start date set to: "+ startDate, R.style.mytoast).show();
             } else {
-                Toast.makeText(this, "You already have a start date.", Toast.LENGTH_SHORT).show();
+                StyleableToast.makeText(this, "You already have a start date.", R.style.mytoast).show();
             }
         });
         dropSiteButton.setOnClickListener(v -> dropSelectedSite());
@@ -170,17 +152,17 @@ public class Profile extends AppCompatActivity {
 
     private void saveStateToFirebase() {
         if (userRef == null) {
-            Toast.makeText(this, "User reference is not initialized.", Toast.LENGTH_SHORT).show();
+           StyleableToast.makeText(this, "User reference is not initialized.", R.style.mytoast).show();
             return;
         }
 
         if (selectedSite == null) {
-            Toast.makeText(this, "No site selected to save.", Toast.LENGTH_SHORT).show();
+            StyleableToast.makeText(this, "No site selected to save.", R.style.mytoast).show();
             return;
         }
 
         if (startDate == null) {
-            Toast.makeText(this, "Start date is not set.", Toast.LENGTH_SHORT).show();
+           StyleableToast.makeText(this, "Start date is not set.", R.style.mytoast).show();
             return;
         }
         Map<String, Object> state = new HashMap<>();
@@ -218,9 +200,8 @@ public class Profile extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> Toast.makeText(this, "Error fetching site details.", Toast.LENGTH_SHORT).show());
     }
-
     private void dropSelectedSite() {
-        if (selectedCategory != null) {//if user chooses to directly delete from the intent
+        if (selectedCategory != null) { // if user chooses to directly delete from the intent
             firestore.collection(selectedCategory)
                     .whereEqualTo("head", selectedSite)
                     .get()
@@ -289,7 +270,7 @@ public class Profile extends AppCompatActivity {
                                                                     batch.delete(userStatesRef);
                                                                 }).addOnSuccessListener(batchSuccess -> {
                                                                     Toast.makeText(this, "You successfully dropped your selection.", Toast.LENGTH_SHORT).show();
-                                                                    Log.d("Debug", "Both UserSelections and UserStates deleted successfully.");
+                                                                    Log.d("Debug", "Deleted successfully.");
                                                                     hideSiteDetails();
                                                                 }).addOnFailureListener(batchFailure -> {
                                                                     Toast.makeText(this, "Failed to drop your selection: " + batchFailure.getMessage(), Toast.LENGTH_SHORT).show();
@@ -329,12 +310,15 @@ public class Profile extends AppCompatActivity {
         calendarView.setVisibility(View.VISIBLE);
         hoursSection.setVisibility(View.VISIBLE);
         pick.setVisibility(View.VISIBLE);
+
+
     }
     private void hideSiteDetails() {
         siteSection.setVisibility(View.GONE);
         calendarView.setVisibility(View.GONE);
         hoursSection.setVisibility(View.GONE);
         pick.setVisibility(View.GONE);
+
     }
     private void initializeCountdown(Date start) {
         this.startDate = start;

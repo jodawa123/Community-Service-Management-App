@@ -2,8 +2,22 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.CS3700" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+         <item name="colorPrimary">@color/blue</item>
     </style>
+    <style name="mytoast">
+        <item name="stTextColor">@color/blue</item>
+        <item name="stFont">@font/alatsi</item>
+        <item name="stTextSize">18sp</item>
+        <item name="stColorBackground">@color/white</item>
+        <item name="stStrokeWidth">3dp</item>
+        <item name="stRadius">5dp</item>
+        <item name="stLength">SHORT</item>
+        <item name="stStrokeColor">@color/blue</item>
+        <item name="stSolidBackground">true</item>
+        <item name="stIconStart">@drawable/baseline_star_24</item>
+
+    </style>
+
 
     <style name="Theme.CS3700" parent="Base.Theme.CS3700" />
 </resources>

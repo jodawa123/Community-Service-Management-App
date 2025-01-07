@@ -15,17 +15,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.example.cs3700.Recycle;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import android.os.Handler;
 import android.os.Looper;
+import nl.joery.animatedbottombar.AnimatedBottomBar;
 
 public class Home extends AppCompatActivity {
 
@@ -36,6 +40,10 @@ public class Home extends AppCompatActivity {
     private Map<String, List<String>> categoryData;
     private Handler handler = new Handler(Looper.getMainLooper());
     private Runnable searchRunnable;
+    private FirebaseAuth firebaseAuth;
+    private DatabaseReference databaseReference;
+    private FirebaseUser currentUser;
+
 
 
     @Override
@@ -52,6 +60,21 @@ public class Home extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         profileImage = findViewById(R.id.profileImage);
         textView6 = findViewById(R.id.textView6);
+        firebaseAuth = FirebaseAuth.getInstance();
+        currentUser = firebaseAuth.getCurrentUser();
+        databaseReference = FirebaseDatabase.getInstance().getReference("users");
+
+        // Fetch the user's name from the database
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            fetchUserName(userId);
+        } else {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+            // Redirect to login screen
+            Intent loginIntent = new Intent(Home.this, login.class);
+            startActivity(loginIntent);
+            finish();
+        }
 
         ImageView imageHospice = findViewById(R.id.imageHospice);
         ImageView imageRehab = findViewById(R.id.imageRehab);
@@ -61,6 +84,8 @@ public class Home extends AppCompatActivity {
         ImageView imageSpecial = findViewById(R.id.imageSpecial);
         ImageView searchIcon = findViewById(R.id.searchIcon);
         EditText searchBar = findViewById(R.id.searchBar);
+        AnimatedBottomBar bottomBar=findViewById(R.id.bottom);
+
 
         imageHospice.setOnClickListener(v -> openCategory("Hospice"));
         imageSpecial.setOnClickListener(v -> openCategory("SpecialNeeds"));
@@ -85,6 +110,35 @@ public class Home extends AppCompatActivity {
                 Toast.makeText(this, "Enter a search term", Toast.LENGTH_SHORT).show();
             }
         });
+        bottomBar.setOnTabSelectListener(new AnimatedBottomBar.OnTabSelectListener() {
+            @Override
+            public void onTabSelected(int lastIndex, AnimatedBottomBar.Tab lastTab, int newIndex, AnimatedBottomBar.Tab newTab) {
+                handleTabSelection(newIndex);
+            }
+
+            @Override
+            public void onTabReselected(int index, AnimatedBottomBar.Tab tab) {
+                handleTabReselection(index);
+            }
+        });
+
+    }
+    private void fetchUserName(String userId) {
+        databaseReference.child(userId).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DataSnapshot snapshot = task.getResult();
+                String name = snapshot.child("name").getValue(String.class);
+                if (name != null) {
+                    textView6.setText(name);
+                } else {
+                    textView6.setText("User");
+                    Toast.makeText(this, "Name not found in database", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                textView6.setText("User");
+                Toast.makeText(this, "Failed to fetch user data", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void openCategory(String categoryName) {
@@ -92,6 +146,7 @@ public class Home extends AppCompatActivity {
         intent.putExtra("CATEGORY_NAME", categoryName);
         startActivity(intent);
     }
+
 
     private void loadAllData(Runnable onDataLoaded) {
         String[] categories = {"HealthCenters", "ChildrenHomes", "Hospice", "Rehab", "RescueCenter", "SpecialNeeds"};
@@ -146,5 +201,35 @@ public class Home extends AppCompatActivity {
         intent.putExtra("SITE_NAME", site);
         intent.putExtra("SITE_POSITION", position);
         startActivity(intent);
+    }
+    private void handleTabSelection(int newIndex) {
+        switch (newIndex) {
+            case 0:
+                // Redirect to Profile page
+                Intent profileIntent = new Intent(Home.this, Profile.class);
+                startActivity(profileIntent);
+                break;
+
+            case 1:
+                // Redirect to Home page
+                // Optional: Do nothing if it's the same page
+                break;
+
+            case 2:
+                // Redirect to Maps page
+                Intent mapsIntent = new Intent(Home.this, Mapping.class);
+                startActivity(mapsIntent);
+                break;
+
+            default:
+                // Handle unexpected index
+                Toast.makeText(Home.this, "Unknown Tab Selected", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void handleTabReselection(int index) {
+        // Handle tab reselection logic if needed
+        Toast.makeText(Home.this, "Tab Reselected: " + index, Toast.LENGTH_SHORT).show();
     }
 }
