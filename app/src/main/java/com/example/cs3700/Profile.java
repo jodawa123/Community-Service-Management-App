@@ -180,7 +180,6 @@ public class Profile extends AppCompatActivity {
                 });
     }
 
-
     private void fetchSiteDetails() {
         firestore.collection(selectedCategory)
                 .whereEqualTo("head", selectedSite)
@@ -210,6 +209,11 @@ public class Profile extends AppCompatActivity {
                             querySnapshot.getDocuments().forEach(document -> {
                                 DocumentReference siteRef = document.getReference();
 
+                                // Locate the `members` subcollection
+                                DocumentReference memberRef = siteRef
+                                        .collection("members")
+                                        .document(currentUser.getUid());
+
                                 // Start a Firestore batch
                                 firestore.runBatch(batch -> {
                                     // Update site slot count
@@ -218,12 +222,15 @@ public class Profile extends AppCompatActivity {
                                     // Delete from UserStates
                                     batch.delete(userRef);
 
-                                    // Delete from UserSelection (assuming UserSelection is a separate collection)
+                                    // Delete from UserSelections
                                     DocumentReference userSelectionRef = firestore.collection("UserSelections")
                                             .document(currentUser.getUid());
                                     batch.delete(userSelectionRef);
+
+                                    // Delete user from the `members` subcollection
+                                    batch.delete(memberRef);
                                 }).addOnSuccessListener(aVoid -> {
-                                    Toast.makeText(this, "User and site selection deleted successfully.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(this, "Deleted successfully.", Toast.LENGTH_SHORT).show();
                                     hideSiteDetails();
                                     selectedSite = null; // Clear the current site
                                 }).addOnFailureListener(e -> {
@@ -235,9 +242,8 @@ public class Profile extends AppCompatActivity {
                         }
                     })
                     .addOnFailureListener(e -> Toast.makeText(this, "Error fetching site details.", Toast.LENGTH_SHORT).show());
-        }
-        else {
-            // If user deletes using the loadFirebase
+        } else {
+            // If user deletes using loadFirebase
             firestore.collection("UserSelections")
                     .document(currentUser.getUid())
                     .get()
@@ -258,29 +264,36 @@ public class Profile extends AppCompatActivity {
                                                 Long availableSlots = document.getLong("availableSlots");
 
                                                 if (availableSlots != null) {
-                                                    // Increment the available slots
-                                                    siteRef.update("availableSlots", availableSlots + 1)
-                                                            .addOnSuccessListener(aVoid -> {
-                                                                // Perform batch deletion for UserSelections and UserStates
-                                                                firestore.runBatch(batch -> {
-                                                                    DocumentReference userSelectionsRef = firestore.collection("UserSelections").document(currentUser.getUid());
-                                                                    batch.delete(userSelectionsRef);
+                                                    // Locate the `members` subcollection
+                                                    DocumentReference memberRef = siteRef
+                                                            .collection("members")
+                                                            .document(currentUser.getUid());
 
-                                                                    DocumentReference userStatesRef = firestore.collection("UserStates").document(currentUser.getUid());
-                                                                    batch.delete(userStatesRef);
-                                                                }).addOnSuccessListener(batchSuccess -> {
-                                                                    Toast.makeText(this, "You successfully dropped your selection.", Toast.LENGTH_SHORT).show();
-                                                                    Log.d("Debug", "Deleted successfully.");
-                                                                    hideSiteDetails();
-                                                                }).addOnFailureListener(batchFailure -> {
-                                                                    Toast.makeText(this, "Failed to drop your selection: " + batchFailure.getMessage(), Toast.LENGTH_SHORT).show();
-                                                                    Log.e("Error", "Batch deletion failed: " + batchFailure.getMessage());
-                                                                });
-                                                            })
-                                                            .addOnFailureListener(updateFailure -> {
-                                                                Toast.makeText(this, "Failed to update site: " + updateFailure.getMessage(), Toast.LENGTH_SHORT).show();
-                                                                Log.e("Error", "Failed to update available slots: " + updateFailure.getMessage());
-                                                            });
+                                                    // Perform batch operations
+                                                    firestore.runBatch(batch -> {
+                                                        // Increment available slots
+                                                        batch.update(siteRef, "availableSlots", availableSlots + 1);
+
+                                                        // Delete from UserSelections
+                                                        DocumentReference userSelectionsRef = firestore.collection("UserSelections")
+                                                                .document(currentUser.getUid());
+                                                        batch.delete(userSelectionsRef);
+
+                                                        // Delete from UserStates
+                                                        DocumentReference userStatesRef = firestore.collection("UserStates")
+                                                                .document(currentUser.getUid());
+                                                        batch.delete(userStatesRef);
+
+                                                        // Delete user from the `members` subcollection
+                                                        batch.delete(memberRef);
+                                                    }).addOnSuccessListener(batchSuccess -> {
+                                                        Toast.makeText(this, "You successfully dropped your selection.", Toast.LENGTH_SHORT).show();
+                                                        Log.d("Debug", "Deleted successfully.");
+                                                        hideSiteDetails();
+                                                    }).addOnFailureListener(batchFailure -> {
+                                                        Toast.makeText(this, "Failed to drop your selection: " + batchFailure.getMessage(), Toast.LENGTH_SHORT).show();
+                                                        Log.e("Error", "Batch deletion failed: " + batchFailure.getMessage());
+                                                    });
                                                 } else {
                                                     Toast.makeText(this, "Invalid available slots data for the site.", Toast.LENGTH_SHORT).show();
                                                 }
@@ -305,6 +318,7 @@ public class Profile extends AppCompatActivity {
                     });
         }
     }
+
     private void showSiteDetails() {
         siteSection.setVisibility(View.VISIBLE);
         calendarView.setVisibility(View.VISIBLE);

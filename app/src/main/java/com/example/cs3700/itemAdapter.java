@@ -15,12 +15,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
     private final Context context;
@@ -122,7 +126,7 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
                         currentModel.setAvailableSlots(newAvailableSlots);
 
                         siteRef.update("availableSlots", newAvailableSlots)
-                                .addOnSuccessListener(aVoid -> saveUserSelection(currentModel, position))
+                                .addOnSuccessListener(aVoid -> saveMemberDetails(siteRef, currentModel, position))
                                 .addOnFailureListener(e -> Toast.makeText(context, "Failed to update slots: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                     } else {
                         Toast.makeText(context, "No matching site found", Toast.LENGTH_SHORT).show();
@@ -130,6 +134,45 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
                 })
                 .addOnFailureListener(e -> Toast.makeText(context, "Error querying site: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
+    private void saveMemberDetails(DocumentReference siteRef, model currentModel, int position) {
+        String userId = currentUser.getUid();
+
+        fetchUserData(userId, (userName, userCustomId) -> {
+            if (userName != null && userCustomId != null) {
+                Map<String, Object> memberData = new HashMap<>();
+                memberData.put("id", userCustomId);
+                memberData.put("name", userName);
+
+                siteRef.collection("members").document(userId)
+                        .set(memberData)
+                        .addOnSuccessListener(aVoid -> {
+                            saveUserSelection(currentModel, position); // Save user selection after saving member
+                            Toast.makeText(context, "Member added successfully!", Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(context, "Failed to add member: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            } else {
+                Toast.makeText(context, "User details not found", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void fetchUserData(String userId, UserDataCallback callback) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId);
+        databaseReference.get().addOnSuccessListener(dataSnapshot -> {
+            if (dataSnapshot.exists()) {
+                String userName = dataSnapshot.child("name").getValue(String.class);
+                String userCustomId = dataSnapshot.child("id").getValue(String.class);
+                callback.onUserDataFetched(userName, userCustomId);
+            } else {
+                callback.onUserDataFetched(null, null);
+            }
+        }).addOnFailureListener(e -> callback.onUserDataFetched(null, null));
+    }
+
+    // Callback interface for user data
+    interface UserDataCallback {
+        void onUserDataFetched(String userName, String userCustomId);
+    }
+
 
     private void saveUserSelection(model currentModel, int position) {
         firestore.collection("UserSelections")
@@ -203,6 +246,32 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
 
         public void setSelectedSite(String selectedSite) {
             this.selectedSite = selectedSite;
+        }
+    }
+    public static class Member {
+        private String id;
+        private String name;
+
+        public Member(String id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+
+        // Getters and Setters
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
     }
 }

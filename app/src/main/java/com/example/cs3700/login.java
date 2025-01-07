@@ -28,6 +28,7 @@ public class login extends AppCompatActivity {
     TextView signUpText;
     FirebaseAuth firebaseAuth;
     DatabaseReference databaseReference;
+    TextView forgot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class login extends AppCompatActivity {
         pass = findViewById(R.id.pass);
         btnLogin = findViewById(R.id.btnLogin);
         signUpText = findViewById(R.id.signUpText);
+        forgot=findViewById(R.id.forgot);
 
         // Login button click listener
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -83,7 +85,6 @@ public class login extends AppCompatActivity {
                                                 if (username != null && !username.isEmpty()) {
                                                     // Pass username to Home activity
                                                     Intent intent = new Intent(login.this, Home.class);
-                                                    intent.putExtra("username", username);
                                                     startActivity(intent);
                                                     finish();
                                                 } else {
@@ -116,5 +117,14 @@ public class login extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        forgot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(login.this, Mail.class);
+                startActivity(intent);
+            }
+        });
+
+
     }
 }

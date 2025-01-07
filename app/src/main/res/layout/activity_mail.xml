@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/blob_scene_haikei__2_"
+    tools:context=".Mail">
+
+    <EditText
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/alatsi"
+        android:text="RESET PASSWORD"
+        android:textColor="@color/gray"
+        android:textSize="42sp" />
+
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="match_parent"
+        android:layout_height="371dp"
+        android:layout_below="@id/title"
+        app:srcCompat="@drawable/emails_cuate" />
+
+    <EditText
+        android:id="@+id/emailEditText"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imageView6"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/editbg4"
+        android:drawableLeft="@drawable/baseline_email_24"
+        android:drawablePadding="10dp"
+        android:elevation="3dp"
+        android:fontFamily="@font/alatsi"
+        android:hint="Enter your email"
+        android:inputType="textEmailAddress"
+        android:padding="15dp"
+        android:textAlignment="center"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/resetPasswordButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/emailEditText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:backgroundTint="@color/yellow"
+        android:fontFamily="@font/aclonica"
+        android:text="RESET"
+        android:textColor="@color/black" />
+</RelativeLayout>
