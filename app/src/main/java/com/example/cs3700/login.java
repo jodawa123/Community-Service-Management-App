@@ -61,7 +61,7 @@ public class login extends AppCompatActivity {
 
                 // Check if fields are empty
                 if (email.isEmpty() || password.isEmpty()) {
-                    StyleableToast.makeText(login.this, "Please fill all fields", R.style.mytoast).show();
+                    Toast.makeText(login.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -69,6 +69,7 @@ public class login extends AppCompatActivity {
                 firebaseAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
+                                Toast.makeText(login.this, "Login successful !!", Toast.LENGTH_SHORT).show();
                                 // Login success
                                 FirebaseUser user = firebaseAuth.getCurrentUser();
                                 if (user != null) {

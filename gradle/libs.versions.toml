@@ -1,5 +1,6 @@
 [versions]
 agp = "8.6.0"
+googleMapsServices = "2.1.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -12,12 +13,15 @@ googleGmsGoogleServices = "4.4.2"
 firebaseAuth = "23.1.0"
 firebaseDatabase = "21.0.0"
 firebaseFirestore = "25.1.1"
+materialCalendarView = "1.9.2"
 pinview = "1.4.4"
 playServices = "12.0.1"
 playServicesMaps = "19.0.0"
 styleabletoast = "2.4.0"
+playServicesLocation = "21.3.0"
 
 [libraries]
+google-maps-services = { module = "com.google.maps:google-maps-services", version.ref = "googleMapsServices" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -29,10 +33,12 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+material-calendar-view = { module = "com.applandeo:material-calendar-view", version.ref = "materialCalendarView" }
 pinview = { module = "io.github.chaosleung:pinview", version.ref = "pinview" }
 play-services = { group = "com.google.android.gms", name = "play-services", version.ref = "playServices" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 styleabletoast = { module = "io.github.muddz:styleabletoast", version.ref = "styleabletoast" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

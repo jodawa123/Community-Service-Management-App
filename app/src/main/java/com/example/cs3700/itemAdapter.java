@@ -1,8 +1,11 @@
 
 package com.example.cs3700;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,10 +80,27 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
         holder.siteTitle.setText(currentModel.getHead());
         holder.studentsNeeded.setText(currentModel.getAvailableSlots() + "/" + currentModel.getTotalSlots());
         holder.siteDescription.setText(currentModel.getDescription());
-        holder.phone.setText(currentModel.getContact());
 
-        // Highlight and animate the searched item
-        // Highlight and animate the searched item
+        String phoneNumber = currentModel.getContact();
+        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
+            holder.phone.setClickable(false);
+        } else {
+            holder.phone.setText(phoneNumber);
+            holder.phone.setClickable(true);
+        }
+        holder.phone.setOnClickListener(v -> {
+            // Copy number to clipboard
+            ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Phone Number", phoneNumber);
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(context, "Number copied to clipboard", Toast.LENGTH_SHORT).show();
+
+            // Redirect to phone dialer
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:" + phoneNumber));
+            context.startActivity(intent);
+        });
+
         if (position==highlightPosition) {
             Animation animation = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.pulsating_animation);
             holder.itemView.startAnimation(animation);
@@ -105,6 +125,13 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
             } else {
                 Toast.makeText(context, "No available slots for this site", Toast.LENGTH_SHORT).show();
             }
+        });
+        holder.siteTitle.setOnClickListener(v -> {
+            Intent intent = new Intent(context, Mapping.class);
+            intent.putExtra("SITE_NAME", currentModel.getHead());
+            intent.putExtra("LATITUDE", currentModel.getLatitude());
+            intent.putExtra("LONGITUDE", currentModel.getLongitude());
+            context.startActivity(intent);
         });
     }
 
@@ -230,6 +257,7 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
             siteDescription = itemView.findViewById(R.id.site_description);
             radioButton = itemView.findViewById(R.id.site_radio_button);
             phone=itemView.findViewById(R.id.site_phone);
+
         }
     }
 

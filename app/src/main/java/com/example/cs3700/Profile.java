@@ -22,13 +22,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import io.github.muddz.styleabletoast.StyleableToast;
 
 
 public class Profile extends AppCompatActivity {
 
-    private TextView pickedSiteName, availableSlots, hoursRemaining, weeksRemainingText,pick;
+    private TextView pickedSiteName, availableSlots, hoursRemainingtx, weeksRemainingText,pick;
     private FirebaseFirestore firestore;
     private String selectedCategory, selectedSite;
     private int currentAvailableSlots;
@@ -36,13 +35,12 @@ public class Profile extends AppCompatActivity {
     private CalendarView calendarView;
     private static final int TOTAL_REQUIRED_HOURS = 90;
     private static final int HOURS_PER_WEEK = 9;
-    private Date startDate;
+    private Date startDate,endDate;
     private int totalWeeksRemaining;
     private int totalHoursRemaining;
     private FirebaseUser currentUser;
     private DocumentReference userRef;
     private ImageView imageView4;
-
 
 
     @Override
@@ -61,7 +59,7 @@ public class Profile extends AppCompatActivity {
         availableSlots = findViewById(R.id.available_slots);
         RadioButton dropSiteButton = findViewById(R.id.drop_site_button);
         calendarView = findViewById(R.id.calendarView);
-        hoursRemaining = findViewById(R.id.hoursRemaining);
+        hoursRemainingtx = findViewById(R.id.hoursRemaining);
         weeksRemainingText = findViewById(R.id.weeksRemaining);
         imageView4=findViewById(R.id.imageView4);
 
@@ -122,42 +120,43 @@ public class Profile extends AppCompatActivity {
         if (currentUser != null) {
             userRef.get().addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {
-                    // Load saved state
                     selectedSite = documentSnapshot.getString("selectedSite");
-                    selectedCategory = documentSnapshot.getString("selectedCategory"); // Add this
+                    selectedCategory = documentSnapshot.getString("selectedCategory");
                     currentAvailableSlots = documentSnapshot.getLong("currentAvailableSlots").intValue();
                     long startDateMillis = documentSnapshot.getLong("startDate");
+                    long endDateMillis = documentSnapshot.getLong("endDate");
 
                     // Update UI with loaded state
                     pickedSiteName.setText("Selected Site: " + selectedSite);
                     availableSlots.setText("Slots: " + currentAvailableSlots);
                     if (startDateMillis != 0) {
                         startDate = new Date(startDateMillis);
-                        initializeCountdown(startDate);
-                        updateCountdownUI();
                     }
-                    // Fetch details if category is available
-                    if (selectedCategory != null) {
-                        fetchSiteDetails();
-                    } else {
-                        showSiteDetails();
+                    if (endDateMillis != 0) {
+                        endDate = new Date(endDateMillis);
                     }
+                    // Highlight dates
+                    if (startDate != null) {
+                        calendarView.setDate(startDate.getTime(), true, true);
+                    }
+                    if (endDate != null) {
+                        calendarView.setDate(endDate.getTime(), true, true);
+                    }
+                    initializeCountdown(startDate);
+                    updateCountdownUI();
+                    showSiteDetails();
                 } else {
-                    Toast.makeText(this, "No saved site.", Toast.LENGTH_SHORT).show();
                     hideSiteDetails();
+                    Toast.makeText(this, "No saved site.", Toast.LENGTH_SHORT).show();
+
                 }
             }).addOnFailureListener(e -> Toast.makeText(this, "Error loading state.", Toast.LENGTH_SHORT).show());
         }
     }
 
     private void saveStateToFirebase() {
-        if (userRef == null) {
-           StyleableToast.makeText(this, "User reference is not initialized.", R.style.mytoast).show();
-            return;
-        }
-
-        if (selectedSite == null) {
-            StyleableToast.makeText(this, "No site selected to save.", R.style.mytoast).show();
+        if (userRef == null || selectedSite == null || startDate == null || endDate == null) {
+            Toast.makeText(this, "Incomplete data. Cannot save state.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -169,15 +168,12 @@ public class Profile extends AppCompatActivity {
         state.put("selectedSite", selectedSite);
         state.put("currentAvailableSlots", currentAvailableSlots);
         state.put("startDate", startDate.getTime());
+        state.put("endDate", endDate.getTime());
         state.put("selectedCategory", selectedCategory);
 
         userRef.set(state)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "State saved successfully.", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to save state: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+                .addOnSuccessListener(aVoid -> Toast.makeText(this, "State saved successfully.", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(this, "Failed to save state: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void fetchSiteDetails() {
@@ -336,33 +332,47 @@ public class Profile extends AppCompatActivity {
     }
     private void initializeCountdown(Date start) {
         this.startDate = start;
-        totalHoursRemaining = TOTAL_REQUIRED_HOURS;
-        totalWeeksRemaining = 10;
+
+        // Calculate end date (10 weeks = 70 days)
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(start);
+        calendar.add(Calendar.DAY_OF_MONTH, 70);
+        this.endDate = calendar.getTime();
+
+        // Highlight start date and end date
+        calendarView.setDate(start.getTime(), true, true);
+
+        // Set the countdown values
         updateCountdownUI();
+
+        // Save to Firestore
+        saveStateToFirebase();
     }
+
     private void updateCountdownUI() {
-        if (startDate == null) {
+        if (startDate == null || endDate == null) {
             Toast.makeText(this, "Please select a start date first.", Toast.LENGTH_SHORT).show();
             return;
         }
+
         Calendar currentCalendar = Calendar.getInstance();
         Calendar startCalendar = Calendar.getInstance();
         startCalendar.setTime(startDate);
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(endDate);
 
-        // Calculate the difference in milliseconds
-        long diffInMillis = currentCalendar.getTimeInMillis() - startCalendar.getTimeInMillis();
+        // Calculate weeks and hours remaining
+        long timeUntilEnd = endCalendar.getTimeInMillis() - currentCalendar.getTimeInMillis();
+        int weeksRemaining = Math.max(0, (int) (timeUntilEnd / (1000 * 60 * 60 * 24 * 7)));
+        int hoursRemaining = Math.max(0, weeksRemaining * HOURS_PER_WEEK);
 
-        // If the start date is in the future, set weeksPassed to 0
-        int weeksPassed = diffInMillis > 0 ? (int) (diffInMillis / (1000 * 60 * 60 * 24 * 7)) : 0;
+        // Update UI
+        weeksRemainingText.setText("Weeks Remaining: " + weeksRemaining);
+        hoursRemainingtx.setText("Hours Remaining: " + hoursRemaining);
 
-        totalWeeksRemaining = Math.max(0, 10 - weeksPassed);
-        totalHoursRemaining = Math.max(0, totalWeeksRemaining * HOURS_PER_WEEK);
-
-        weeksRemainingText.setText("Weeks Remaining: " + totalWeeksRemaining);
-        hoursRemaining.setText("Hours Remaining: " + totalHoursRemaining);
-
-        if (totalWeeksRemaining <= 0) {
+        if (weeksRemaining <= 0) {
             Toast.makeText(this, "Community service completed!", Toast.LENGTH_SHORT).show();
         }
     }
+
 }
