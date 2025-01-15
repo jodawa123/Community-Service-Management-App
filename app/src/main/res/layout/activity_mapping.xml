@@ -46,8 +46,10 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@id/tips_text"
                             android:layout_centerHorizontal="true"
-                            android:background="@drawable/editbg2"
+                            android:background="@color/blue"
                             android:layout_marginTop="10dp"
+                            android:padding="10dp"
+                            android:textColor="@color/white"
                             android:text="Dismiss" />
                 </RelativeLayout>
         </androidx.cardview.widget.CardView>

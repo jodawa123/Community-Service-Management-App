@@ -103,7 +103,7 @@ public class login extends AppCompatActivity {
                                 }
                             } else {
                                 // Login failed
-                                StyleableToast.makeText(login.this, "Login Failed: " + task.getException().getMessage(), R.style.mytoast).show();
+                                StyleableToast.makeText(login.this, "Login Failed:Incorrect username or password", R.style.mytoast).show();
                             }
                         });
             }

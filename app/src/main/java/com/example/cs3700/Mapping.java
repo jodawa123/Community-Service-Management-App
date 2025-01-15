@@ -7,7 +7,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -52,6 +55,7 @@ public class Mapping extends FragmentActivity implements OnMapReadyCallback {
     private FirebaseFirestore db;
 
     private static final float DEFAULT_ZOOM = 15f;
+    private static final LatLng NAIROBI = new LatLng(-1.286389, 36.817223);
 
     private LatLng userLocation;
     private String siteName;
@@ -92,11 +96,15 @@ public class Mapping extends FragmentActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(NAIROBI, DEFAULT_ZOOM));
         getUserLocation();
     }
 
     private void pinSpecificSite() {
         LatLng siteLocation = new LatLng(siteLatitude, siteLongitude);
+
+        // Log site location for debugging
+        Log.d("Mapping", "Pinning site at: " + siteLocation.toString());
 
         // Add a blue marker for the site
         mMap.addMarker(new MarkerOptions()
@@ -108,117 +116,13 @@ public class Mapping extends FragmentActivity implements OnMapReadyCallback {
 
         // Move the camera to the specific site
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(siteLocation, DEFAULT_ZOOM));
+        dismissButton.setText("Pinch to see your location.\nPS:it's in yellow");
+        Animation ani = AnimationUtils.loadAnimation(this, R.anim.pulsating_animation);
+        dismissButton.setAnimation(ani);
 
         // Set up info window click listener
         mMap.setOnInfoWindowClickListener(this::openGoogleMapsDirections);
 
-        // Draw the path between the user's location and the site
-        if (userLocation != null) {
-            drawPathToSite(siteLocation);
-        }
-    }
-
-    private void drawPathToSite(LatLng siteLocation) {
-        if (userLocation == null) {
-            Toast.makeText(this, "User location not available yet. Try again later.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Build the URL for the Google Directions API
-        String url = String.format(Locale.ENGLISH,
-                "https://maps.googleapis.com/maps/api/directions/json?origin=%f,%f&destination=%f,%f&mode=driving&key=YOUR_API_KEY",
-                userLocation.latitude, userLocation.longitude,
-                siteLocation.latitude, siteLocation.longitude);
-
-        // Fetch the directions and draw the polyline
-        new FetchDirectionsTask(url, directionsResult -> {
-            if (directionsResult != null) {
-                List<LatLng> routePoints = decodePolyline(directionsResult);
-                if (routePoints != null) {
-                    mMap.addPolyline(new PolylineOptions()
-                            .addAll(routePoints)
-                            .width(8f)
-                            .color(ContextCompat.getColor(this, R.color.blue)));
-                } else {
-                    Toast.makeText(this, "Failed to decode route.", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(this, "Failed to fetch directions.", Toast.LENGTH_SHORT).show();
-            }
-        }).execute();
-    }
-
-    private static class FetchDirectionsTask extends AsyncTask<Void, Void, String> {
-        private final String url;
-        private final OnDirectionsResultListener listener;
-
-        interface OnDirectionsResultListener {
-            void onResult(String result);
-        }
-
-        FetchDirectionsTask(String url, OnDirectionsResultListener listener) {
-            this.url = url;
-            this.listener = listener;
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            try {
-                URL urlObject = new URL(url);
-                HttpURLConnection connection = (HttpURLConnection) urlObject.openConnection();
-                connection.connect();
-
-                InputStream inputStream = connection.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                StringBuilder builder = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    builder.append(line);
-                }
-
-                return builder.toString();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            listener.onResult(result);
-        }
-    }
-
-    private List<LatLng> decodePolyline(String encoded) {
-        List<LatLng> poly = new ArrayList<>();
-        int index = 0, len = encoded.length();
-        int lat = 0, lng = 0;
-
-        while (index < len) {
-            int b, shift = 0, result = 0;
-            do {
-                b = encoded.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lat += dlat;
-
-            shift = 0;
-            result = 0;
-            do {
-                b = encoded.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lng += dlng;
-
-            poly.add(new LatLng((double) lat / 1E5, (double) lng / 1E5));
-        }
-
-        return poly;
     }
 
     private void fetchAllSites() {
@@ -261,18 +165,20 @@ public class Mapping extends FragmentActivity implements OnMapReadyCallback {
                     userLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
                     mMap.addMarker(new MarkerOptions()
-                            .position(userLocation)
-                            .title("You are here")
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                                    .position(userLocation)
+                                    .title("You are here")
+                                   .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
 
                     if (siteName == null) {
                         fetchAllSites();
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, DEFAULT_ZOOM));
                     } else {
                         pinSpecificSite();
+
                     }
                 } else {
-                    Toast.makeText(this, "Unable to get your location.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Turn on your location.", Toast.LENGTH_SHORT).show();
+                    promptEnableLocation();
                 }
             });
         } else {
