@@ -1,5 +1,7 @@
 [versions]
 agp = "8.6.0"
+googleApiClientAndroid = "1.33.2"
+googleApiServicesDrive = "v3-rev136-1.25.0"
 googleMapsServices = "2.1.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -16,11 +18,16 @@ firebaseFirestore = "25.1.1"
 materialCalendarView = "1.9.2"
 pinview = "1.4.4"
 playServices = "12.0.1"
+playServicesAuth = "21.3.0"
 playServicesMaps = "19.0.0"
 styleabletoast = "2.4.0"
 playServicesLocation = "21.3.0"
 
 [libraries]
+gms-play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+google-api-client-android = { module = "com.google.api-client:google-api-client-android", version.ref = "googleApiClientAndroid" }
+google-api-client-gson = { module = "com.google.api-client:google-api-client-gson", version.ref = "googleApiClientAndroid" }
+google-api-services-drive = { module = "com.google.apis:google-api-services-drive", version.ref = "googleApiServicesDrive" }
 google-maps-services = { module = "com.google.maps:google-maps-services", version.ref = "googleMapsServices" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

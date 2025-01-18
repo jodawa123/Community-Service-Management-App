@@ -30,6 +30,14 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    packagingOptions {
+        exclude ("META-INF/DEPENDENCIES")
+        exclude ("META-INF/DEPENDENCIES.txt")
+        exclude ("META-INF/LICENSE")
+        exclude ("META-INF/LICENSE.txt")
+        exclude ("META-INF/NOTICE")
+        exclude ("META-INF/NOTICE.txt")
+    }
 }
 dependencies {
     implementation(libs.appcompat)
@@ -46,6 +54,10 @@ dependencies {
     implementation (libs.play.services.maps)
     implementation(libs.play.services.location)
     implementation (libs.google.maps.services)
+    implementation (libs.google.api.client.android)
+    implementation (libs.google.api.services.drive)
+    implementation (libs.gms.play.services.auth)
+    implementation (libs.google.api.client.gson)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

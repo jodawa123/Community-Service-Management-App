@@ -142,26 +142,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/alatsi"
-                    android:text="Community service\n guidlines"
+                    android:text="Community service\n guidlines.docx"
                     android:textColor="@color/blue"
                     android:textSize="16sp" />
 
-                   <ImageView
-                    android:id="@+id/doc1_preview"
-                    android:layout_width="53dp"
+                <ImageView
+                    android:id="@+id/doc1_download"
+                    android:layout_width="50dp"
                     android:layout_height="37dp"
-                    android:layout_marginLeft="70dp"
-                    android:text="Preview"
-                    app:srcCompat="@drawable/baseline_preview_24" />
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="150dp"
+                    app:srcCompat="@drawable/baseline_download_24" />
 
-                    <ImageView
-                        android:id="@+id/doc1_download"
-                        android:layout_width="50dp"
-                        android:layout_height="37dp"
-                        app:srcCompat="@drawable/baseline_download_24"
-                        android:layout_marginLeft="10dp" />
-
-                </LinearLayout>
+            </LinearLayout>
 
             </LinearLayout>
 
@@ -180,18 +173,18 @@
             android:textSize="14sp"
             android:textStyle="bold" />
 
-
         <CalendarView
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/pick"
             android:layout_marginTop="20dp"
-            android:background="@color/yellow"
             android:elevation="50dp"
             android:firstDayOfWeek="2"
             android:focusedMonthDateColor="@color/blue"
             android:visibility="visible"
+            android:dateTextAppearance="@style/CalendarDateText"
+            android:weekDayTextAppearance="@style/CalendarWeekDayText"
             android:selectedWeekBackgroundColor="@color/blue"
             android:selectedDateVerticalBar="@color/blue"/>
 
@@ -202,7 +195,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/calendarView"
             android:layout_marginTop="20dp"
-            android:background="@drawable/editbg2"
+            android:background="@color/blue"
             android:orientation="vertical"
             android:padding="15dp"
             android:visibility="visible">
@@ -212,7 +205,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/alatsi"
-                android:text="Weeks Remaining: 30"
+                android:lineSpacingExtra="10sp"
+                android:text="Weeks Remaining: 10"
                 android:textColor="@color/yellow"
                 android:textSize="17sp" />
 
@@ -222,6 +216,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/alatsi"
+                android:lineSpacingExtra="10sp"
                 android:text="Hours Remaining: 90"
                 android:textColor="@color/yellow"
                 android:textSize="17sp" />

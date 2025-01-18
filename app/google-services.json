@@ -12,7 +12,12 @@
           "package_name": "com.example.cs3700"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1017328075812-u0ila056cksm5lmcbs9pn2vrnasifik5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAejHaqAw2E-PTANCIazcIn2m_4vQeXZ-c"

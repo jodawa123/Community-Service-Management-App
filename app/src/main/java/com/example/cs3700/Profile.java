@@ -9,6 +9,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.CalendarView;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
@@ -25,23 +26,24 @@ import java.util.Map;
 import io.github.muddz.styleabletoast.StyleableToast;
 
 
+
+
 public class Profile extends AppCompatActivity {
 
-    private TextView pickedSiteName, availableSlots, hoursRemainingtx, weeksRemainingText,pick;
+    private TextView pickedSiteName, availableSlots, hoursRemainingtx, weeksRemainingText, pick;
     private FirebaseFirestore firestore;
     private String selectedCategory, selectedSite;
     private int currentAvailableSlots;
-    private View siteSection,hoursSection,documents_section;
+    private View siteSection, hoursSection, documents_section;
     private CalendarView calendarView;
     private static final int TOTAL_REQUIRED_HOURS = 90;
     private static final int HOURS_PER_WEEK = 9;
-    private Date startDate,endDate;
+    private Date startDate, endDate;
     private int totalWeeksRemaining;
     private int totalHoursRemaining;
     private FirebaseUser currentUser;
     private DocumentReference userRef;
-    private ImageView imageView4;
-
+    private ImageView imageView4,down;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +51,8 @@ public class Profile extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
 
-
         Animation ani = AnimationUtils.loadAnimation(this, R.anim.pulsating_animation);
-        pick=findViewById(R.id.pick);
+        pick = findViewById(R.id.pick);
         pick.setAnimation(ani);
         // Initialize Views
 
@@ -61,7 +62,8 @@ public class Profile extends AppCompatActivity {
         calendarView = findViewById(R.id.calendarView);
         hoursRemainingtx = findViewById(R.id.hoursRemaining);
         weeksRemainingText = findViewById(R.id.weeksRemaining);
-        imageView4=findViewById(R.id.imageView4);
+        imageView4 = findViewById(R.id.imageView4);
+        down = findViewById(R.id.doc1_download);
 
         siteSection = findViewById(R.id.site_section);
         hoursSection = findViewById(R.id.hours_section);
@@ -74,7 +76,7 @@ public class Profile extends AppCompatActivity {
         selectedSite = getIntent().getStringExtra("SELECTED_SITE");
 
         imageView4.setOnClickListener(view -> {
-            Intent intent = new Intent(Profile.this,Home.class);
+            Intent intent = new Intent(Profile.this, Home.class);
             startActivity(intent);
         });
 
@@ -114,8 +116,37 @@ public class Profile extends AppCompatActivity {
             }
         });
         dropSiteButton.setOnClickListener(v -> dropSelectedSite());
+
+        down.setOnClickListener(view -> {
+            String fileUrl = "https://drive.google.com/uc?id=1t6YyMTxAI2IE14wcye737s2vIsde0r0H&export=download";
+            String fileName = "COMMUNITY.docx";
+            downloadFile(fileUrl, fileName);
+        });
     }
 
+    // Download a file directly from a URL
+    private void downloadFile(String fileUrl, String fileName) {
+        try {
+            // Get the DownloadManager system service
+            android.app.DownloadManager downloadManager = (android.app.DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+
+            // Create a request for the file download
+            android.app.DownloadManager.Request request = new android.app.DownloadManager.Request(android.net.Uri.parse(fileUrl));
+            request.setTitle(fileName); // Title shown in notification
+            request.setDescription("Downloading file..."); // Description in notification
+            request.setNotificationVisibility(android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED); // Show notification when done
+            request.setDestinationInExternalFilesDir(this, android.os.Environment.DIRECTORY_DOWNLOADS, fileName); // Save file to downloads directory
+
+            // Enqueue the download
+            downloadManager.enqueue(request);
+
+            // Notify the user that the download has started
+            Toast.makeText(this, "Downloading file...", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Download failed.", Toast.LENGTH_SHORT).show();
+        }
+    }
     private void loadStateFromFirebase() {
         if (currentUser != null) {
             userRef.get().addOnSuccessListener(documentSnapshot -> {

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Custom Style for Calendar Dates -->
+    <style name="CalendarDateText" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/alatsi</item>
+        <item name="abb_textStyle">bold</item>
+    </style>
+
+    <!-- Custom Style for Calendar Weekday Text -->
+    <style name="CalendarWeekDayText" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/blue</item>
+        <item name="android:fontFamily">@font/alatsi</item>
+        <item name="abb_textStyle">bold</item>
+
+    </style>
+</resources>
