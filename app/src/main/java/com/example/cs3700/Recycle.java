@@ -22,7 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 
 import io.github.muddz.styleabletoast.StyleableToast;
-import nl.joery.animatedbottombar.AnimatedBottomBar;
+
 
 public class Recycle extends AppCompatActivity {
 
@@ -49,7 +49,6 @@ public class Recycle extends AppCompatActivity {
         // Initialize components
         imageView3 = findViewById(R.id.imageView3);
         recyclerView = findViewById(R.id.recycler);
-        AnimatedBottomBar bottomBar=findViewById(R.id.bottom);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         modelArrayList = new ArrayList<>();
@@ -72,17 +71,7 @@ public class Recycle extends AppCompatActivity {
             Toast.makeText(this, "No category provided", Toast.LENGTH_SHORT).show();
         }
 
-        bottomBar.setOnTabSelectListener(new AnimatedBottomBar.OnTabSelectListener() {
-            @Override
-            public void onTabSelected(int lastIndex, AnimatedBottomBar.Tab lastTab, int newIndex, AnimatedBottomBar.Tab newTab) {
-                handleTabSelection(newIndex);
-            }
 
-            @Override
-            public void onTabReselected(int index, AnimatedBottomBar.Tab tab) {
-                handleTabReselection(index);
-            }
-        });
     }
     // Fetch the user's already selected site from Firestore
     private void fetchUserSelectedSite() {
@@ -153,34 +142,5 @@ public class Recycle extends AppCompatActivity {
                     Toast.makeText(this, "Error loading data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
-    private void handleTabSelection(int newIndex) {
-        switch (newIndex) {
-            case 0:
-                // Redirect to Profile page
-                Intent profileIntent = new Intent(Recycle.this, Profile.class);
-                startActivity(profileIntent);
-                break;
 
-            case 1:
-                Intent homeIntent = new Intent(Recycle.this, Home.class);
-                startActivity(homeIntent);
-                break;
-
-            case 2:
-                // Redirect to Maps page
-                Intent mapsIntent = new Intent(Recycle.this, Mapping.class);
-                startActivity(mapsIntent);
-                break;
-
-            default:
-                // Handle unexpected index
-                Toast.makeText(Recycle.this, "Unknown Tab Selected", Toast.LENGTH_SHORT).show();
-                break;
-        }
-    }
-
-    private void handleTabReselection(int index) {
-        // Handle tab reselection logic if needed
-        Toast.makeText(Recycle.this, "Tab Reselected: " + index, Toast.LENGTH_SHORT).show();
-    }
 }

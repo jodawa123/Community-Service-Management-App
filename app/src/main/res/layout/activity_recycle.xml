@@ -41,24 +41,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/baseline_arrow_back_24" />
 
-    <nl.joery.animatedbottombar.AnimatedBottomBar
-        android:id="@+id/bottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:abb_selectedTabType="text"
-        app:abb_indicatorHeight="6dp"
-        app:abb_tabs="@menu/menu"
-        app:abb_selectedIndex="-1"
-        app:abb_indicatorMargin="16dp"
-        app:abb_tabColor="@color/gray"
-        app:abb_tabColorSelected="@color/blue"
-        app:abb_textSize="18dp"
-        app:abb_iconSize="30dp"
-        app:abb_badgeAnimationDuration="1500"
-        app:abb_indicatorColor="@color/blue"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:abb_animationDuration="500"
-        app:abb_badgeTextSize="16sp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
