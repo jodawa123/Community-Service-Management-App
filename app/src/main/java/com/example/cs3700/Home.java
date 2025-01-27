@@ -2,7 +2,10 @@
 package com.example.cs3700;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -11,11 +14,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.example.cs3700.Recycle;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -43,8 +63,7 @@ public class Home extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
     private FirebaseUser currentUser;
-
-
+    private static final int REQUEST_CHECK_SETTINGS = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +103,7 @@ public class Home extends AppCompatActivity {
         ImageView imageSpecial = findViewById(R.id.imageSpecial);
         ImageView searchIcon = findViewById(R.id.searchIcon);
         EditText searchBar = findViewById(R.id.searchBar);
-        AnimatedBottomBar bottomBar=findViewById(R.id.bottom);
+        AnimatedBottomBar bottomBar = findViewById(R.id.bottom);
 
 
         imageHospice.setOnClickListener(v -> openCategory("Hospice"));
@@ -121,8 +140,10 @@ public class Home extends AppCompatActivity {
                 handleTabReselection(index);
             }
         });
+        checkLocation();
 
     }
+
     private void fetchUserName(String userId) {
         databaseReference.child(userId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
@@ -171,6 +192,7 @@ public class Home extends AppCompatActivity {
             });
         }
     }
+
     private void performSearch(String query) {
         boolean found = false;
 
@@ -202,6 +224,7 @@ public class Home extends AppCompatActivity {
         intent.putExtra("SITE_POSITION", position);
         startActivity(intent);
     }
+
     private void handleTabSelection(int newIndex) {
         switch (newIndex) {
             case 0:
@@ -231,5 +254,74 @@ public class Home extends AppCompatActivity {
     private void handleTabReselection(int index) {
         // Handle tab reselection logic if needed
         Toast.makeText(Home.this, "Tab Reselected: " + index, Toast.LENGTH_SHORT).show();
+    }
+    private void checkLocation() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+
+            // Configure location request
+            LocationRequest locationRequest = LocationRequest.create()
+                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                    .setInterval(10000) // 10 seconds interval
+                    .setFastestInterval(5000); // 5 seconds fastest interval
+
+            // Build location settings request
+            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                    .addLocationRequest(locationRequest)
+                    .setAlwaysShow(true); // Always show the dialog if settings are not satisfied
+
+            // Get the settings client
+            SettingsClient settingsClient = LocationServices.getSettingsClient(this);
+            settingsClient.checkLocationSettings(builder.build())
+                    .addOnCompleteListener(task -> {
+                        try {
+                            // If settings are satisfied, proceed without further prompts
+                            task.getResult(ApiException.class);
+                        } catch (ApiException e) {
+                            if (e.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED) {
+                                try {
+                                    // Show the dialog to enable location settings
+                                    ResolvableApiException resolvable = (ResolvableApiException) e;
+                                    resolvable.startResolutionForResult(this, REQUEST_CHECK_SETTINGS);
+                                } catch (Exception sendEx) {
+                                    Toast.makeText(this, "Failed to prompt location settings.", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(this, "Location is required to display the site.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    100);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 100) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                checkLocation();
+            } else {
+                Toast.makeText(this, "Permission denied. Unable to show your location.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CHECK_SETTINGS) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(this, "Location enabled successfully.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Location not enabled.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
