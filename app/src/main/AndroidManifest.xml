@@ -8,8 +8,10 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 
 
     <application
@@ -22,6 +24,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CS3700"
         tools:targetApi="31">
+        <receiver android:name=".NotificationReceiver" />
+        <activity
+            android:name=".Curve"
+            android:exported="false" />
+
         <activity
             android:name=".Landing"
             android:exported="false" />
@@ -31,7 +38,7 @@
             android:value="AIzaSyD9Q3ZlvG_IS4_sfFmRZSKSocTVqQcbemw" />
         <meta-data
             android:name="com.google.android.gms.drive.DriveScopes"
-            android:value="https://www.googleapis.com/auth/drive.readonly"/>
+            android:value="https://www.googleapis.com/auth/drive.readonly" />
 
         <activity
             android:name=".Mail"

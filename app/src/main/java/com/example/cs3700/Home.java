@@ -5,10 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,20 +18,13 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import com.example.cs3700.Recycle;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -113,11 +102,6 @@ public class Home extends AppCompatActivity {
         imageChildren.setOnClickListener(v -> openCategory("ChildrenHomes"));
         imageRescue.setOnClickListener(v -> openCategory("RescueCenter"));
 
-        profileImage.setOnClickListener(view -> {
-            Intent intent = new Intent(Home.this, Profile.class);
-            startActivity(intent);
-        });
-
         categoryData = new HashMap<>();
         loadAllData(() -> searchBar.setEnabled(true));
 
@@ -141,7 +125,6 @@ public class Home extends AppCompatActivity {
             }
         });
         checkLocation();
-
     }
 
     private void fetchUserName(String userId) {
@@ -242,6 +225,12 @@ public class Home extends AppCompatActivity {
                 // Redirect to Maps page
                 Intent mapsIntent = new Intent(Home.this, Mapping.class);
                 startActivity(mapsIntent);
+                break;
+
+            case 3:
+                // Redirect to Maps page
+                Intent targetIntent = new Intent(Home.this, Curve.class);
+                startActivity(targetIntent);
                 break;
 
             default:

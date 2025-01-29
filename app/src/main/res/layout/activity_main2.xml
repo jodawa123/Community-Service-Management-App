@@ -306,7 +306,7 @@
         app:abb_indicatorMargin="16dp"
         app:abb_tabColor="@color/blue"
         app:abb_tabColorSelected="@color/gray"
-        app:abb_textSize="18dp"
+        app:abb_textSize="16dp"
         app:abb_iconSize="30dp"
         app:abb_badgeAnimationDuration="900"
         app:abb_indicatorColor="@color/gray"

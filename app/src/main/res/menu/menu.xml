@@ -9,5 +9,8 @@
     <item android:id="@+id/maps"
         android:title="Maps"
         android:icon="@drawable/baseline_location_pin_24"/>
+    <item android:id="@+id/progress"
+        android:title="Track"
+        android:icon="@drawable/baseline_ads_click_24"/>
 
 </menu>
