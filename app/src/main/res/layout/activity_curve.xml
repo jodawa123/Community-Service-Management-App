@@ -43,7 +43,7 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:src="@drawable/trophy"
-                android:layout_marginStart="130dp"/>
+                android:layout_marginStart="150dp"/>
 
         </LinearLayout>
 

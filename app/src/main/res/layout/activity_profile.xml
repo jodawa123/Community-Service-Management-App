@@ -12,16 +12,6 @@
         android:layout_height="wrap_content">
 
         <!-- Profile Image -->
-
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="53dp"
-            android:layout_height="44dp"
-            android:layout_marginLeft="47dp"
-            android:layout_marginTop="18dp"
-            android:layout_toRightOf="@id/user_name"
-            app:srcCompat="@drawable/baseline_arrow_forward_24" />
-
         <TextView
             android:id="@+id/user_name"
             android:layout_width="wrap_content"
@@ -32,8 +22,16 @@
             android:text="PROFILE"
             android:textColor="@color/gray"
             android:textSize="50sp"
-            android:textStyle="bold"
-           />
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="53dp"
+            android:layout_height="44dp"
+            android:layout_marginLeft="47dp"
+            android:layout_marginTop="18dp"
+            android:layout_toRightOf="@id/user_name"
+            app:srcCompat="@drawable/baseline_arrow_forward_24" />
 
         <ImageView
             android:id="@+id/profile_image"
@@ -46,7 +44,6 @@
             android:scaleType="centerCrop"
             android:src="@drawable/user" />
 
-
         <LinearLayout
             android:id="@+id/site_section"
             android:layout_width="match_parent"
@@ -57,7 +54,6 @@
             android:orientation="horizontal"
             android:padding="15dp"
             android:visibility="visible">
-
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -81,8 +77,6 @@
                     android:checked="false" />
             </LinearLayout>
 
-
-
             <TextView
                 android:id="@+id/picked_site_name"
                 android:layout_width="wrap_content"
@@ -96,7 +90,6 @@
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 
-            <!-- Available Slots -->
             <TextView
                 android:id="@+id/available_slots"
                 android:layout_width="wrap_content"
@@ -154,17 +147,14 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="150dp"
                     app:srcCompat="@drawable/baseline_download_24" />
-
             </LinearLayout>
-
-            </LinearLayout>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/pick"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/documents_section"
-            android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:fontFamily="@font/aclonica"
             android:padding="20dp"
@@ -188,12 +178,33 @@
             android:selectedWeekBackgroundColor="@color/blue"
             android:selectedDateVerticalBar="@color/blue"/>
 
-        <!-- Countdown Section -->
+        <Button
+            android:id="@+id/bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/gray"
+            android:textColor="@color/blue"
+            android:text="Reset Date"
+            android:layout_below="@id/calendarView"/>
+
+        <Button
+            android:id="@+id/bt1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/calendarView"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="120dp"
+            android:layout_marginEnd="10dp"
+            android:layout_toRightOf="@+id/bt"
+            android:backgroundTint="@color/gray"
+            android:text="See progress"
+            android:textColor="@color/blue" />
+
         <LinearLayout
             android:id="@+id/hours_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/calendarView"
+            android:layout_below="@id/bt"
             android:layout_marginTop="20dp"
             android:background="@color/blue"
             android:orientation="vertical"
@@ -223,7 +234,5 @@
                 android:textColor="@color/yellow"
                 android:textSize="17sp" />
         </LinearLayout>
-
-
     </RelativeLayout>
 </ScrollView>

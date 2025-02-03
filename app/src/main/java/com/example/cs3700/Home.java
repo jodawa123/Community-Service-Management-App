@@ -2,8 +2,6 @@
 package com.example.cs3700;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -53,6 +51,8 @@ public class Home extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private FirebaseUser currentUser;
     private static final int REQUEST_CHECK_SETTINGS = 1001;
+    private static final String PREFS_NAME = "AppPrefs";
+    private static final String LOCATION_PROMPT_SHOWN = "LocationPromptShown";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +124,9 @@ public class Home extends AppCompatActivity {
                 handleTabReselection(index);
             }
         });
-        checkLocation();
+        if (!hasLocationPromptBeenShown()) {
+            checkLocationSettings();
+        }
     }
 
     private void fetchUserName(String userId) {
@@ -227,12 +229,6 @@ public class Home extends AppCompatActivity {
                 startActivity(mapsIntent);
                 break;
 
-            case 3:
-                // Redirect to Maps page
-                Intent targetIntent = new Intent(Home.this, Curve.class);
-                startActivity(targetIntent);
-                break;
-
             default:
                 // Handle unexpected index
                 Toast.makeText(Home.this, "Unknown Tab Selected", Toast.LENGTH_SHORT).show();
@@ -244,73 +240,38 @@ public class Home extends AppCompatActivity {
         // Handle tab reselection logic if needed
         Toast.makeText(Home.this, "Tab Reselected: " + index, Toast.LENGTH_SHORT).show();
     }
-    private void checkLocation() {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+    private void checkLocationSettings() {
+        LocationRequest locationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(10000)
+                .setFastestInterval(5000);
 
-            // Configure location request
-            LocationRequest locationRequest = LocationRequest.create()
-                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                    .setInterval(10000) // 10 seconds interval
-                    .setFastestInterval(5000); // 5 seconds fastest interval
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest)
+                .setAlwaysShow(true);
 
-            // Build location settings request
-            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                    .addLocationRequest(locationRequest)
-                    .setAlwaysShow(true); // Always show the dialog if settings are not satisfied
-
-            // Get the settings client
-            SettingsClient settingsClient = LocationServices.getSettingsClient(this);
-            settingsClient.checkLocationSettings(builder.build())
-                    .addOnCompleteListener(task -> {
-                        try {
-                            // If settings are satisfied, proceed without further prompts
-                            task.getResult(ApiException.class);
-                        } catch (ApiException e) {
-                            if (e.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED) {
-                                try {
-                                    // Show the dialog to enable location settings
-                                    ResolvableApiException resolvable = (ResolvableApiException) e;
-                                    resolvable.startResolutionForResult(this, REQUEST_CHECK_SETTINGS);
-                                } catch (Exception sendEx) {
-                                    Toast.makeText(this, "Failed to prompt location settings.", Toast.LENGTH_SHORT).show();
-                                }
-                            } else {
-                                Toast.makeText(this, "Location is required to display the site.", Toast.LENGTH_SHORT).show();
-                            }
+        SettingsClient settingsClient = LocationServices.getSettingsClient(this);
+        settingsClient.checkLocationSettings(builder.build())
+                .addOnCompleteListener(task -> {
+                    try {
+                        task.getResult(ApiException.class);
+                    } catch (ApiException e) {
+                        if (e.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED) {
+                            try {
+                                ((ResolvableApiException) e).startResolutionForResult(this, REQUEST_CHECK_SETTINGS);
+                            } catch (Exception ignored) {}
                         }
-                    });
-
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    100);
-        }
+                    }
+                });
+        saveLocationPromptShown();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == 100) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                checkLocation();
-            } else {
-                Toast.makeText(this, "Permission denied. Unable to show your location.", Toast.LENGTH_SHORT).show();
-            }
-        }
+    private boolean hasLocationPromptBeenShown() {
+        return getSharedPreferences(PREFS_NAME, MODE_PRIVATE).getBoolean(LOCATION_PROMPT_SHOWN, false);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_CHECK_SETTINGS) {
-            if (resultCode == RESULT_OK) {
-                Toast.makeText(this, "Location enabled successfully.", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Location not enabled.", Toast.LENGTH_SHORT).show();
-            }
-        }
+    private void saveLocationPromptShown() {
+        getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit().putBoolean(LOCATION_PROMPT_SHOWN, true).apply();
     }
+
 }

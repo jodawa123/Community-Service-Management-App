@@ -1,5 +1,6 @@
 [versions]
 agp = "8.6.0"
+githubMaterialCalendarview = "2.0.1"
 googleApiClientAndroid = "1.33.2"
 googleApiServicesDrive = "v3-rev136-1.25.0"
 googleMapsServices = "2.1.0"
@@ -44,6 +45,7 @@ material-calendar-view = { module = "com.applandeo:material-calendar-view", vers
 pinview = { module = "io.github.chaosleung:pinview", version.ref = "pinview" }
 play-services = { group = "com.google.android.gms", name = "play-services", version.ref = "playServices" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+prolificinteractive-material-calendarview = { module = "com.github.prolificinteractive:material-calendarview", version.ref = "githubMaterialCalendarview" }
 styleabletoast = { module = "io.github.muddz:styleabletoast", version.ref = "styleabletoast" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 

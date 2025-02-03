@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -23,9 +24,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import android.content.Intent;
 import io.github.muddz.styleabletoast.StyleableToast;
-
-
 
 
 public class Profile extends AppCompatActivity {
@@ -39,11 +39,11 @@ public class Profile extends AppCompatActivity {
     private static final int TOTAL_REQUIRED_HOURS = 90;
     private static final int HOURS_PER_WEEK = 9;
     private Date startDate, endDate;
-    private int totalWeeksRemaining;
-    private int totalHoursRemaining;
     private FirebaseUser currentUser;
     private DocumentReference userRef;
     private ImageView imageView4,down;
+    private Button resetDateButton,track;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +64,8 @@ public class Profile extends AppCompatActivity {
         weeksRemainingText = findViewById(R.id.weeksRemaining);
         imageView4 = findViewById(R.id.imageView4);
         down = findViewById(R.id.doc1_download);
+        resetDateButton = findViewById(R.id.bt);
+        track=findViewById(R.id.bt1);
 
         siteSection = findViewById(R.id.site_section);
         hoursSection = findViewById(R.id.hours_section);
@@ -116,12 +118,18 @@ public class Profile extends AppCompatActivity {
             }
         });
         dropSiteButton.setOnClickListener(v -> dropSelectedSite());
+        resetDateButton.setOnClickListener(v -> resetStartDate());
 
         down.setOnClickListener(view -> {
             String fileUrl = "https://drive.google.com/uc?id=1t6YyMTxAI2IE14wcye737s2vIsde0r0H&export=download";
             String fileName = "COMMUNITY.docx";
             downloadFile(fileUrl, fileName);
         });
+        track.setOnClickListener(v -> {
+            Intent targetIntent = new Intent(Profile.this, Curve.class);
+            startActivity(targetIntent);
+        });
+
     }
 
     // Download a file directly from a URL
@@ -146,6 +154,13 @@ public class Profile extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(this, "Download failed.", Toast.LENGTH_SHORT).show();
         }
+    }
+    private void resetStartDate() {
+        startDate = null;
+        endDate = null;
+        calendarView.setEnabled(true);
+        StyleableToast.makeText(this, "Start date reset. Select a new date.", R.style.mytoast).show();
+        saveStateToFirebase();
     }
     private void loadStateFromFirebase() {
         if (currentUser != null) {
@@ -186,15 +201,11 @@ public class Profile extends AppCompatActivity {
     }
 
     private void saveStateToFirebase() {
-        if (userRef == null || selectedSite == null || startDate == null || endDate == null) {
+        if (userRef == null || selectedSite == null) {
             Toast.makeText(this, "Incomplete data. Cannot save state.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (startDate == null) {
-           StyleableToast.makeText(this, "Start date is not set.", R.style.mytoast).show();
-            return;
-        }
         Map<String, Object> state = new HashMap<>();
         state.put("selectedSite", selectedSite);
         state.put("currentAvailableSlots", currentAvailableSlots);
@@ -362,6 +373,11 @@ public class Profile extends AppCompatActivity {
 
     }
     private void initializeCountdown(Date start) {
+        if (start == null) {
+            Toast.makeText(this, "Start date is not set.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         this.startDate = start;
 
         // Calculate end date (10 weeks = 70 days)

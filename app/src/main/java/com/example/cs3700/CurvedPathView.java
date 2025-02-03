@@ -10,16 +10,35 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import android.animation.ValueAnimator;
+import android.graphics.Color;
+
 public class CurvedPathView extends View {
     private int currentWeek = 0;
+    private ValueAnimator glowAnimator;
+    private int glowColor = Color.parseColor("#F44336"); // Default red color
 
     public CurvedPathView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        setupGlowAnimation();
     }
-
     public void setWeekProgress(int weekProgress) {
         this.currentWeek = weekProgress;
         invalidate(); // Redraw the view when progress changes
+    }
+
+    private void setupGlowAnimation() {
+        glowAnimator = ValueAnimator.ofFloat(0, 1);
+        glowAnimator.setDuration(1000); // 1 second animation
+        glowAnimator.setRepeatCount(ValueAnimator.INFINITE); // Repeat indefinitely
+        glowAnimator.setRepeatMode(ValueAnimator.REVERSE); // Reverse the animation
+        glowAnimator.addUpdateListener(animation -> {
+            // Update the glow color based on the animation progress
+            float fraction = animation.getAnimatedFraction();
+            int alpha = (int) (255 * (0.5f + 0.5f * fraction)); // Vary alpha between 128 and 255
+            glowColor = Color.argb(alpha, 244, 67, 54); // Red with varying alpha
+            invalidate(); // Redraw the view
+        });
     }
 
     @Override
@@ -65,8 +84,11 @@ public class CurvedPathView extends View {
                 trailPaint.setColor(Color.parseColor("#FFD700")); // yellow for passed weeks
                 circlePaint.setColor(Color.parseColor("#FFD700"));
             } else if (i == currentWeek) {
-                trailPaint.setColor(Color.parseColor("#F44336")); // Red for the current week
-                circlePaint.setColor(Color.parseColor("#F44336"));
+                trailPaint.setColor(glowColor); // Use the animated glow color
+                circlePaint.setColor(glowColor);
+                if (glowAnimator != null && !glowAnimator.isStarted()) {
+                    glowAnimator.start(); // Start the glow animation
+                }
             } else {
                 trailPaint.setColor(Color.parseColor("#BDBDBD")); // Gray for upcoming weeks
                 circlePaint.setColor(Color.parseColor("#BDBDBD"));
