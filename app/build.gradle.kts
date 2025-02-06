@@ -50,8 +50,6 @@ dependencies {
     implementation (libs.styleabletoast)
     implementation (libs.library)
     implementation (libs.pinview)
-    implementation (libs.material.calendar.view)
-    implementation (libs.prolificinteractive.material.calendarview)
     implementation (libs.play.services.maps)
     implementation(libs.play.services.location)
     implementation (libs.google.maps.services)

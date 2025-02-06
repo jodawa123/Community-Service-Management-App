@@ -46,7 +46,7 @@ public class CurvedPathView extends View {
         super.onDraw(canvas);
 
         int totalWeeks = 10; // Total milestones
-        int circleRadius = 70; // Size of milestone circles
+        int circleRadius = 65; // Size of milestone circles
         int trailWidth = 15; // Width of the trail
 
         // Paints for trail and milestones

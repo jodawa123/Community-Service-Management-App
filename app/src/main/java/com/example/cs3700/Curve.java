@@ -1,7 +1,5 @@
 package com.example.cs3700;
 
-import static android.content.ContentValues.TAG;
-
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -9,6 +7,8 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
@@ -24,6 +24,9 @@ public class Curve extends AppCompatActivity {
     private static final String CHANNEL_ID = "progress_notifications";
     private static final int NOTIFICATION_ID = 1;
     private CurvedPathView curvedPathView;
+    private ProgressBar countdownProgressBar;
+    private TextView daysRemainingText;
+    private TextView hoursRemainingText;
     private static final String TAG = "Curve";
     private static final String PREFS_NAME = "ProgressPrefs";
     private static final String KEY_LAST_NOTIFIED_WEEK = "last_notified_week";
@@ -33,6 +36,9 @@ public class Curve extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_curve);
         curvedPathView = findViewById(R.id.curvedPathView);
+        countdownProgressBar = findViewById(R.id.countdownProgressBar);
+        daysRemainingText = findViewById(R.id.daysText);
+        hoursRemainingText = findViewById(R.id.hoursText);
 
         // Create a notification channel for Android O and above
         createNotificationChannel();
@@ -50,6 +56,19 @@ public class Curve extends AppCompatActivity {
 
                 if (startDateMillis != null) {
                     Date startDate = new Date(startDateMillis);
+
+                    // Calculate the number of days and hours remaining
+                    int daysRemaining = calculateDaysRemaining(startDate);
+                    int hoursRemaining = calculateHoursRemaining(startDate);
+                    Log.d(TAG, "Days Remaining: " + daysRemaining);
+                    Log.d(TAG, "Hours Remaining: " + hoursRemaining);
+
+                    // Update the TextViews
+                    daysRemainingText.setText(String.valueOf(daysRemaining));
+                    hoursRemainingText.setText(String.valueOf(hoursRemaining));
+
+                    // Update the progress bar
+                    updateProgressBar(daysRemaining);
 
                     // Calculate the number of weeks since the start date
                     int currentWeek = calculateCurrentWeek(startDate);
@@ -134,5 +153,20 @@ public class Curve extends AppCompatActivity {
         long diffInDays = diffInMillis / (1000 * 60 * 60 * 24);
 
         return (int) Math.ceil(diffInDays / 7.0); // Convert days to weeks
+    }
+
+    private int calculateDaysRemaining(Date startDate) {
+        int ten= 10-calculateCurrentWeek(startDate);
+        return ten *3;
+    }
+
+    private int calculateHoursRemaining(Date startDate) {
+        int hrs=calculateDaysRemaining(startDate);
+        return hrs *3;
+    }
+
+    private void updateProgressBar(int daysRemaining) {
+        int progress = 30-daysRemaining;
+        countdownProgressBar.setProgress(progress);
     }
 }

@@ -1,52 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/blob_scene_haikei__4_">
+    android:fillViewport="true"
+    android:background="@drawable/blob_scene_haikei__4_"> <!-- Light blue background -->
 
-    <!-- ScrollView -->
-    <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Title: Countdown -->
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginTop="32dp"
+            android:text="COUNTDOWN"
+            android:textColor="@color/gray"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Title -->
-            <TextView
-                android:id="@+id/backButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="20dp"
-                android:drawableLeft="@drawable/arrow_back_24"
-                android:fontFamily="@font/aclonica"
-                android:text="Progress"
-                android:textAlignment="center"
-                android:textColor="@color/gray"
-                android:textSize="34sp" />
+        <!-- Countdown Container -->
+        <LinearLayout
+            android:id="@+id/countdownContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titleText">
 
-            <!-- Curved Path View -->
-            <com.example.cs3700.CurvedPathView
-                android:id="@+id/curvedPathView"
-                android:layout_width="match_parent"
-                android:layout_height="1500dp" />
+            <!-- Hours Container -->
+            <LinearLayout
+                android:layout_width="100dp"
+                android:layout_height="120dp"
+                android:layout_margin="8dp"
+                android:background="@color/yellow"
+                android:elevation="4dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-            <ImageView
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/trophy"
-                android:layout_marginStart="150dp"/>
+                <TextView
+                    android:id="@+id/hoursText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="90"
+                    android:textColor="@color/gray"
+                    android:textSize="48sp"
+                    android:textStyle="bold" />
 
+                <TextView
+                    android:id="@+id/hoursLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="HOURS"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Minutes Container -->
+            <LinearLayout
+                android:layout_width="100dp"
+                android:layout_height="120dp"
+                android:layout_margin="8dp"
+                android:background="@color/yellow"
+                android:elevation="4dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/daysText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="30"
+                    android:textColor="@color/white"
+                    android:textSize="48sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/minutesLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DAYS"
+                    android:textColor="@color/gray"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
 
-    </ScrollView>
+        <!-- Progress Bar -->
+        <ProgressBar
+            android:id="@+id/countdownProgressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="200dp"
+            android:layout_height="8dp"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#BBDEFB"
+            android:max="100"
+            android:progress="50"
+            android:progressTint="@color/blue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/countdownContainer" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Curved Path View -->
+        <com.example.cs3700.CurvedPathView
+            android:id="@+id/curvedPathView"
+            android:layout_width="match_parent"
+            android:layout_height="1450dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/countdownProgressBar" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

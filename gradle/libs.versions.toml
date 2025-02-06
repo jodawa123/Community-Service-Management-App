@@ -1,6 +1,6 @@
 [versions]
 agp = "8.6.0"
-githubMaterialCalendarview = "2.0.1"
+
 googleApiClientAndroid = "1.33.2"
 googleApiServicesDrive = "v3-rev136-1.25.0"
 googleMapsServices = "2.1.0"
@@ -16,7 +16,7 @@ googleGmsGoogleServices = "4.4.2"
 firebaseAuth = "23.1.0"
 firebaseDatabase = "21.0.0"
 firebaseFirestore = "25.1.1"
-materialCalendarView = "1.9.2"
+
 pinview = "1.4.4"
 playServices = "12.0.1"
 playServicesAuth = "21.3.0"
@@ -41,11 +41,9 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
-material-calendar-view = { module = "com.applandeo:material-calendar-view", version.ref = "materialCalendarView" }
 pinview = { module = "io.github.chaosleung:pinview", version.ref = "pinview" }
 play-services = { group = "com.google.android.gms", name = "play-services", version.ref = "playServices" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
-prolificinteractive-material-calendarview = { module = "com.github.prolificinteractive:material-calendarview", version.ref = "githubMaterialCalendarview" }
 styleabletoast = { module = "io.github.muddz:styleabletoast", version.ref = "styleabletoast" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 

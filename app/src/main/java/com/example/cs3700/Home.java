@@ -1,4 +1,3 @@
-
 package com.example.cs3700;
 
 import android.content.Intent;
@@ -94,7 +93,6 @@ public class Home extends AppCompatActivity {
         EditText searchBar = findViewById(R.id.searchBar);
         AnimatedBottomBar bottomBar = findViewById(R.id.bottom);
 
-
         imageHospice.setOnClickListener(v -> openCategory("Hospice"));
         imageSpecial.setOnClickListener(v -> openCategory("SpecialNeeds"));
         imageRehab.setOnClickListener(v -> openCategory("Rehab"));
@@ -124,9 +122,19 @@ public class Home extends AppCompatActivity {
                 handleTabReselection(index);
             }
         });
-        if (!hasLocationPromptBeenShown()) {
-            checkLocationSettings();
-        }
+
+        // Reset the location prompt flag when the activity is created
+        resetLocationPromptShown();
+
+        // Show the location prompt every time the activity is created
+        checkLocationSettings();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Reset the location prompt flag when the activity is destroyed
+        resetLocationPromptShown();
     }
 
     private void fetchUserName(String userId) {
@@ -152,7 +160,6 @@ public class Home extends AppCompatActivity {
         intent.putExtra("CATEGORY_NAME", categoryName);
         startActivity(intent);
     }
-
 
     private void loadAllData(Runnable onDataLoaded) {
         String[] categories = {"HealthCenters", "ChildrenHomes", "Hospice", "Rehab", "RescueCenter", "SpecialNeeds"};
@@ -240,6 +247,7 @@ public class Home extends AppCompatActivity {
         // Handle tab reselection logic if needed
         Toast.makeText(Home.this, "Tab Reselected: " + index, Toast.LENGTH_SHORT).show();
     }
+
     private void checkLocationSettings() {
         LocationRequest locationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
@@ -263,7 +271,6 @@ public class Home extends AppCompatActivity {
                         }
                     }
                 });
-        saveLocationPromptShown();
     }
 
     private boolean hasLocationPromptBeenShown() {
@@ -274,4 +281,7 @@ public class Home extends AppCompatActivity {
         getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit().putBoolean(LOCATION_PROMPT_SHOWN, true).apply();
     }
 
+    private void resetLocationPromptShown() {
+        getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit().putBoolean(LOCATION_PROMPT_SHOWN, false).apply();
+    }
 }
