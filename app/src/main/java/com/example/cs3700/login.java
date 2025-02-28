@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -25,11 +28,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import io.github.muddz.styleabletoast.StyleableToast;
 
 public class login extends AppCompatActivity {
-    EditText identity, pass;
-    Button btnLogin;
-    TextView signUpText, forgot;
-    FirebaseAuth firebaseAuth;
-    DatabaseReference databaseReference;
+    private EditText editTextEmail, editTextPassword;
+    private FirebaseAuth firebaseAuth;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,36 +43,49 @@ public class login extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        // Disable page number announcements by hiding the action bar title
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+        // Ensure the title is not spoken by TalkBack
+        setTitle(" ");
 
-        // Initialize Firebase Authentication and Database Reference
+        // Only hide ActionBar if it exists
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
+
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
 
-        identity = findViewById(R.id.identity);
-        pass = findViewById(R.id.pass);
-        btnLogin = findViewById(R.id.btnLogin);
-        signUpText = findViewById(R.id.signUpText);
-        forgot = findViewById(R.id.forgot);
+        editTextEmail = findViewById(R.id.identity);
+        editTextPassword = findViewById(R.id.pass);
+        Button buttonLogin = findViewById(R.id.btnLogin);
+        TextView textViewSignUp = findViewById(R.id.signUpText);
+        TextView textViewForgotPassword = findViewById(R.id.forgot);
 
-        btnLogin.setOnClickListener(view -> {
+        buttonLogin.setContentDescription("Tap to log in");
+        textViewSignUp.setContentDescription("Tap to sign up for a new account");
+        textViewForgotPassword.setContentDescription("Tap if you forgot your password");
+
+        buttonLogin.setOnClickListener(view -> {
             if (!isInternetAvailable()) {
-                Toast.makeText(login.this, "No internet connection. Please try again later.", Toast.LENGTH_SHORT).show();
+                showToastAndAnnounce("No internet connection. Please try again later.");
                 return;
             }
 
-            String email = identity.getText().toString().trim();
-            String password = pass.getText().toString().trim();
+            String email = editTextEmail.getText().toString().trim();
+            String password = editTextPassword.getText().toString().trim();
 
             if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(login.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                showToastAndAnnounce("Please fill all fields");
                 return;
             }
 
             firebaseAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            Toast.makeText(login.this, "Login successful !!", Toast.LENGTH_SHORT).show();
-                            // Login success
                             FirebaseUser user = firebaseAuth.getCurrentUser();
                             if (user != null && user.isEmailVerified()) {
                                 databaseReference.child(user.getUid()).get().addOnCompleteListener(dbTask -> {
@@ -79,28 +93,29 @@ public class login extends AppCompatActivity {
                                         DataSnapshot snapshot = dbTask.getResult();
                                         String username = snapshot.child("name").getValue(String.class);
                                         if (username != null && !username.isEmpty()) {
+                                            showToastAndAnnounce("Login successful. Welcome, " + username + "!");
                                             Intent intent = new Intent(login.this, Home.class);
                                             startActivity(intent);
                                             finish();
                                         } else {
-                                            StyleableToast.makeText(login.this, "Username not found in database", R.style.mytoast).show();
+                                            showToastAndAnnounce("Username not found in database");
                                         }
                                     } else {
-                                        StyleableToast.makeText(login.this, "Failed to retrieve user data: " + dbTask.getException().getMessage(), R.style.mytoast).show();
+                                        showToastAndAnnounce("Failed to retrieve user data: " + dbTask.getException().getMessage());
                                     }
                                 });
                             } else {
-                                StyleableToast.makeText(login.this, "Please verify your email before logging in", R.style.mytoast).show();
+                                showToastAndAnnounce("Please verify your email before logging in");
                                 firebaseAuth.signOut();
                             }
                         } else {
-                            StyleableToast.makeText(login.this, "Login Failed: Incorrect username or password", R.style.mytoast).show();
+                            showToastAndAnnounce("Login Failed: Incorrect email or password");
                         }
                     });
         });
 
-        signUpText.setOnClickListener(v -> startActivity(new Intent(login.this, SignUp.class)));
-        forgot.setOnClickListener(view -> startActivity(new Intent(login.this, Mail.class)));
+        textViewSignUp.setOnClickListener(v -> startActivity(new Intent(login.this, SignUp.class)));
+        textViewForgotPassword.setOnClickListener(view -> startActivity(new Intent(login.this, Mail.class)));
     }
 
     private boolean isInternetAvailable() {
@@ -110,5 +125,15 @@ public class login extends AppCompatActivity {
             return capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
         }
         return false;
+    }
+
+    private void showToastAndAnnounce(String message) {
+        Toast.makeText(login.this, message, Toast.LENGTH_SHORT).show();
+        View mainLayout = findViewById(R.id.main); // Use the root ConstraintLayout
+        if (mainLayout != null) {
+            mainLayout.announceForAccessibility(message);
+        } else {
+            Log.e("login", "mainLayout is null. Check if the ID is correct and the view exists in the layout.");
+        }
     }
 }

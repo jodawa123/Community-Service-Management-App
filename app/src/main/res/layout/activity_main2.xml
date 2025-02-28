@@ -1,91 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/main"
     android:background="@drawable/wave_haikei__3_"
     tools:context=".Home">
 
+    <!-- Main Content Area -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/scroll"
+        android:layout_above="@id/bottomAppBar"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
+            <!-- Header Section -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="240dp">
+                android:layout_height="190dp">
 
-
+                <!-- Greeting Message -->
                 <TextView
                     android:id="@+id/textView5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="28dp"
-                    android:fontFamily="@font/alatsi"
-                    android:text="Hello"
+                    android:layout_marginTop="16dp"
+                    android:contentDescription="Greeting message"
+                    android:fontFamily="@font/open_dyslexic_regular"
+                    android:text="Hello, "
                     android:textColor="@color/blue"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <!-- User's Name -->
                 <TextView
                     android:id="@+id/textView6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:fontFamily="@font/alatsi"
+                    android:contentDescription="User's name"
+                    android:fontFamily="@font/open_dyslexic_regular"
                     android:hint="John Doe"
                     android:textColor="@color/gray"
-                    android:textSize="45sp"
+                    android:textSize="36sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/textView5" />
 
+                <!-- Profile Image -->
                 <ImageView
                     android:id="@+id/profileImage"
-                    android:layout_width="122dp"
-                    android:layout_height="114dp"
-                    android:layout_marginTop="52dp"
-                    android:layout_marginEnd="52dp"
-                    android:contentDescription="Profile Image"
+                    android:layout_width="104dp"
+                    android:layout_height="103dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginEnd="60dp"
+                    android:contentDescription="User profile image"
                     android:padding="5dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/hello"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <!-- Search Bar -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="10dp"
                     android:background="@drawable/custombutton"
                     android:orientation="horizontal"
-                    android:padding="5dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent">
 
                     <EditText
                         android:id="@+id/searchBar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
                         android:layout_weight="1"
                         android:background="@android:color/transparent"
                         android:fontFamily="@font/aclonica"
                         android:hint="Search For..."
-                        android:padding="5dp"
+                        android:padding="10dp"
                         android:textColor="@color/blue"
                         android:textSize="16sp" />
 
@@ -93,13 +101,39 @@
                         android:id="@+id/searchIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:contentDescription="Search Icon"
+                        android:contentDescription="Search button"
                         android:padding="8dp"
                         android:src="@drawable/baseline_search_24" />
                 </LinearLayout>
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Image Slider (Non-interactive, skip for TalkBack) -->
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/imageSlider"
+                android:layout_width="370dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:importantForAccessibility="no"
+                app:layout_constraintTop_toBottomOf="@id/searchBar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- Dots Indicator (Non-interactive, skip for TalkBack) -->
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/dotsIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:tabIndicatorColor="@color/blue"
+                app:tabIndicatorHeight="3dp"
+                app:tabSelectedTextColor="@color/gray"
+                app:tabTextColor="@color/gray"
+                app:layout_constraintTop_toBottomOf="@id/imageSlider"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:importantForAccessibility="no" />
+
+            <!-- Categories Section -->
             <TextView
                 android:id="@+id/categoriesTitle"
                 android:layout_width="wrap_content"
@@ -107,24 +141,29 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="15dp"
-                android:fontFamily="@font/alatsi"
+                android:contentDescription="Section title: Categories"
+                android:fontFamily="@font/open_dyslexic_bold"
                 android:text="Categories"
                 android:textAlignment="center"
                 android:textColor="@color/blue"
-                android:textSize="26sp"
-                android:textStyle="bold" />
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:accessibilityHeading="true"
+                app:layout_constraintTop_toBottomOf="@id/dotsIndicator" />
 
+            <!-- Categories Grid -->
             <GridLayout
                 android:id="@+id/categoriesGrid"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="654dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_margin="16dp"
+                android:layout_marginBottom="40dp"
                 android:columnCount="2"
+                android:contentDescription="Layout with different categories"
                 android:orientation="horizontal"
                 android:rowCount="4">
 
-
+                <!-- Special Needs -->
                 <LinearLayout
                     android:layout_width="180dp"
                     android:layout_height="200dp"
@@ -138,20 +177,21 @@
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:layout_gravity="center"
+                        android:contentDescription="Special needs"
                         android:src="@drawable/physical" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:fontFamily="@font/aclonica"
+                        android:fontFamily="@font/open_dyslexic_bold"
                         android:gravity="center"
                         android:text="Special needs"
                         android:textColor="@color/blue"
                         android:textSize="16sp" />
                 </LinearLayout>
 
-                <!-- Category Item 4 -->
+                <!-- Health Centers -->
                 <LinearLayout
                     android:layout_width="180dp"
                     android:layout_height="200dp"
@@ -165,21 +205,21 @@
                         android:layout_width="80dp"
                         android:layout_height="70dp"
                         android:layout_gravity="center"
-                        android:contentDescription="Health"
+                        android:contentDescription="Health Centers"
                         android:src="@drawable/hospital" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:fontFamily="@font/aclonica"
+                        android:fontFamily="@font/open_dyslexic_bold"
                         android:gravity="center"
                         android:text="Health centers"
                         android:textColor="@color/yellow"
                         android:textSize="16sp" />
                 </LinearLayout>
 
-
+                <!-- Children Home -->
                 <LinearLayout
                     android:layout_width="180dp"
                     android:layout_height="200dp"
@@ -200,13 +240,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:fontFamily="@font/aclonica"
+                        android:fontFamily="@font/open_dyslexic_bold"
                         android:gravity="center"
                         android:text="Children Home"
                         android:textColor="@color/yellow"
                         android:textSize="16sp" />
                 </LinearLayout>
 
+                <!-- Rehabilitation -->
                 <LinearLayout
                     android:layout_width="180dp"
                     android:layout_height="200dp"
@@ -220,21 +261,21 @@
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:layout_gravity="center"
-                        android:contentDescription="Rehab"
-                        android:src="@drawable/addiction"
-                        tools:ignore="DuplicateIds" />
+                        android:contentDescription="Rehab Centers"
+                        android:src="@drawable/addiction" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:fontFamily="@font/aclonica"
+                        android:fontFamily="@font/open_dyslexic_bold"
                         android:gravity="center"
                         android:text="Rehabilitation"
                         android:textColor="@color/blue"
                         android:textSize="16sp" />
                 </LinearLayout>
 
+                <!-- Rescue Homes -->
                 <LinearLayout
                     android:layout_width="180dp"
                     android:layout_height="200dp"
@@ -248,19 +289,21 @@
                         android:layout_width="70dp"
                         android:layout_height="80dp"
                         android:layout_gravity="center"
-                        android:contentDescription="Rescue"
+                        android:contentDescription="Rescue Homes"
                         android:src="@drawable/refuge" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:fontFamily="@font/aclonica"
+                        android:fontFamily="@font/open_dyslexic_bold"
                         android:gravity="center"
                         android:text="Rescue Homes"
                         android:textColor="@color/blue"
                         android:textSize="16sp" />
                 </LinearLayout>
+
+                <!-- Hospice -->
                 <LinearLayout
                     android:layout_width="180dp"
                     android:layout_height="200dp"
@@ -274,44 +317,60 @@
                         android:layout_width="80dp"
                         android:layout_height="75dp"
                         android:layout_gravity="center"
-                        android:contentDescription="Hospice"
+                        android:contentDescription="Elderly care"
                         android:src="@drawable/elderly" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:fontFamily="@font/aclonica"
+                        android:fontFamily="@font/open_dyslexic_bold"
                         android:gravity="center"
                         android:text="Hospice"
                         android:textColor="@color/yellow"
                         android:textSize="16sp" />
                 </LinearLayout>
-
             </GridLayout>
-
-
         </LinearLayout>
-
     </ScrollView>
-    <nl.joery.animatedbottombar.AnimatedBottomBar
-        android:id="@+id/bottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:abb_selectedTabType="text"
-        app:abb_indicatorHeight="6dp"
-        app:abb_tabs="@menu/menu"
-        app:abb_selectedIndex="1"
-        app:abb_indicatorMargin="16dp"
-        app:abb_tabColor="@color/blue"
-        app:abb_tabColorSelected="@color/gray"
-        app:abb_textSize="16dp"
-        app:abb_iconSize="30dp"
-        app:abb_badgeAnimationDuration="900"
-        app:abb_indicatorColor="@color/gray"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:abb_animationDuration="500"
-        app:abb_badgeTextSize="16sp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Bottom App Bar with Cradle for FAB -->
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottomAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="85dp"
+        android:layout_gravity="bottom"
+        app:fabCradleMargin="10dp"
+        app:fabCradleRoundedCornerRadius="30dp"
+        app:fabCradleVerticalOffset="15dp"
+        app:fabAnchorMode="cradle"
+        app:fabAlignmentMode="center"
+        app:hideOnScroll="true">
+
+        <!-- Bottom Navigation View -->
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigationView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:background="@android:color/transparent"
+            android:elevation="0dp"
+            app:itemIconSize="33dp"
+            app:itemIconTint="@color/gray"
+            app:labelVisibilityMode="unlabeled"
+            app:menu="@menu/bottom_nav_menu" />
+    </com.google.android.material.bottomappbar.BottomAppBar>
+
+    <!-- Floating Action Button (Read Aloud) -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/ttsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/gray"
+        android:contentDescription="Text to speech button"
+        android:elevation="8dp"
+        android:src="@drawable/baseline_mic_24"
+        app:layout_anchor="@id/bottomAppBar"
+        app:layout_anchorGravity="center"
+        app:maxImageSize="33dp" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,238 +1,284 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/blob_scene_haikei__1_"
-    android:padding="16dp"
-    android:scrollbars="none">
+    tools:context=".Profile">
 
-    <RelativeLayout
+    <!-- ScrollView for Main Content -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:scrollbars="none">
 
-        <!-- Profile Image -->
-        <TextView
-            android:id="@+id/user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:fontFamily="@font/alatsi"
-            android:text="PROFILE"
-            android:textColor="@color/gray"
-            android:textSize="50sp"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="53dp"
-            android:layout_height="44dp"
-            android:layout_marginLeft="47dp"
-            android:layout_marginTop="18dp"
-            android:layout_toRightOf="@id/user_name"
-            app:srcCompat="@drawable/baseline_arrow_forward_24" />
-
-        <ImageView
-            android:id="@+id/profile_image"
-            android:layout_width="175dp"
-            android:layout_height="175dp"
-            android:layout_below="@id/user_name"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:contentDescription="Profile Picture"
-            android:scaleType="centerCrop"
-            android:src="@drawable/user" />
-
-        <LinearLayout
-            android:id="@+id/site_section"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/profile_image"
-            android:layout_marginTop="30dp"
-            android:background="@color/blue"
-            android:orientation="horizontal"
-            android:padding="15dp"
-            android:visibility="visible">
+            android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/drop_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/aclonica"
-                    android:text="Drop"
-                    android:textColor="@color/yellow"
-                    android:textSize="16sp" />
-
-                <RadioButton
-                    android:id="@+id/drop_site_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/yellow"
-                    android:checked="false" />
-            </LinearLayout>
-
+            <!-- Profile Header -->
             <TextView
-                android:id="@+id/picked_site_name"
+                android:id="@+id/user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/alatsi"
-                android:text="Selected Site: "
-                android:textColor="@color/white"
-                android:textSize="20sp" />
+                android:contentDescription="Profile header"
+                android:fontFamily="@font/open_dyslexic_regular"
+                android:text="PROFILE"
+                android:textColor="@color/gray"
+                android:textSize="40sp"
+                android:textStyle="bold"
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
 
-            <TextView
-                android:id="@+id/available_slots"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:fontFamily="@font/aclonica"
-                android:text="Slots: "
-                android:textColor="@color/yellow"
-                android:textSize="16sp" />
-        </LinearLayout>
+            <!-- Back Button -->
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="53dp"
+                android:layout_height="44dp"
+                android:layout_marginLeft="47dp"
+                android:layout_marginTop="18dp"
+                android:layout_toRightOf="@id/user_name"
+                android:contentDescription="Back button"
+                app:srcCompat="@drawable/baseline_arrow_forward_24"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:accessibilityTraversalBefore="@id/profile_image" />
 
-        <LinearLayout
-            android:id="@+id/documents_section"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/site_section"
-            android:layout_marginTop="20dp"
-            android:orientation="vertical"
-            android:padding="15dp"
-            android:background="@color/blue">
+            <!-- Profile Picture -->
+            <ImageView
+                android:id="@+id/profile_image"
+                android:layout_width="175dp"
+                android:layout_height="175dp"
+                android:layout_below="@id/user_name"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:contentDescription="Profile picture"
+                android:scaleType="centerCrop"
+                android:src="@drawable/user"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:accessibilityTraversalBefore="@id/site_section" />
 
-            <TextView
-                android:id="@+id/documents_header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:fontFamily="@font/alatsi"
-                android:text="What is expected of you?"
-                android:textAlignment="center"
-                android:textColor="@color/yellow"
-                android:textSize="18sp" />
-
+            <!-- Site Section -->
             <LinearLayout
+                android:id="@+id/site_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/profile_image"
+                android:layout_marginTop="30dp"
+                android:background="@color/blue"
                 android:orientation="horizontal"
-                android:padding="8dp"
-                android:background="@color/white"
-                android:layout_marginBottom="8dp">
+                android:padding="15dp"
+                android:visibility="visible"
+                android:contentDescription="Selected site section"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:accessibilityTraversalBefore="@id/documents_section">
 
-                <TextView
-                    android:id="@+id/doc1_title"
+                <!-- Drop Site Button -->
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true">
+
+                    <TextView
+                        android:id="@+id/drop_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="Drop site option"
+                        android:fontFamily="@font/open_dyslexic_bold"
+                        android:text="Drop"
+                        android:textColor="@color/yellow"
+                        android:textSize="16sp" />
+
+                    <RadioButton
+                        android:id="@+id/drop_site_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/yellow"
+                        android:checked="false"
+                        android:contentDescription="Drop selected site button" />
+                </LinearLayout>
+
+                <!-- Selected Site and Slots -->
+                <TextView
+                    android:id="@+id/picked_site_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="1"
                     android:fontFamily="@font/alatsi"
-                    android:text="Community Service\n Guidlines.docx"
-                    android:textColor="@color/blue"
+                    android:text="Selected Site: "
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:contentDescription="Selected site name" />
+
+                <TextView
+                    android:id="@+id/available_slots"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:contentDescription="Available slots"
+                    android:fontFamily="@font/open_dyslexic_regular"
+                    android:text="Slots: "
+                    android:textColor="@color/yellow"
                     android:textSize="16sp" />
-
-                <ImageView
-                    android:id="@+id/doc1_download"
-                    android:layout_width="50dp"
-                    android:layout_height="37dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="150dp"
-                    app:srcCompat="@drawable/baseline_download_24" />
             </LinearLayout>
-        </LinearLayout>
 
-        <TextView
-            android:id="@+id/pick"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/documents_section"
-            android:layout_marginTop="20dp"
-            android:fontFamily="@font/aclonica"
-            android:padding="20dp"
-            android:text="PICK YOUR START DATE IN THE CALENDER"
-            android:textAlignment="center"
-            android:textColor="@color/blue"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
-        <CalendarView
-            android:id="@+id/calendarView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/pick"
-            android:elevation="50dp"
-            android:firstDayOfWeek="2"
-            android:focusedMonthDateColor="@color/blue"
-            android:visibility="visible"
-            android:dateTextAppearance="@style/CalendarDateText"
-            android:weekDayTextAppearance="@style/CalendarWeekDayText"
-            android:selectedWeekBackgroundColor="@color/blue"
-            android:selectedDateVerticalBar="@color/blue"/>
-
-        <Button
-            android:id="@+id/bt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/gray"
-            android:textColor="@color/blue"
-            android:text="Reset Date"
-            android:layout_below="@id/calendarView"/>
-
-        <Button
-            android:id="@+id/bt1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/calendarView"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="120dp"
-            android:layout_marginEnd="10dp"
-            android:layout_toRightOf="@+id/bt"
-            android:backgroundTint="@color/gray"
-            android:text="See progress"
-            android:textColor="@color/blue" />
-
-        <LinearLayout
-            android:id="@+id/hours_section"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/bt"
-            android:layout_marginTop="20dp"
-            android:background="@color/blue"
-            android:orientation="vertical"
-            android:padding="15dp"
-            android:visibility="visible">
-
-            <TextView
-                android:id="@+id/weeksRemaining"
+            <!-- Documents Section -->
+            <LinearLayout
+                android:id="@+id/documents_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/alatsi"
-                android:lineSpacingExtra="10sp"
-                android:text="Weeks Remaining: 10"
-                android:textAlignment="center"
-                android:textColor="@color/yellow"
-                android:textSize="17sp" />
+                android:layout_below="@id/site_section"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical"
+                android:padding="15dp"
+                android:background="@color/blue"
+                android:contentDescription="Documents section"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:accessibilityTraversalBefore="@id/pick">
 
+                <TextView
+                    android:id="@+id/documents_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:contentDescription="Documents header"
+                    android:fontFamily="@font/alatsi"
+                    android:text="What is expected of you?"
+                    android:textAlignment="center"
+                    android:textColor="@color/yellow"
+                    android:textSize="20sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:background="@color/white"
+                    android:layout_marginBottom="8dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true">
+
+                    <TextView
+                        android:id="@+id/doc1_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="Community service guidelines document"
+                        android:fontFamily="@font/open_dyslexic_regular"
+                        android:text="Community Service\n Guidelines.docx"
+                        android:textColor="@color/blue"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/doc1_download"
+                        android:layout_width="50dp"
+                        android:layout_height="37dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="120dp"
+                        android:contentDescription="Download button"
+                        app:srcCompat="@drawable/baseline_download_24" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Pick Start Date -->
             <TextView
-                android:id="@+id/hoursRemaining"
+                android:id="@+id/pick"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_below="@id/documents_section"
+                android:layout_marginTop="20dp"
+                android:contentDescription="Pick your start date in the calendar"
                 android:fontFamily="@font/alatsi"
-                android:lineSpacingExtra="10sp"
-                android:text="Hours Remaining: 90"
+                android:padding="20dp"
+                android:text="PICK YOUR START DATE IN THE CALENDAR"
                 android:textAlignment="center"
-                android:textColor="@color/yellow"
-                android:textSize="17sp" />
-        </LinearLayout>
-    </RelativeLayout>
-</ScrollView>
+                android:textColor="@color/blue"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:accessibilityTraversalBefore="@id/calendarView" />
+
+            <!-- Calendar -->
+            <CalendarView
+                android:id="@+id/calendarView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pick"
+                android:elevation="50dp"
+                android:firstDayOfWeek="2"
+                android:focusedMonthDateColor="@color/blue"
+                android:visibility="visible"
+                android:dateTextAppearance="@style/CalendarDateText"
+                android:weekDayTextAppearance="@style/CalendarWeekDayText"
+                android:selectedWeekBackgroundColor="@color/blue"
+                android:selectedDateVerticalBar="@color/blue"
+                android:contentDescription="Calendar to pick start date"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:accessibilityTraversalBefore="@id/bt" />
+
+            <!-- Reset Date Button -->
+            <Button
+                android:id="@+id/bt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                android:backgroundTint="@color/blue"
+                android:textColor="@color/white"
+                android:text="Reset Date"
+                android:layout_below="@id/calendarView"
+                android:contentDescription="Reset start date button"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:accessibilityTraversalBefore="@id/bt1" />
+
+            <!-- Track Progress Button -->
+            <Button
+                android:id="@+id/bt1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/calendarView"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="120dp"
+                android:layout_marginLeft="121dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="9dp"
+                android:layout_toRightOf="@+id/bt"
+                android:backgroundTint="@color/yellow"
+                android:contentDescription="Track progress button"
+                android:text="See progress"
+                android:textColor="@color/blue"
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
+        </RelativeLayout>
+    </ScrollView>
+
+    <!-- Floating Action Button (Read Aloud) -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/ttsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_mic_24"
+        android:backgroundTint="@color/gray"
+        app:maxImageSize="35dp"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="Text to speech button"
+        android:elevation="8dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -16,44 +18,56 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
-    private static int SPLASH_SCREEN =5000;
-
-    //variables
-    Animation topanim, bottomanim;
-    ImageView image;
-    TextView textView,textView2;
+    private static final int SPLASH_SCREEN_DELAY = 5000; // 5 seconds
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+
+        // Adjust for system UI insets
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.mainLayout), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        //load animations collecting them from our directory
-        topanim= AnimationUtils.loadAnimation(this,R.anim.top_animation);
-        bottomanim=AnimationUtils.loadAnimation(this,R.anim.bottom_animation);
+        // Disable page number announcements by hiding the action bar title
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+        // Ensure the title is not spoken by TalkBack
+        setTitle(" ");
 
-        image=findViewById(R.id.imageView);
-        textView=findViewById(R.id.textView);
-        textView2=findViewById(R.id.textView2);
+        // Only hide ActionBar if it exists
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
-        image.setAnimation(topanim);
-        textView.setAnimation(bottomanim);
-        textView2.setAnimation(bottomanim);
 
-        //to handle or delay process
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(MainActivity.this, login.class); // Ensure "LoginActivity" is correct
-                startActivity(intent);
-                finish();
-            }
-        }, SPLASH_SCREEN); // Delay in milliseconds (e.g., 3000 = 3 seconds)
+        // Load animations
+        // UI Elements
+        Animation slideDownAnimation = AnimationUtils.loadAnimation(this, R.anim.top_animation);
+        Animation fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.bottom_animation);
 
+        // Initialize UI components
+        ImageView logoImageView = findViewById(R.id.logoImageView);
+        TextView titleTextView = findViewById(R.id.titleTextView);
+        TextView taglineTextView = findViewById(R.id.taglineTextView);
+
+        // Apply animations
+        logoImageView.setAnimation(slideDownAnimation);
+        titleTextView.setAnimation(fadeInAnimation);
+        taglineTextView.setAnimation(fadeInAnimation);
+
+        // Ensure TalkBack focuses correctly after animation
+        titleTextView.requestFocus();
+
+        // Delayed transition to LoginActivity
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            Intent intent = new Intent(MainActivity.this, login.class);
+            startActivity(intent);
+            finish();
+        }, SPLASH_SCREEN_DELAY);
     }
 }
