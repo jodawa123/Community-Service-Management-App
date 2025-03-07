@@ -6,13 +6,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -21,10 +18,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import io.github.muddz.styleabletoast.StyleableToast;
 
 public class SignUp extends AppCompatActivity {
-    EditText editTextText, editTextText4, editTextText5, identity;
-    Button button;
-    FirebaseAuth firebaseAuth;
-    DatabaseReference databaseReference;
+    private EditText nameField, emailField, passwordField, idField;
+    private Button signUpButton;
+    private FirebaseAuth firebaseAuth;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,89 +30,80 @@ public class SignUp extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(insets.getInsets(WindowInsetsCompat.Type.systemBars()).left,
+                    insets.getInsets(WindowInsetsCompat.Type.systemBars()).top,
+                    insets.getInsets(WindowInsetsCompat.Type.systemBars()).right,
+                    insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom);
             return insets;
         });
 
-        // Initialize Firebase Auth and Database
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
 
-        // Initialize UI components
-        editTextText = findViewById(R.id.editTextText);   // Name field
-        identity = findViewById(R.id.identity);          // Identity field
-        editTextText4 = findViewById(R.id.editTextText4); // Email field
-        editTextText5 = findViewById(R.id.editTextText5); // Password field
-        button = findViewById(R.id.button);              // Sign-Up button
+        nameField = findViewById(R.id.editTextText);
+        idField = findViewById(R.id.identity);
+        emailField = findViewById(R.id.editTextText4);
+        passwordField = findViewById(R.id.editTextText5);
+        signUpButton = findViewById(R.id.button);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String name = editTextText.getText().toString().trim();
-                String id = identity.getText().toString().trim();
-                String email = editTextText4.getText().toString().trim();
-                String password = editTextText5.getText().toString().trim();
-
-                // Validate inputs
-                if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(SignUp.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
-                } else if (password.length() < 6) {
-                    Toast.makeText(SignUp.this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show();
-                } else if (id.length() != 6) {
-                    Toast.makeText(SignUp.this, "ID must be exactly 6 characters", Toast.LENGTH_SHORT).show();
-                } else {
-                    // Create a new user in Firebase Authentication
-                    firebaseAuth.createUserWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    FirebaseUser user = firebaseAuth.getCurrentUser();
-                                    if (user != null) {
-                                        // Send verification email
-                                        user.sendEmailVerification()
-                                                .addOnCompleteListener(verificationTask -> {
-                                                    if (verificationTask.isSuccessful()) {
-                                                        String userId = user.getUid();
-
-                                                        // Save user details to the database
-                                                        User newUser = new User(name, id, email);
-                                                        databaseReference.child(userId).setValue(newUser)
-                                                                .addOnCompleteListener(dbTask -> {
-                                                                    if (dbTask.isSuccessful()) {
-                                                                        StyleableToast.makeText(SignUp.this, "Registration successful! Verify your email before logging in.", R.style.mytoast).show();
-
-                                                                        // Log out the user and redirect to Login page
-                                                                        firebaseAuth.signOut();
-                                                                        Intent intent = new Intent(SignUp.this, login.class);
-                                                                        startActivity(intent);
-                                                                        finish();
-                                                                    } else {
-                                                                        StyleableToast.makeText(SignUp.this, "Error saving user data: " + dbTask.getException().getMessage(), R.style.mytoast).show();
-                                                                    }
-                                                                });
-                                                    } else {
-                                                        StyleableToast.makeText(SignUp.this, "Failed to send verification email: " + verificationTask.getException().getMessage(), R.style.mytoast).show();
-                                                    }
-                                                });
-                                    }
-                                } else {
-                                    StyleableToast.makeText(SignUp.this, "Error: " + task.getException().getMessage(), R.style.mytoast).show();
-                                }
-                            });
-                }
-            }
-        });
+        // Set content descriptions for TalkBack accessibility
+        signUpButton.setContentDescription("Tap to sign up and create an account");
+        signUpButton.setOnClickListener(view -> registerUser());
     }
 
-    // User class to hold data
-    public static class User {
-        public String name;
-        public String id;
-        public String email;
+    private void registerUser() {
+        String name = nameField.getText().toString().trim();
+        String id = idField.getText().toString().trim();
+        String email = emailField.getText().toString().trim();
+        String password = passwordField.getText().toString().trim();
 
-        public User() {
-            // Default constructor required for calls to DataSnapshot.getValue(User.class)
+        if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            announceMessage("Please fill all fields");
+        } else if (password.length() < 6) {
+            announceMessage("Password must be at least 6 characters");
+        } else if (id.length() != 6) {
+            announceMessage("ID must be exactly 6 characters");
+        } else {
+            firebaseAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = firebaseAuth.getCurrentUser();
+                            if (user != null) {
+                                user.sendEmailVerification().addOnCompleteListener(verificationTask -> {
+                                    if (verificationTask.isSuccessful()) {
+                                        databaseReference.child(user.getUid()).setValue(new User(name, id, email))
+                                                .addOnCompleteListener(dbTask -> {
+                                                    if (dbTask.isSuccessful()) {
+                                                        announceMessage("Registration successful! Check your email for verification.");
+                                                        firebaseAuth.signOut();
+                                                        startActivity(new Intent(SignUp.this, login.class));
+                                                        finish();
+                                                    } else {
+                                                        announceMessage("Error saving user data: " + dbTask.getException().getMessage());
+                                                    }
+                                                });
+                                    } else {
+                                        announceMessage("Failed to send verification email: " + verificationTask.getException().getMessage());
+                                    }
+                                });
+                            }
+                        } else {
+                            announceMessage("Error: " + task.getException().getMessage());
+                        }
+                    });
         }
+    }
+
+    private void announceMessage(String message) {
+        StyleableToast.makeText(this, message, R.style.mytoast).show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        signUpButton.announceForAccessibility(message);
+    }
+
+    public static class User {
+        public String name, id, email;
+
+        public User() {}
 
         public User(String name, String id, String email) {
             this.name = name;

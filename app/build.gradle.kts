@@ -57,6 +57,7 @@ dependencies {
     implementation (libs.google.api.services.drive)
     implementation (libs.gms.play.services.auth)
     implementation (libs.google.api.client.gson)
+    implementation (libs.itext7.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

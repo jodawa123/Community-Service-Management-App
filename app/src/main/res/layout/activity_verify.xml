@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/blob_scene_haikei__2_">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/headText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:fontFamily="@font/open_dyslexic_bold"
+        android:gravity="center"
+        android:text="PLEASE HOLD"
+        android:textColor="@color/gray"
+        android:textSize="40sp"
+        android:contentDescription="Please hold screen"
+        android:importantForAccessibility="yes" />
+
+    <!-- Subtitle -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/headText"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/open_dyslexic_bold"
+        android:gravity="center"
+        android:text="Hold on, we're verifying you..."
+        android:textColor="@color/gray"
+        android:textSize="20sp"
+        android:contentDescription="Hold on, we are verifying you"
+        android:importantForAccessibility="yes" />
+
+    <!-- Circular Progress Bar -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="300dp"
+        android:layout_height="350dp"
+        android:layout_centerInParent="true"
+        android:indeterminate="false"
+        android:indeterminateTint="@color/yellow"
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/circular_progress_bar"
+        android:contentDescription="Verification progress bar"
+        android:importantForAccessibility="yes" />
+
+    <!-- Error Image (Hidden by Default) -->
+    <ImageView
+        android:id="@+id/hold"
+        android:layout_width="350dp"
+        android:layout_height="400dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone"
+        android:importantForAccessibility="no" /> <!-- Set to "no" since it's hidden by default -->
+</RelativeLayout>

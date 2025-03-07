@@ -61,14 +61,117 @@
                 android:src="@drawable/user"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:accessibilityTraversalBefore="@id/site_section" />
+                android:accessibilityTraversalBefore="@id/countdownContainer" />
+
+            <!-- Countdown Container -->
+            <LinearLayout
+                android:id="@+id/countdownContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profile_image"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+                android:orientation="horizontal"
+                android:accessibilityTraversalBefore="@id/site_section">
+
+                <!-- Hours Container -->
+                <LinearLayout
+                    android:layout_width="90dp"
+                    android:layout_height="100dp"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/custom_edittext"
+                    android:elevation="4dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/weeksText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/gray"
+                        android:textSize="34sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/weeksLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="WEEKS"
+                        android:textColor="@color/gray"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Minutes Container -->
+                <LinearLayout
+                    android:layout_width="90dp"
+                    android:layout_height="100dp"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/custom_edittext"
+                    android:elevation="4dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/daysText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/gray"
+                        android:textSize="34sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/daysLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="DAYS"
+                        android:textColor="@color/gray"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Seconds Container -->
+                <LinearLayout
+                    android:layout_width="90dp"
+                    android:layout_height="100dp"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/custom_edittext"
+                    android:elevation="4dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/hoursText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/gray"
+                        android:textSize="34sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/hoursLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="HOURS"
+                        android:textColor="@color/gray"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
 
             <!-- Site Section -->
             <LinearLayout
                 android:id="@+id/site_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/profile_image"
+                android:layout_below="@id/countdownContainer"
                 android:layout_marginTop="30dp"
                 android:background="@color/blue"
                 android:orientation="horizontal"
@@ -260,10 +363,10 @@
                 android:layout_toRightOf="@+id/bt"
                 android:backgroundTint="@color/yellow"
                 android:contentDescription="Track progress button"
-                android:text="See progress"
-                android:textColor="@color/blue"
                 android:focusable="true"
-                android:focusableInTouchMode="true" />
+                android:focusableInTouchMode="true"
+                android:text="Daily Diary"
+                android:textColor="@color/blue" />
         </RelativeLayout>
     </ScrollView>
 

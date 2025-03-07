@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="60dp"
-            android:fontFamily="@font/aclonica"
+            android:fontFamily="@font/open_dyslexic_bold"
             android:hint="Site Name"
             android:textColor="@color/blue"
             android:textSize="20sp"
@@ -60,7 +60,7 @@
             android:layout_below="@id/site_title"
             android:layout_marginStart="60dp"
             android:layout_marginTop="4dp"
-            android:fontFamily="@font/alatsi"
+            android:fontFamily="@font/open_dyslexic_bold"
             android:hint="Description goes here"
             android:textColor="@color/black"
             android:textSize="16sp" />

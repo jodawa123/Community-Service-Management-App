@@ -1,5 +1,7 @@
 package com.example.cs3700;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,6 +11,7 @@ import android.speech.tts.UtteranceProgressListener;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.BackgroundColorSpan;
+import android.util.Log;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
@@ -28,21 +31,25 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import io.github.muddz.styleabletoast.StyleableToast;
+import java.util.Set;
+
 
 public class Profile extends AppCompatActivity {
 
     private TextView pickedSiteName, availableSlots, pick,documents_header,doc1_title;
     private FirebaseFirestore firestore;
-    private String selectedCategory, selectedSite;
+    private String selectedCategory, selectedSite,userId;
     private int currentAvailableSlots;
     private View siteSection;
     private CalendarView calendarView;
@@ -125,6 +132,7 @@ public class Profile extends AppCompatActivity {
         // Initialize Firebase
         firestore = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        userId = (currentUser != null) ? currentUser.getUid() : null;
 
         selectedCategory = getIntent().getStringExtra("CATEGORY_NAME");
         selectedSite = getIntent().getStringExtra("SELECTED_SITE");
@@ -180,9 +188,10 @@ public class Profile extends AppCompatActivity {
         });
 
         track.setOnClickListener(v -> {
-            Intent targetIntent = new Intent(Profile.this, Curve.class);
+            Intent targetIntent = new Intent(Profile.this, Verify.class);
             startActivity(targetIntent);
         });
+        calculateTotals();
     }
 
     @Override
@@ -239,7 +248,8 @@ public class Profile extends AppCompatActivity {
         endDate = null;
         calendarView.setEnabled(true);
         showToastAndAnnounce("Start date reset. Select a new date.");
-        saveStateToFirebase();
+        saveStateToFirebase(); // Save the updated state to Firestore
+        updateCountdownUI(); // Refresh the UI
     }
 
     private void loadStateFromFirebase() {
@@ -249,18 +259,15 @@ public class Profile extends AppCompatActivity {
                     selectedSite = documentSnapshot.getString("selectedSite");
                     selectedCategory = documentSnapshot.getString("selectedCategory");
                     currentAvailableSlots = documentSnapshot.getLong("currentAvailableSlots").intValue();
-                    long startDateMillis = documentSnapshot.getLong("startDate");
-                    long endDateMillis = documentSnapshot.getLong("endDate");
+                    Long startDateMillis = documentSnapshot.getLong("startDate");
+                    Long endDateMillis = documentSnapshot.getLong("endDate");
 
                     // Update UI with loaded state
                     pickedSiteName.setText("Selected Site: " + selectedSite);
                     availableSlots.setText("Slots: " + currentAvailableSlots);
-                    if (startDateMillis != 0) {
-                        startDate = new Date(startDateMillis);
-                    }
-                    if (endDateMillis != 0) {
-                        endDate = new Date(endDateMillis);
-                    }
+                    startDate = startDateMillis != null ? new Date(startDateMillis) : null;
+                    endDate = endDateMillis != null ? new Date(endDateMillis) : null;
+
                     // Highlight dates
                     if (startDate != null) {
                         calendarView.setDate(startDate.getTime(), true, true);
@@ -292,9 +299,9 @@ public class Profile extends AppCompatActivity {
         state.put("endDate", endDate != null ? endDate.getTime() : null);
         state.put("selectedCategory", selectedCategory);
 
-        /*userRef.set(state)
+        userRef.set(state)
                 .addOnSuccessListener(aVoid -> showToastAndAnnounce("State saved successfully."))
-                .addOnFailureListener(e -> showToastAndAnnounce("Failed to save state: " + e.getMessage()));*/
+                .addOnFailureListener(e -> showToastAndAnnounce("Failed to save state: " + e.getMessage()));
     }
 
     private void fetchSiteDetails() {
@@ -346,6 +353,9 @@ public class Profile extends AppCompatActivity {
 
                                     // Delete user from the `members` subcollection
                                     batch.delete(memberRef);
+
+                                    // Delete daily logs for the user
+                                    deleteDailyLogs(batch);
                                 }).addOnSuccessListener(aVoid -> {
                                     showToastAndAnnounce("Deleted successfully.");
                                     hideSiteDetails();
@@ -403,6 +413,9 @@ public class Profile extends AppCompatActivity {
 
                                                         // Delete user from the `members` subcollection
                                                         batch.delete(memberRef);
+
+                                                        // Delete daily logs for the user
+                                                        deleteDailyLogs(batch);
                                                     }).addOnSuccessListener(batchSuccess -> {
                                                         showToastAndAnnounce("You successfully dropped your selection.");
                                                         hideSiteDetails();
@@ -430,6 +443,75 @@ public class Profile extends AppCompatActivity {
                         showToastAndAnnounce("Failed to fetch user selection: " + fetchFailure.getMessage());
                     });
         }
+    }
+
+    private void deleteDailyLogs(WriteBatch batch) {
+        firestore.collection("daily_logs").document(userId).collection("logs")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        batch.delete(doc.getReference());
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error deleting daily logs: " + e.getMessage());
+                });
+    }
+    private void calculateTotals() {
+        if (userId == null) {
+            Log.e(TAG, "User ID is null. Cannot calculate totals.");
+            return;
+        }
+
+        firestore.collection("daily_logs").document(userId).collection("logs")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    int totalDays = queryDocumentSnapshots.size();
+                    final int[] totalHours = {0}; // Use an array to store totalHours
+                    Set<Integer> weeks = new HashSet<>();
+
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        // Calculate total hours
+                        String hoursStr = doc.getString("hours");
+                        if (hoursStr != null && !hoursStr.isEmpty()) {
+                            totalHours[0] += Integer.parseInt(hoursStr); // Modify the array element
+                        }
+
+                        // Calculate total weeks
+                        String dateStr = doc.getString("date");
+                        if (dateStr != null && !dateStr.isEmpty()) {
+                            try {
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.setTime(sdf.parse(dateStr));
+                                int week = calendar.get(Calendar.WEEK_OF_YEAR);
+                                weeks.add(week);
+                            } catch (Exception e) {
+                                Log.e(TAG, "Error parsing date: " + dateStr, e);
+                            }
+                        }
+                    }
+
+                    int totalWeeks = weeks.size();
+
+                    runOnUiThread(() -> {
+                        TextView weeksDoneTextView = findViewById(R.id.weeksText);
+                        TextView daysDoneTextView = findViewById(R.id.daysText);
+                        TextView hoursDoneTextView = findViewById(R.id.hoursText);
+
+                        if (weeksDoneTextView != null && daysDoneTextView != null && hoursDoneTextView != null) {
+                            weeksDoneTextView.setText(String.valueOf(totalWeeks));
+                            daysDoneTextView.setText(String.valueOf(totalDays));
+                            hoursDoneTextView.setText(String.valueOf(totalHours[0]));
+                        } else {
+                            Log.e(TAG, "One or more TextViews are null.");
+                        }
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error calculating totals", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error fetching logs", e);
+                });
     }
 
     private void showSiteDetails() {

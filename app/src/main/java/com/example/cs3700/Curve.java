@@ -2,31 +2,30 @@ package com.example.cs3700;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.Calendar;
 import java.util.Date;
 
 public class Curve extends AppCompatActivity {
     private static final String CHANNEL_ID = "progress_notifications";
     private static final int NOTIFICATION_ID = 1;
-    private CurvedPathView curvedPathView;
     private ProgressBar countdownProgressBar;
     private TextView daysRemainingText;
     private TextView hoursRemainingText;
+    private TextView weeksRemainingText;
     private static final String TAG = "Curve";
     private static final String PREFS_NAME = "ProgressPrefs";
     private static final String KEY_LAST_NOTIFIED_WEEK = "last_notified_week";
@@ -35,10 +34,10 @@ public class Curve extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_curve);
-        curvedPathView = findViewById(R.id.curvedPathView);
         countdownProgressBar = findViewById(R.id.countdownProgressBar);
         daysRemainingText = findViewById(R.id.daysText);
         hoursRemainingText = findViewById(R.id.hoursText);
+        weeksRemainingText = findViewById(R.id.weeksText);
 
         // Create a notification channel for Android O and above
         createNotificationChannel();
@@ -57,60 +56,49 @@ public class Curve extends AppCompatActivity {
                 if (startDateMillis != null) {
                     Date startDate = new Date(startDateMillis);
 
-                    // Calculate the number of days and hours remaining
-                    int daysRemaining = calculateDaysRemaining(startDate);
-                    int hoursRemaining = calculateHoursRemaining(startDate);
+                    // Calculate remaining weeks, days, and hours
+                    int weeksRemaining = calculateRemainingWeeks(startDate);
+                    int daysRemaining = weeksRemaining * 3;
+                    int hoursRemaining = daysRemaining * 3;
+                    Log.d(TAG, "Weeks Remaining: " + weeksRemaining);
                     Log.d(TAG, "Days Remaining: " + daysRemaining);
                     Log.d(TAG, "Hours Remaining: " + hoursRemaining);
 
                     // Update the TextViews
+                    weeksRemainingText.setText(String.valueOf(weeksRemaining));
                     daysRemainingText.setText(String.valueOf(daysRemaining));
                     hoursRemainingText.setText(String.valueOf(hoursRemaining));
 
                     // Update the progress bar
                     updateProgressBar(daysRemaining);
 
-                    // Calculate the number of weeks since the start date
-                    int currentWeek = calculateCurrentWeek(startDate);
-                    Log.d(TAG, "Current Week: " + currentWeek);
-
-                    // Update the progress in the curved view
-                    curvedPathView.setWeekProgress(currentWeek);
-
-                    // Send a notification only if the current week is new
-                    sendNotificationIfNewWeek(currentWeek);
+                    // Send a notification only if the week changes
+                    sendNotificationIfNewWeek(weeksRemaining);
                 }
             }
         }).addOnFailureListener(e -> Log.e(TAG, "Error fetching data from Firestore", e));
     }
 
     private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is not available in older versions
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Progress Notifications";
             String description = "Notifications for weekly progress updates";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
-
-            // Register the channel with the system
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
     }
 
-    private void sendNotificationIfNewWeek(int currentWeek) {
+    private void sendNotificationIfNewWeek(int weeksRemaining) {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        int lastNotifiedWeek = prefs.getInt(KEY_LAST_NOTIFIED_WEEK, 0);
+        int lastNotifiedWeek = prefs.getInt(KEY_LAST_NOTIFIED_WEEK, 10);
 
-        if (currentWeek > lastNotifiedWeek) {
-            // Send the notification
-            sendNotification(currentWeek);
-
-            // Update the last notified week in SharedPreferences
+        if (weeksRemaining < lastNotifiedWeek) {
+            sendNotification(10 - weeksRemaining);
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt(KEY_LAST_NOTIFIED_WEEK, currentWeek);
+            editor.putInt(KEY_LAST_NOTIFIED_WEEK, weeksRemaining);
             editor.apply();
         }
     }
@@ -131,42 +119,45 @@ public class Curve extends AppCompatActivity {
 
         if (currentWeek >= 1 && currentWeek <= 10) {
             String message = encouragingMessages[currentWeek - 1];
+            Log.d(TAG, "Sending notification for week " + currentWeek + ": " + message);
+
+            // Create an intent to open the app when the notification is clicked
+            Intent intent = new Intent(this, Curve.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_notification) // Add a notification icon
+                    .setSmallIcon(R.drawable.ic_notification)
                     .setContentTitle("Week " + currentWeek)
                     .setContentText(message)
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setContentIntent(pendingIntent) // Set the intent to launch the app
+                    .setAutoCancel(true); // Automatically dismiss the notification when clicked
 
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.notify(NOTIFICATION_ID, builder.build());
+            if (notificationManager != null) {
+                notificationManager.notify(NOTIFICATION_ID, builder.build());
+                Log.d(TAG, "Notification sent successfully");
+            } else {
+                Log.e(TAG, "NotificationManager is null");
+            }
+        } else {
+            Log.e(TAG, "Invalid currentWeek: " + currentWeek);
         }
     }
 
-    private int calculateCurrentWeek(Date startDate) {
+    private int calculateRemainingWeeks(Date startDate) {
         Calendar startCalendar = Calendar.getInstance();
         startCalendar.setTime(startDate);
-
         Calendar today = Calendar.getInstance();
-
         long diffInMillis = today.getTimeInMillis() - startCalendar.getTimeInMillis();
         long diffInDays = diffInMillis / (1000 * 60 * 60 * 24);
-
-        return (int) Math.ceil(diffInDays / 7.0); // Convert days to weeks
-    }
-
-    private int calculateDaysRemaining(Date startDate) {
-        int ten= 10-calculateCurrentWeek(startDate);
-        return ten *3;
-    }
-
-    private int calculateHoursRemaining(Date startDate) {
-        int hrs=calculateDaysRemaining(startDate);
-        return hrs *3;
+        int elapsedWeeks = (int) Math.ceil(diffInDays / 7.0);
+        return Math.max(10 - elapsedWeeks, 0);
     }
 
     private void updateProgressBar(int daysRemaining) {
-        int progress = 30-daysRemaining;
+        int progress = 30 - daysRemaining;
         countdownProgressBar.setProgress(progress);
     }
 }

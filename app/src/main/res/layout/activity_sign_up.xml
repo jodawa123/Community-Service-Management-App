@@ -25,8 +25,8 @@
 
     <EditText
         android:id="@+id/editTextText"
-        android:layout_width="294dp"
-        android:layout_height="56dp"
+        android:layout_width="292dp"
+        android:layout_height="50dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="185dp"
         android:layout_marginBottom="12dp"
@@ -48,8 +48,8 @@
 
     <EditText
         android:id="@+id/identity"
-        android:layout_width="294dp"
-        android:layout_height="56dp"
+        android:layout_width="292dp"
+        android:layout_height="50dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="185dp"
         android:layout_marginBottom="12dp"
@@ -59,7 +59,7 @@
         android:elevation="3dp"
         android:ems="10"
         android:fontFamily="@font/alatsi"
-        android:hint="Enter your school id "
+        android:hint="Enter your school ID "
         android:inputType="text|number"
         android:padding="15dp"
         android:textAlignment="center"
@@ -72,7 +72,7 @@
     <EditText
         android:id="@+id/editTextText4"
         android:layout_width="292dp"
-        android:layout_height="52dp"
+        android:layout_height="50dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="92dp"
         android:layout_marginBottom="20dp"
@@ -95,7 +95,7 @@
     <EditText
         android:id="@+id/editTextText5"
         android:layout_width="292dp"
-        android:layout_height="52dp"
+        android:layout_height="50dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="103dp"
         android:layout_marginBottom="12dp"

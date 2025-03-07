@@ -16,15 +16,16 @@
         android:fontFamily="@font/alatsi"
         android:text="RESET PASSWORD"
         android:textColor="@color/gray"
-        android:textSize="42sp" />
-
+        android:textSize="42sp"
+        android:importantForAccessibility="no" />
 
     <ImageView
         android:id="@+id/imageView6"
         android:layout_width="match_parent"
         android:layout_height="371dp"
         android:layout_below="@id/title"
-        app:srcCompat="@drawable/emails_cuate" />
+        app:srcCompat="@drawable/emails_cuate"
+        android:contentDescription="Illustration of an email being sent" />
 
     <EditText
         android:id="@+id/emailEditText"
@@ -41,7 +42,7 @@
         android:inputType="textEmailAddress"
         android:padding="15dp"
         android:textAlignment="center"
-        android:textSize="18sp" />
+        android:textSize="18sp"/>
 
     <Button
         android:id="@+id/resetPasswordButton"
@@ -53,5 +54,6 @@
         android:backgroundTint="@color/yellow"
         android:fontFamily="@font/aclonica"
         android:text="RESET"
-        android:textColor="@color/black" />
+        android:textColor="@color/black"
+        android:contentDescription="Tap to reset your password" />
 </RelativeLayout>
