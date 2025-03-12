@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +41,7 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
     private String userSelectedSite = null; // Track user's selected site
     private String searchQuery;
     private int highlightPosition = -1;
+
 
     public itemAdapter(Context context, ArrayList<model> modelArrayList, String categoryName, String userSelectedSite, String searchQuery,int highlightPosition) {
         this.context = context;
@@ -126,7 +128,7 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
                 Toast.makeText(context, "No available slots for this site", Toast.LENGTH_SHORT).show();
             }
         });
-        holder.siteTitle.setOnClickListener(v -> {
+        holder.map.setOnClickListener(v -> {
             Intent intent = new Intent(context, Mapping.class);
             intent.putExtra("SITE_NAME", currentModel.getHead());
             intent.putExtra("LATITUDE", currentModel.getLatitude());
@@ -249,6 +251,7 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
     public static class Holder extends RecyclerView.ViewHolder {
         TextView siteTitle, studentsNeeded, siteDescription,phone;
         RadioButton radioButton;
+        private ImageView map;
 
         public Holder(@NonNull View itemView) {
             super(itemView);
@@ -257,6 +260,7 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
             siteDescription = itemView.findViewById(R.id.site_description);
             radioButton = itemView.findViewById(R.id.site_radio_button);
             phone=itemView.findViewById(R.id.site_phone);
+            map=itemView.findViewById(R.id.location_icon);
 
         }
     }

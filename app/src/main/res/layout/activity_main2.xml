@@ -14,26 +14,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/scroll"
+        android:layout_marginBottom="60dp"
         android:layout_above="@id/bottomAppBar"
         android:fillViewport="true">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            >
 
             <!-- Header Section -->
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="190dp">
+                android:id="@+id/header"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
                 <!-- Greeting Message -->
                 <TextView
                     android:id="@+id/textView5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
                     android:contentDescription="Greeting message"
                     android:fontFamily="@font/open_dyslexic_regular"
                     android:text="Hello, "
@@ -48,7 +52,7 @@
                     android:id="@+id/textView6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
                     android:contentDescription="User's name"
                     android:fontFamily="@font/open_dyslexic_regular"
                     android:hint="John Doe"
@@ -59,31 +63,31 @@
                     app:layout_constraintTop_toBottomOf="@id/textView5" />
 
                 <!-- Profile Image -->
+
+                <!-- Search Bar -->
+
                 <ImageView
                     android:id="@+id/profileImage"
-                    android:layout_width="104dp"
-                    android:layout_height="103dp"
-                    android:layout_marginTop="40dp"
-                    android:layout_marginEnd="60dp"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="48dp"
+                    android:layout_marginEnd="28dp"
                     android:contentDescription="User profile image"
                     android:padding="5dp"
-                    android:scaleType="centerCrop"
                     android:src="@drawable/hello"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <!-- Search Bar -->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="16dp"
                     android:background="@drawable/custombutton"
                     android:orientation="horizontal"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent">
+                    android:padding="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/textView6"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
 
                     <EditText
                         android:id="@+id/searchBar"
@@ -107,31 +111,33 @@
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- Image Slider (Non-interactive, skip for TalkBack) -->
+            <!-- Image Slider -->
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/imageSlider"
-                android:layout_width="370dp"
+                android:layout_width="0dp"
                 android:layout_height="200dp"
-                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:importantForAccessibility="no"
-                app:layout_constraintTop_toBottomOf="@id/searchBar"
+                app:layout_constraintTop_toBottomOf="@id/header"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
-            <!-- Dots Indicator (Non-interactive, skip for TalkBack) -->
+            <!-- Dots Indicator -->
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/dotsIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                app:tabIndicatorColor="@color/blue"
-                app:tabIndicatorHeight="3dp"
-                app:tabSelectedTextColor="@color/gray"
-                app:tabTextColor="@color/gray"
+                android:layout_marginTop="8dp"
+                android:importantForAccessibility="no"
                 app:layout_constraintTop_toBottomOf="@id/imageSlider"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:importantForAccessibility="no" />
+                app:tabIndicatorColor="@color/blue"
+                app:tabIndicatorHeight="3dp"
+                app:tabSelectedTextColor="@color/gray"
+                app:tabTextColor="@color/gray" />
 
             <!-- Categories Section -->
             <TextView
@@ -139,8 +145,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="15dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 android:contentDescription="Section title: Categories"
                 android:fontFamily="@font/open_dyslexic_bold"
                 android:text="Categories"
@@ -149,28 +155,34 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:accessibilityHeading="true"
-                app:layout_constraintTop_toBottomOf="@id/dotsIndicator" />
+                app:layout_constraintTop_toBottomOf="@id/dotsIndicator"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <!-- Categories Grid -->
-            <GridLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/categoriesGrid"
-                android:layout_width="wrap_content"
-                android:layout_height="654dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="40dp"
-                android:columnCount="2"
-                android:contentDescription="Layout with different categories"
-                android:orientation="horizontal"
-                android:rowCount="4">
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintTop_toBottomOf="@id/categoriesTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
                 <!-- Special Needs -->
                 <LinearLayout
-                    android:layout_width="180dp"
+                    android:id="@+id/special"
+                    android:layout_width="0dp"
                     android:layout_height="200dp"
                     android:layout_margin="8dp"
                     android:background="@color/yellow"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.48"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
                         android:id="@+id/imageSpecial"
@@ -193,12 +205,17 @@
 
                 <!-- Health Centers -->
                 <LinearLayout
-                    android:layout_width="180dp"
+                    android:id="@+id/health"
+                    android:layout_width="0dp"
                     android:layout_height="200dp"
                     android:layout_margin="8dp"
                     android:background="@color/blue"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.48"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
                         android:id="@+id/imageHealth"
@@ -216,17 +233,23 @@
                         android:gravity="center"
                         android:text="Health centers"
                         android:textColor="@color/yellow"
+                        app:layout_constraintTop_toBottomOf="@id/rehab"
                         android:textSize="16sp" />
                 </LinearLayout>
 
                 <!-- Children Home -->
                 <LinearLayout
-                    android:layout_width="180dp"
+                    android:id="@+id/children"
+                    android:layout_width="0dp"
                     android:layout_height="200dp"
                     android:layout_margin="8dp"
                     android:background="@color/blue"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.48"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/special">
 
                     <ImageView
                         android:id="@+id/imageChildren"
@@ -249,12 +272,17 @@
 
                 <!-- Rehabilitation -->
                 <LinearLayout
-                    android:layout_width="180dp"
+                    android:id="@+id/rehab"
+                    android:layout_width="0dp"
                     android:layout_height="200dp"
                     android:layout_margin="8dp"
                     android:background="@color/yellow"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.48"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/health">
 
                     <ImageView
                         android:id="@+id/imageRehab"
@@ -277,12 +305,17 @@
 
                 <!-- Rescue Homes -->
                 <LinearLayout
-                    android:layout_width="180dp"
+                    android:id="@+id/rescue"
+                    android:layout_width="0dp"
                     android:layout_height="200dp"
                     android:layout_margin="8dp"
                     android:background="@color/yellow"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.48"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/children">
 
                     <ImageView
                         android:id="@+id/imageRescue"
@@ -305,12 +338,17 @@
 
                 <!-- Hospice -->
                 <LinearLayout
-                    android:layout_width="180dp"
+                    android:id="@+id/hospice"
+                    android:layout_width="0dp"
                     android:layout_height="200dp"
                     android:layout_margin="8dp"
                     android:background="@color/blue"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.48"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rehab">
 
                     <ImageView
                         android:id="@+id/imageHospice"
@@ -330,15 +368,15 @@
                         android:textColor="@color/yellow"
                         android:textSize="16sp" />
                 </LinearLayout>
-            </GridLayout>
-        </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
     <!-- Bottom App Bar with Cradle for FAB -->
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
         android:layout_width="match_parent"
-        android:layout_height="85dp"
+        android:layout_height="80dp"
         android:layout_gravity="bottom"
         app:fabCradleMargin="10dp"
         app:fabCradleRoundedCornerRadius="30dp"
@@ -355,7 +393,7 @@
             android:layout_marginEnd="12dp"
             android:background="@android:color/transparent"
             android:elevation="0dp"
-            app:itemIconSize="33dp"
+            app:itemIconSize="32dp"
             app:itemIconTint="@color/gray"
             app:labelVisibilityMode="unlabeled"
             app:menu="@menu/bottom_nav_menu" />
@@ -363,14 +401,14 @@
 
     <!-- Floating Action Button (Read Aloud) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/ttsButton"
+        android:id="@+id/homebutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/gray"
         android:contentDescription="Text to speech button"
         android:elevation="8dp"
-        android:src="@drawable/baseline_mic_24"
+        android:src="@drawable/baseline_home_24"
         app:layout_anchor="@id/bottomAppBar"
         app:layout_anchorGravity="center"
-        app:maxImageSize="33dp" />
+        app:maxImageSize="30dp" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -6,37 +6,46 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/yellow"
-    android:textAlignment="center"
     tools:context=".MainActivity">
 
+    <!-- ImageView with responsive constraints -->
     <ImageView
         android:id="@+id/logoImageView"
-        android:layout_width="420dp"
-        android:layout_height="549dp"
-        android:layout_marginStart="62dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="63dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="Illustration of community service"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@id/titleTextView"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/nursing_home_cuate_1_"
-        android:contentDescription="Illustration of community service" />
+        app:srcCompat="@drawable/nursing_home_cuate_1_" />
 
+    <!-- Title TextView with responsive constraints -->
     <TextView
         android:id="@+id/titleTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:contentDescription="Community Service Title"
         android:fontFamily="@font/alatsi"
         android:text="COMMUNITY SERVICE"
         android:textAlignment="center"
         android:textSize="40sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        app:layout_constraintTop_toBottomOf="@id/logoImageView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/logoImageView" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Tagline TextView with responsive constraints -->
     <TextView
         android:id="@+id/taglineTextView"
         android:layout_width="wrap_content"
@@ -46,8 +55,10 @@
         android:fontFamily="@font/open_dyslexic_bold"
         android:text="#Making a Difference Together"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        app:layout_constraintTop_toBottomOf="@id/titleTextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleTextView" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

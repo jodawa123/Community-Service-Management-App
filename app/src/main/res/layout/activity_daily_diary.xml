@@ -16,10 +16,11 @@
         <!-- Title -->
         <TextView
             android:id="@+id/diaryTitle"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:contentDescription="Student Daily Diary"
             android:fontFamily="@font/open_dyslexic_bold"
             android:text="STUDENT DAILY DIARY 📝"
@@ -27,15 +28,22 @@
             android:textColor="@color/blue"
             android:textSize="30sp"
             android:textStyle="bold"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:importantForAccessibility="yes"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:accessibilityTraversalBefore="@id/studentName" />
 
         <!-- Student Details -->
         <EditText
             android:id="@+id/studentName"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:background="@android:color/transparent"
             android:fontFamily="@font/open_dyslexic_regular"
             android:hint="Student Name"
@@ -43,13 +51,21 @@
             android:padding="10dp"
             android:textColor="@color/black"
             android:textSize="20sp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:importantForAccessibility="yes"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/diaryTitle" />
+            app:layout_constraintTop_toBottomOf="@id/diaryTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:accessibilityTraversalBefore="@id/semester" />
 
         <EditText
             android:id="@+id/semester"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:background="@android:color/transparent"
             android:fontFamily="@font/open_dyslexic_regular"
             android:hint="Semester"
@@ -57,13 +73,21 @@
             android:padding="10dp"
             android:textColor="@color/black"
             android:textSize="20sp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:importantForAccessibility="yes"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/studentName" />
+            app:layout_constraintTop_toBottomOf="@id/studentName"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:accessibilityTraversalBefore="@id/siteOrganization" />
 
         <EditText
             android:id="@+id/siteOrganization"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:background="@android:color/transparent"
             android:fontFamily="@font/open_dyslexic_regular"
             android:hint="Site/Organization"
@@ -71,13 +95,21 @@
             android:padding="10dp"
             android:textColor="@color/black"
             android:textSize="20sp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:importantForAccessibility="yes"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/semester" />
+            app:layout_constraintTop_toBottomOf="@id/semester"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:accessibilityTraversalBefore="@id/siteSupervisor" />
 
         <EditText
             android:id="@+id/siteSupervisor"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:background="@android:color/transparent"
             android:fontFamily="@font/open_dyslexic_regular"
             android:hint="Site Supervisor's Name"
@@ -85,17 +117,30 @@
             android:padding="10dp"
             android:textColor="@color/black"
             android:textSize="20sp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:importantForAccessibility="yes"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/siteOrganization" />
+            app:layout_constraintTop_toBottomOf="@id/siteOrganization"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:accessibilityTraversalBefore="@id/logEntryContainer" />
 
         <!-- Log Entries (Vertical Layout with Labels) -->
         <LinearLayout
             android:id="@+id/logEntryContainer"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/siteSupervisor">
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:importantForAccessibility="yes"
+            app:layout_constraintTop_toBottomOf="@id/siteSupervisor"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:accessibilityTraversalBefore="@id/sup">
 
             <TextView
                 android:layout_width="match_parent"
@@ -109,6 +154,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
+            <!-- Date -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -128,17 +174,22 @@
 
                 <EditText
                     android:id="@+id/logDate"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:fontFamily="@font/open_dyslexic_regular"
                     android:hint="3/2/2025"
                     android:inputType="date"
                     android:padding="10dp"
                     android:textColor="@color/blue"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:importantForAccessibility="yes" />
             </LinearLayout>
 
+            <!-- Time In -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -158,17 +209,22 @@
 
                 <EditText
                     android:id="@+id/timeIn"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:fontFamily="@font/open_dyslexic_regular"
                     android:hint="9:00"
                     android:inputType="time"
                     android:padding="10dp"
                     android:textColor="@color/blue"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:importantForAccessibility="yes" />
             </LinearLayout>
 
+            <!-- Time Out -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -188,17 +244,22 @@
 
                 <EditText
                     android:id="@+id/timeOut"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:fontFamily="@font/open_dyslexic_regular"
                     android:hint="12.00"
                     android:inputType="time"
                     android:padding="10dp"
                     android:textColor="@color/blue"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:importantForAccessibility="yes" />
             </LinearLayout>
 
+            <!-- Activities -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -218,17 +279,22 @@
 
                 <EditText
                     android:id="@+id/activitiesDone"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:fontFamily="@font/open_dyslexic_regular"
                     android:hint="Cleaning\nSweeping"
                     android:inputType="textMultiLine"
                     android:padding="10dp"
                     android:textColor="@color/blue"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:importantForAccessibility="yes" />
             </LinearLayout>
 
+            <!-- Hours Worked -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -248,68 +314,103 @@
 
                 <EditText
                     android:id="@+id/hoursWorked"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:fontFamily="@font/open_dyslexic_regular"
                     android:hint=" hours updates automatically"
                     android:inputType="number"
                     android:padding="10dp"
                     android:textColor="@color/blue"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:importantForAccessibility="yes" />
             </LinearLayout>
         </LinearLayout>
 
         <!-- Student and Supervisor Signatures -->
         <TextView
             android:id="@+id/sup"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:contentDescription="Student's Signature"
             android:fontFamily="@font/open_dyslexic_regular"
             android:text="Student’s Signature: _______________________"
-            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:importantForAccessibility="yes"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/logEntryContainer" />
+            app:layout_constraintTop_toBottomOf="@id/logEntryContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:accessibilityTraversalBefore="@id/sign" />
 
         <TextView
             android:id="@+id/sign"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:contentDescription="Supervisor's Signature"
             android:fontFamily="@font/open_dyslexic_regular"
             android:text="Supervisor’s Signature: ____________________"
-            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:importantForAccessibility="yes"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/sup" />
+            app:layout_constraintTop_toBottomOf="@id/sup"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:accessibilityTraversalBefore="@id/submit" />
 
+        <!-- Submit Button -->
         <Button
             android:id="@+id/submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="20dp"
             android:backgroundTint="@color/blue"
             android:contentDescription="Submit Button"
             android:text="Submit"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:importantForAccessibility="yes"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/sign" />
+            app:layout_constraintTop_toBottomOf="@id/sign"
+            app:layout_constraintEnd_toStartOf="@id/report"
+            android:accessibilityTraversalBefore="@id/report" />
 
+        <!-- Generate Report Button -->
         <Button
             android:id="@+id/report"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="120dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="20dp"
             android:backgroundTint="@color/yellow"
             android:contentDescription="Generate Report Button"
             android:text="Generate report"
             android:textColor="@color/black"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:importantForAccessibility="yes"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/submit" />
+            app:layout_constraintStart_toEndOf="@id/submit"
+            app:layout_constraintTop_toBottomOf="@id/sign" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -1,63 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/blob_scene_haikei__2_">
 
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="77dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="30dp"
+        android:accessibilityTraversalBefore="@id/profile_image"
+        android:clickable="true"
+        android:contentDescription="Back button"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_arrow_back_60" />
     <!-- Title -->
     <TextView
         android:id="@+id/headText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"
+        android:accessibilityTraversalBefore="@id/titleText"
+        android:contentDescription="Please hold screen"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:fontFamily="@font/open_dyslexic_bold"
         android:gravity="center"
+        android:importantForAccessibility="yes"
         android:text="PLEASE HOLD"
         android:textColor="@color/gray"
         android:textSize="40sp"
-        android:contentDescription="Please hold screen"
-        android:importantForAccessibility="yes" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView4" />
 
     <!-- Subtitle -->
     <TextView
         android:id="@+id/titleText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/headText"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
+        android:padding="15dp"
+        android:contentDescription="Hold on, we are verifying you"
         android:fontFamily="@font/open_dyslexic_bold"
-        android:gravity="center"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:importantForAccessibility="yes"
         android:text="Hold on, we're verifying you..."
+        android:textAlignment="center"
         android:textColor="@color/gray"
         android:textSize="20sp"
-        android:contentDescription="Hold on, we are verifying you"
-        android:importantForAccessibility="yes" />
+        app:layout_constraintTop_toBottomOf="@id/headText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:accessibilityTraversalBefore="@id/progressBar" />
 
     <!-- Circular Progress Bar -->
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleLarge"
-        android:layout_width="300dp"
-        android:layout_height="350dp"
-        android:layout_centerInParent="true"
-        android:indeterminate="false"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
+        android:indeterminate="true"
+        app:layout_constraintWidth_max="600dp"
         android:indeterminateTint="@color/yellow"
         android:max="100"
         android:progress="0"
         android:progressDrawable="@drawable/circular_progress_bar"
         android:contentDescription="Verification progress bar"
-        android:importantForAccessibility="yes" />
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:importantForAccessibility="yes"
+        app:layout_constraintTop_toBottomOf="@id/titleText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8"
+        app:layout_constraintDimensionRatio="1:1"
+        android:accessibilityTraversalBefore="@id/hold" />
 
     <!-- Error Image (Hidden by Default) -->
     <ImageView
         android:id="@+id/hold"
-        android:layout_width="350dp"
-        android:layout_height="400dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:visibility="gone"
-        android:importantForAccessibility="no" /> <!-- Set to "no" since it's hidden by default -->
-</RelativeLayout>
+        android:contentDescription="Error image"
+        android:importantForAccessibility="no"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8"
+        app:layout_constraintDimensionRatio="1:1.25"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+</androidx.constraintlayout.widget.ConstraintLayout>

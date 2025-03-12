@@ -1,20 +1,10 @@
 package com.example.cs3700;
 
 import static android.content.ContentValues.TAG;
-
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
-import android.speech.tts.UtteranceProgressListener;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.view.View;
-import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -25,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -60,8 +49,6 @@ public class Profile extends AppCompatActivity {
     private DocumentReference userRef;
     private ImageView imageView4, down;
     private Button resetDateButton, track;
-    private TextToSpeech textToSpeech;
-    private FloatingActionButton ttsButton;
     private boolean isTTSActive = false; // Tracks whether TTS is active
 
     private List<TextItem> textItems = new ArrayList<>(); // List to store text items
@@ -96,18 +83,6 @@ public class Profile extends AppCompatActivity {
         }
 
 
-        // Initialize Text-to-Speech
-        textToSpeech = new TextToSpeech(this, status -> {
-            if (status == TextToSpeech.SUCCESS) {
-                int result = textToSpeech.setLanguage(Locale.US);
-                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    showToast("Language not supported");
-                }
-            } else {
-                showToast("Text-to-Speech initialization failed");
-            }
-        });
-
         Animation ani = AnimationUtils.loadAnimation(this, R.anim.pulsating_animation);
         pick = findViewById(R.id.pick);
         pick.setAnimation(ani);
@@ -124,10 +99,6 @@ public class Profile extends AppCompatActivity {
         siteSection = findViewById(R.id.site_section);
         documents_header = findViewById(R.id.documents_header);
         doc1_title = findViewById(R.id.doc1_title);
-
-        // Initialize TTS Button
-        ttsButton = findViewById(R.id.ttsButton);
-        ttsButton.setOnClickListener(v -> activateTTS());
 
         // Initialize Firebase
         firestore = FirebaseFirestore.getInstance();
@@ -194,22 +165,10 @@ public class Profile extends AppCompatActivity {
         calculateTotals();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (textToSpeech != null) {
-            textToSpeech.stop();
-            textToSpeech.shutdown();
-        }
-    }
-
     // Show Toast and announce for accessibility
     private void showToastAndAnnounce(String message) {
         // Show Toast for all users
         showToast(message);
-
-        // Check if TalkBack (or another screen reader) is active
-        AccessibilityManager am = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
 
     }
 
@@ -314,6 +273,7 @@ public class Profile extends AppCompatActivity {
                             pickedSiteName.setText("Selected Site: " + selectedSite);
                             currentAvailableSlots = document.getLong("availableSlots").intValue();
                             availableSlots.setText("Slots: " + currentAvailableSlots);
+                            saveStateToFirebase();
                             showSiteDetails();
                         });
                     } else {
@@ -569,106 +529,4 @@ public class Profile extends AppCompatActivity {
         }
     }
 
-    // Activate TTS to read screen content
-    private void activateTTS() {
-        if (isTTSActive) {
-            // If TTS is active, stop it
-            if (textToSpeech != null) {
-                textToSpeech.stop(); // Stop speaking
-            }
-            isTTSActive = false;
-            ttsButton.setImageResource(R.drawable.baseline_mic_off_24); // Change button icon to indicate TTS is off
-            showToastAndAnnounce("Text-to-Speech stopped.");
-        } else {
-            // If TTS is not active, start it
-            // Clear the list
-            textItems.clear();
-            currentIndex = 0; // Reset the index
-
-            // Collect text from various components
-            textItems.add(new TextItem(pickedSiteName, pickedSiteName.getText().toString()));
-            textItems.add(new TextItem(availableSlots, availableSlots.getText().toString()));
-            textItems.add(new TextItem(documents_header, documents_header.getText().toString()));
-            textItems.add(new TextItem(doc1_title, doc1_title.getText().toString()));
-            textItems.add(new TextItem(pick, pick.getText().toString()));
-
-            // Start reading the text
-            if (!textItems.isEmpty()) {
-                isTTSActive = true;
-                ttsButton.setImageResource(R.drawable.baseline_mic_24); // Change button icon to indicate TTS is on
-                readTextItem(currentIndex);
-            } else {
-                showToastAndAnnounce("No text to read");
-            }
-        }
-    }
-
-    // Read and highlight text
-    private void readTextItem(int index) {
-        if (index >= textItems.size()) {
-            isTTSActive = false; // Reset the flag when done
-            ttsButton.setImageResource(R.drawable.baseline_mic_off_24); // Update button icon
-            showToastAndAnnounce("Finished reading screen content.");
-            return;
-        }
-
-        TextItem textItem = textItems.get(index);
-        View view = textItem.view;
-        String text = textItem.text;
-
-        // Highlight the text
-        runOnUiThread(() -> highlightText(view, text));
-
-        // Set up UtteranceProgressListener
-        textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
-            @Override
-            public void onStart(String utteranceId) {
-                // No action needed
-            }
-
-            @Override
-            public void onDone(String utteranceId) {
-                runOnUiThread(() -> {
-                    // Reset the text appearance
-                    resetTextAppearance(view);
-
-                    // Move to the next text item
-                    currentIndex++;
-                    readTextItem(currentIndex);
-                });
-            }
-
-            @Override
-            public void onError(String utteranceId) {
-                runOnUiThread(() -> showToastAndAnnounce("Error reading text"));
-            }
-        });
-
-        // Speak the text
-        Bundle params = new Bundle();
-        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "utteranceId" + index);
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, params, "utteranceId" + index);
-    }
-
-    // Highlight the text in its original component
-    private void highlightText(View view, String text) {
-        if (view instanceof TextView) {
-            TextView textView = (TextView) view;
-            SpannableString spannableString = new SpannableString(text);
-            spannableString.setSpan(
-                    new BackgroundColorSpan(Color.GRAY), // Highlight color
-                    0, text.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            );
-            textView.setText(spannableString);
-        }
-    }
-
-    // Reset the text appearance
-    private void resetTextAppearance(View view) {
-        if (view instanceof TextView) {
-            TextView textView = (TextView) view;
-            textView.setText(textItems.get(currentIndex).text); // Restore original text
-        }
-    }
 }

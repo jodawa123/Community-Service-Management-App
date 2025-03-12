@@ -7,7 +7,6 @@ import android.net.NetworkCapabilities;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.accessibility.AccessibilityEvent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -25,11 +24,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import io.github.muddz.styleabletoast.StyleableToast;
 
 public class login extends AppCompatActivity {
     private EditText editTextEmail, editTextPassword;
     private FirebaseAuth firebaseAuth;
+    private String answer;
     private DatabaseReference databaseReference;
 
     @Override
@@ -64,6 +63,7 @@ public class login extends AppCompatActivity {
         Button buttonLogin = findViewById(R.id.btnLogin);
         TextView textViewSignUp = findViewById(R.id.signUpText);
         TextView textViewForgotPassword = findViewById(R.id.forgot);
+        answer="yes";
 
         buttonLogin.setContentDescription("Tap to log in");
         textViewSignUp.setContentDescription("Tap to sign up for a new account");
@@ -95,6 +95,7 @@ public class login extends AppCompatActivity {
                                         if (username != null && !username.isEmpty()) {
                                             showToastAndAnnounce("Login successful. Welcome, " + username + "!");
                                             Intent intent = new Intent(login.this, Home.class);
+                                            intent.putExtra("one", answer);
                                             startActivity(intent);
                                             finish();
                                         } else {

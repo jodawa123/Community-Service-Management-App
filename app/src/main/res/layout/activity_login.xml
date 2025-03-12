@@ -8,53 +8,64 @@
     android:background="@drawable/wave_haikei"
     tools:context=".login">
 
-
+    <!-- ImageView with content description -->
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="412dp"
-        android:layout_height="465dp"
-        android:contentDescription="Welcome image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="30dp"
+        android:contentDescription="Welcome image showing a person holding a key"
+        android:importantForAccessibility="yes"
+        android:scaleType="fitCenter"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.8"
         app:srcCompat="@drawable/welcome_cuate" />
 
+    <!-- Email EditText -->
     <EditText
         android:id="@+id/identity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="70dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="32dp"
+        android:accessibilityTraversalAfter="@id/imageView"
         android:background="@drawable/editbg"
         android:drawableLeft="@drawable/baseline_email_24"
         android:drawablePadding="10dp"
         android:elevation="3dp"
-        android:fontFamily="@font/open_dyslexic_bold"
+        android:fontFamily="@font/open_dyslexic_regular"
         android:hint="Enter your email"
+        android:importantForAccessibility="yes"
         android:inputType="textEmailAddress"
         android:padding="15dp"
         android:textAlignment="center"
         android:textColorLink="@color/material_dynamic_neutral30"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@id/pass"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintWidth_max="400dp" />
 
+    <!-- Password EditText -->
     <EditText
         android:id="@+id/pass"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="70dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginEnd="32dp"
+        android:accessibilityTraversalAfter="@id/identity"
         android:background="@drawable/editbg"
         android:drawableLeft="@drawable/baseline_key_24"
         android:drawablePadding="10dp"
-        android:fontFamily="@font/open_dyslexic_bold"
+        android:fontFamily="@font/open_dyslexic_regular"
         android:hint="Enter your password"
+        android:importantForAccessibility="yes"
         android:inputType="textPassword"
         android:padding="15dp"
         android:textAlignment="center"
@@ -62,51 +73,58 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/identity" />
+        app:layout_constraintTop_toBottomOf="@+id/identity"
+        app:layout_constraintWidth_max="400dp" />
 
-    <Button
-        android:id="@+id/btnLogin"
-        android:layout_width="109dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="30dp"
-        android:backgroundTint="@color/yellow"
-        android:elevation="5dp"
-        android:fontFamily="@font/alatsi"
-        android:text="Login"
-        android:textColor="@color/blue"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/forgot" />
-
+    <!-- Forgot Password Text -->
     <TextView
         android:id="@+id/forgot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="120dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:accessibilityTraversalAfter="@id/pass"
         android:fontFamily="@font/alatsi"
+        android:importantForAccessibility="yes"
         android:text="Forgot password"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pass" />
 
+    <!-- Login Button -->
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:accessibilityTraversalAfter="@id/forgot"
+        android:backgroundTint="@color/yellow"
+        android:elevation="5dp"
+        android:fontFamily="@font/open_dyslexic_regular"
+        android:importantForAccessibility="yes"
+        android:text="Login"
+        android:textColor="@color/blue"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/forgot" />
+
+    <!-- Don't Have an Account Text -->
     <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="40dp"
+        android:accessibilityTraversalAfter="@id/btnLogin"
         android:fontFamily="@font/open_dyslexic_bold"
+        android:importantForAccessibility="yes"
         android:text="Don't have an account?"
-        android:textSize="17sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
 
+    <!-- Sign Up Text -->
     <TextView
         android:id="@+id/signUpText"
         android:layout_width="wrap_content"
@@ -115,11 +133,12 @@
         android:fontFamily="@font/open_dyslexic_bold"
         android:text="Sign up"
         android:textColor="@color/blue"
-        android:textSize="16sp"
+        android:textSize="19sp"
         app:layout_constraintBottom_toBottomOf="@+id/text"
         app:layout_constraintStart_toEndOf="@id/text"
         app:layout_constraintTop_toTopOf="@+id/text"
-        app:layout_constraintVertical_bias="1.0" />
-
+        app:layout_constraintVertical_bias="1.0"
+        android:importantForAccessibility="yes"
+        android:accessibilityTraversalAfter="@id/text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

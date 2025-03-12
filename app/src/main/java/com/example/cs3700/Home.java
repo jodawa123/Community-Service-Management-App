@@ -1,25 +1,21 @@
 package com.example.cs3700;
 
-import android.content.Context;
+import android.Manifest;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
-import android.speech.tts.UtteranceProgressListener;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.BackgroundColorSpan;
 import android.view.View;
-import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityManager;
 import android.widget.EditText;
-import android.widget.GridLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -39,40 +35,31 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class Home extends AppCompatActivity {
 
     private FirebaseFirestore firestore;
     private TextView textView6;
+    private String selectedSite; // Stores the selected site name
+    private String selectedCategory, locs; // Stores the selected category name
     private Map<String, List<String>> categoryData;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
     private FirebaseUser currentUser;
     private ViewPager2 imageSlider;
     private TabLayout dotsIndicator;
-    private TextToSpeech textToSpeech;
+    private FloatingActionButton home;
     private List<Integer> imageList = Arrays.asList(
             R.drawable.ones,
             R.drawable.twos,
             R.drawable.threes,
             R.drawable.four
     );
-    private List<TextItem> textItems = new ArrayList<>();
-    private int currentIndex = 0; // Track the current text item being read
-    private boolean isTTSActive = false; // Track TTS state
-    private FloatingActionButton ttsButton; // Declare ttsButton as a class variable
 
-    private static class TextItem {
-        View view; // Can be TextView or EditText
-        String text;
-
-        TextItem(View view, String text) {
-            this.view = view;
-            this.text = text;
-        }
-    }
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
+    private static final String PREFS_NAME = "AppPrefs";
+    private static final String KEY_LOCATION_PERMISSION_REQUESTED = "locationPermissionRequested";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,18 +71,16 @@ public class Home extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         // Disable page number announcements by hiding the action bar title
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-        //Ensure the title is not spoken by TalkBack
+        // Ensure the title is not spoken by TalkBack
         setTitle(" ");
 
-        // Only hide ActionBar if it exists
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-        }
-
+        // Get the value of `locs` from the intent
+        locs = getIntent().getStringExtra("one");
 
         // Initialize Firebase and UI components
         firestore = FirebaseFirestore.getInstance();
@@ -104,28 +89,14 @@ public class Home extends AppCompatActivity {
         currentUser = firebaseAuth.getCurrentUser();
         dotsIndicator = findViewById(R.id.dotsIndicator);
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
-
-        // Initialize TextToSpeech
-        textToSpeech = new TextToSpeech(this, status -> {
-            if (status == TextToSpeech.SUCCESS) {
-                int result = textToSpeech.setLanguage(Locale.US);
-                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    showToast("Language not supported");
-                } else {
-                    // Set the speech rate (e.g., 1.0 is normal speed, 0.5 is slower, 2.0 is faster)
-                    textToSpeech.setSpeechRate(1.0f); // Default speed
-                }
-            } else {
-                showToast("Text-to-Speech initialization failed");
-            }
-        });
+        home = findViewById(R.id.homebutton); // Initialize the FloatingActionButton
 
         // Fetch the user's name from the database
         if (currentUser != null) {
             String userId = currentUser.getUid();
             fetchUserName(userId);
         } else {
-            showToast("User not logged in");
+            announceOrToast("User not logged in");
             // Redirect to login screen
             Intent loginIntent = new Intent(Home.this, login.class);
             startActivity(loginIntent);
@@ -142,23 +113,6 @@ public class Home extends AppCompatActivity {
         ImageView searchIcon = findViewById(R.id.searchIcon);
         EditText searchBar = findViewById(R.id.searchBar);
         BottomNavigationView bottomBar = findViewById(R.id.bottomNavigationView);
-
-        // TTS Button
-        ttsButton = findViewById(R.id.ttsButton); // Initialize ttsButton
-        ttsButton.setOnClickListener(v -> {
-            if (isTTSActive) {
-                // If TTS is active, stop it
-                textToSpeech.stop(); // Stop speaking
-                isTTSActive = false;
-                ttsButton.setImageResource(R.drawable.baseline_mic_off_24); // Change button icon to indicate TTS is off
-                showToast("Text-to-Speech stopped.");
-            } else {
-                // If TTS is not active, start it
-                activateTTS(); // Start reading text
-                isTTSActive = true;
-                ttsButton.setImageResource(R.drawable.baseline_mic_24); // Change button icon to indicate TTS is on
-            }
-        });
 
         // Set click listeners for category images
         imageHospice.setOnClickListener(v -> openCategory("Hospice"));
@@ -195,6 +149,8 @@ public class Home extends AppCompatActivity {
             } else if (itemId == R.id.nav_profile) {
                 // Handle Profile tab selection
                 Intent profileIntent = new Intent(Home.this, Profile.class);
+                profileIntent.putExtra("SELECTED_SITE", selectedSite); // Pass the selected site
+                profileIntent.putExtra("CATEGORY_NAME", selectedCategory); // Pass the selected category
                 startActivity(profileIntent);
                 announceOrToast("Opening Profile");
                 return true;
@@ -222,33 +178,56 @@ public class Home extends AppCompatActivity {
                 imageSlider.postDelayed(() -> {
                     int nextPosition = (position + 1) % imageList.size();
                     imageSlider.setCurrentItem(nextPosition, true);
-                }, 5000); // Slide every 5 seconds
+                }, 3000); // Slide every 3 seconds
             }
         });
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (textToSpeech != null) {
-            textToSpeech.stop();
-            textToSpeech.shutdown();
+        home.setOnClickListener(view -> announceOrToast("Home"));
+
+        // Show location permission alert if `locs` equals "yes"
+        if ("yes".equals(locs)) {
+            showLocationPermissionAlert();
         }
     }
 
-    // Show text as a Toast message
-    private void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    // Show an alert dialog to request location permission
+    private void showLocationPermissionAlert() {
+        new AlertDialog.Builder(this)
+                .setTitle("Location Permission Required")
+                .setMessage("This app requires location permission to verify your presence. Would you like to enable it?")
+                .setPositiveButton("Yes", (dialog, which) -> requestLocationPermission())
+                .setNegativeButton("No", (dialog, which) -> {
+                    // Handle the case where the user denies the permission
+                    announceOrToast("Location permission is required for full functionality.");
+                })
+                .setCancelable(false) // Prevent dismissing the dialog by tapping outside
+                .show();
     }
 
-    // Announce text using TTS only if TalkBack is active, otherwise show Toast
+    // Request location permission
+    private void requestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            announceOrToast("Location permission already granted");
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                announceOrToast("Location permission granted");
+            } else {
+                announceOrToast("Location permission denied");
+            }
+        }
+    }
+
+    // Show text as a Toast message or announce it using TalkBack
     private void announceOrToast(String message) {
-        // Show Toast by default
-        showToast(message);
-
-        // Check if TalkBack (or another screen reader) is active
-        AccessibilityManager am = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
-
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     private void fetchUserName(String userId) {
@@ -307,7 +286,7 @@ public class Home extends AppCompatActivity {
                 String site = sites.get(i);
                 if (site.contains(query)) {
                     found = true;
-                    highlightSite(category, site, i);
+                    highlightSite(category, site, i, query); // Pass the query to highlightSite
                     announceOrToast("Found in " + category + ": " + site);
                     return;
                 }
@@ -319,135 +298,12 @@ public class Home extends AppCompatActivity {
         }
     }
 
-    private void highlightSite(String category, String site, int position) {
+    private void highlightSite(String category, String site, int position, String query) {
         Intent intent = new Intent(Home.this, Recycle.class);
         intent.putExtra("CATEGORY_NAME", category);
         intent.putExtra("SITE_NAME", site);
         intent.putExtra("SITE_POSITION", position);
+        intent.putExtra("SEARCH_QUERY", query); // Pass the search query
         startActivity(intent);
-    }
-
-    private void activateTTS() {
-        // Clear the list
-        textItems.clear();
-        currentIndex = 0; // Reset the index
-
-        // Collect text from various components
-        TextView greetingText = findViewById(R.id.textView5);
-        TextView userNameText = findViewById(R.id.textView6);
-        EditText searchBarText = findViewById(R.id.searchBar);
-        TextView categoriesTitleText = findViewById(R.id.categoriesTitle);
-
-        // Read EditText hint if empty
-        String searchText = searchBarText.getText().toString().trim();
-        if (searchText.isEmpty()) {
-            searchText = searchBarText.getHint().toString(); // Read hint instead
-        }
-
-        // Add text items to the list
-        textItems.add(new TextItem(greetingText, greetingText.getText().toString()));
-        textItems.add(new TextItem(userNameText, userNameText.getText().toString()));
-        textItems.add(new TextItem(searchBarText, searchText));
-        textItems.add(new TextItem(categoriesTitleText, categoriesTitleText.getText().toString()));
-
-        // Add text from category items
-        GridLayout categoriesGrid = findViewById(R.id.categoriesGrid);
-        for (int i = 0; i < categoriesGrid.getChildCount(); i++) {
-            View child = categoriesGrid.getChildAt(i);
-            if (child instanceof LinearLayout) {
-                LinearLayout categoryItem = (LinearLayout) child;
-                for (int j = 0; j < categoryItem.getChildCount(); j++) {
-                    View innerChild = categoryItem.getChildAt(j);
-                    if (innerChild instanceof TextView) {
-                        TextView categoryText = (TextView) innerChild;
-                        textItems.add(new TextItem(categoryText, categoryText.getText().toString()));
-                    }
-                }
-            }
-        }
-
-        // Start reading the text
-        if (!textItems.isEmpty()) {
-            readTextItem(currentIndex);
-        } else {
-            announceOrToast("No text to read");
-        }
-    }
-
-    private void readTextItem(int index) {
-        if (index >= textItems.size()) {
-            isTTSActive = false; // Reset TTS state when done
-            ttsButton.setImageResource(R.drawable.baseline_mic_off_24); // Change button icon to indicate TTS is off
-            return;
-        }
-
-        TextItem textItem = textItems.get(index);
-        View view = textItem.view;
-        String text = textItem.text;
-
-        // Highlight the text
-        runOnUiThread(() -> highlightText(view, text));
-
-        // Set up UtteranceProgressListener
-        textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
-            @Override
-            public void onStart(String utteranceId) {
-                // No action needed
-            }
-
-            @Override
-            public void onDone(String utteranceId) {
-                runOnUiThread(() -> {
-                    // Reset the text appearance
-                    resetTextAppearance(view);
-
-                    // Move to the next text item
-                    currentIndex++;
-                    readTextItem(currentIndex);
-                });
-            }
-
-            @Override
-            public void onError(String utteranceId) {
-                runOnUiThread(() -> showToast("Error reading text"));
-            }
-        });
-
-        // Speak the text
-        Bundle params = new Bundle();
-        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "utteranceId" + index);
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, params, "utteranceId" + index);
-    }
-
-    private void highlightText(View view, String text) {
-        if (view instanceof TextView) {
-            TextView textView = (TextView) view;
-            SpannableString spannableString = new SpannableString(text);
-            spannableString.setSpan(
-                    new BackgroundColorSpan(Color.YELLOW), // Highlight color
-                    0, text.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            );
-            textView.setText(spannableString);
-        } else if (view instanceof EditText) {
-            EditText editText = (EditText) view;
-            SpannableString spannableString = new SpannableString(text);
-            spannableString.setSpan(
-                    new BackgroundColorSpan(Color.YELLOW), // Highlight color
-                    0, text.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            );
-            editText.setText(spannableString);
-        }
-    }
-
-    private void resetTextAppearance(View view) {
-        if (view instanceof TextView) {
-            TextView textView = (TextView) view;
-            textView.setText(textItems.get(currentIndex).text); // Restore original text
-        } else if (view instanceof EditText) {
-            EditText editText = (EditText) view;
-            editText.setText(textItems.get(currentIndex).text);
-        }
     }
 }
