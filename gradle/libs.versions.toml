@@ -1,6 +1,7 @@
 [versions]
 agp = "8.6.0"
 
+glideVersion = "4.12.0"
 googleApiClientAndroid = "1.33.2"
 googleApiServicesDrive = "v3-rev136-1.25.0"
 googleMapsServices = "2.1.0"
@@ -24,8 +25,11 @@ playServicesAuth = "21.3.0"
 playServicesMaps = "19.0.0"
 styleabletoast = "2.4.0"
 playServicesLocation = "21.3.0"
+workRuntime = "2.10.0"
+swiperefreshlayout = "1.1.0"
 
 [libraries]
+github-glide = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
 gms-play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 google-api-client-android = { module = "com.google.api-client:google-api-client-android", version.ref = "googleApiClientAndroid" }
 google-api-client-gson = { module = "com.google.api-client:google-api-client-gson", version.ref = "googleApiClientAndroid" }
@@ -48,6 +52,8 @@ play-services = { group = "com.google.android.gms", name = "play-services", vers
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 styleabletoast = { module = "io.github.muddz:styleabletoast", version.ref = "styleabletoast" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+work-runtime = { module = "androidx.work:work-runtime", version.ref = "workRuntime" }
+swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

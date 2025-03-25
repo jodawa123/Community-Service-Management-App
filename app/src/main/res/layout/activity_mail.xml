@@ -32,6 +32,7 @@
         android:id="@+id/imageView6"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constraintHeight_max="800dp"
         android:layout_marginTop="16dp"
         app:srcCompat="@drawable/emails_cuate"
         android:contentDescription="Illustration of an email being sent"
@@ -54,6 +55,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
+        app:layout_constraintWidth_max="800dp"
         android:background="@drawable/editbg4"
         android:drawableLeft="@drawable/baseline_email_24"
         android:drawablePadding="10dp"
@@ -75,7 +77,7 @@
     <!-- Reset Password Button -->
     <Button
         android:id="@+id/resetPasswordButton"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"

@@ -23,16 +23,11 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.example.cs3700" />
-                  <option name="mobileSdkAppId" value="1:583964486006:android:b21f717db3563728b9f257" />
+                  <option name="appId" value="com.example.helpinghands" />
+                  <option name="mobileSdkAppId" value="1:583964486006:android:837364633e4bfa14b9f257" />
                   <option name="projectId" value="cs-3700" />
                   <option name="projectNumber" value="583964486006" />
                 </ConnectionSetting>
-              </option>
-              <option name="failureTypes">
-                <list>
-                  <option value="ANR" />
-                </list>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
               <option name="timeIntervalDays" value="THIRTY_DAYS" />

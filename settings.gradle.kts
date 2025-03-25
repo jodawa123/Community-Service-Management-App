@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "CS3700"
+rootProject.name = "HelpingHands(usiu)"
 include(":app")
  

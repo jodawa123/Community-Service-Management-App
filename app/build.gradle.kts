@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.cs3700"
-    compileSdk = 34
+    namespace = "com.example.helpinghands"
+    compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.cs3700"
+        applicationId = "com.example.helpinghands"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
@@ -31,12 +31,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     packagingOptions {
-        exclude ("META-INF/DEPENDENCIES")
-        exclude ("META-INF/DEPENDENCIES.txt")
-        exclude ("META-INF/LICENSE")
-        exclude ("META-INF/LICENSE.txt")
-        exclude ("META-INF/NOTICE")
-        exclude ("META-INF/NOTICE.txt")
+        resources.excludes.add("META-INF/DEPENDENCIES")
+        resources.excludes.add("META-INF/DEPENDENCIES.txt")
+        resources.excludes.add("META-INF/LICENSE")
+        resources.excludes.add("META-INF/LICENSE.txt")
+        resources.excludes.add("META-INF/NOTICE")
+        resources.excludes.add("META-INF/NOTICE.txt")
     }
 }
 dependencies {
@@ -57,7 +57,10 @@ dependencies {
     implementation (libs.google.api.services.drive)
     implementation (libs.gms.play.services.auth)
     implementation (libs.google.api.client.gson)
+    implementation (libs.github.glide)
+    implementation (libs.work.runtime)
     implementation (libs.itext7.core)
+    implementation(libs.swiperefreshlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

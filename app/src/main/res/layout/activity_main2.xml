@@ -14,14 +14,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/scroll"
-        android:layout_marginBottom="60dp"
-        android:layout_above="@id/bottomAppBar"
+        android:layout_marginBottom="30dp"
         android:fillViewport="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
             <!-- Header Section -->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -38,7 +36,6 @@
                     android:id="@+id/textView5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="Greeting message"
                     android:fontFamily="@font/open_dyslexic_regular"
                     android:text="Hello, "
                     android:textColor="@color/blue"
@@ -53,30 +50,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:contentDescription="User's name"
                     android:fontFamily="@font/open_dyslexic_regular"
-                    android:hint="John Doe"
+                    android:text="John Doe"
                     android:textColor="@color/gray"
                     android:textSize="36sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/textView5" />
 
-                <!-- Profile Image -->
-
-                <!-- Search Bar -->
-
-                <ImageView
-                    android:id="@+id/profileImage"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_marginTop="48dp"
-                    android:layout_marginEnd="28dp"
-                    android:contentDescription="User profile image"
-                    android:padding="5dp"
-                    android:src="@drawable/hello"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -116,6 +97,7 @@
                 android:id="@+id/imageSlider"
                 android:layout_width="0dp"
                 android:layout_height="200dp"
+                app:layout_constraintHeight_max="400dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
@@ -135,7 +117,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:tabIndicatorColor="@color/blue"
-                app:tabIndicatorHeight="3dp"
+                app:tabIndicatorHeight="4dp"
                 app:tabSelectedTextColor="@color/gray"
                 app:tabTextColor="@color/gray" />
 
@@ -372,43 +354,25 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <!-- Bottom App Bar with Cradle for FAB -->
-    <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/bottomAppBar"
+    <!-- Bottom Navigation Bar -->
+    <nl.joery.animatedbottombar.AnimatedBottomBar
+        android:id="@+id/bottom"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_gravity="bottom"
-        app:fabCradleMargin="10dp"
-        app:fabCradleRoundedCornerRadius="30dp"
-        app:fabCradleVerticalOffset="15dp"
-        app:fabAnchorMode="cradle"
-        app:fabAlignmentMode="center"
-        app:hideOnScroll="true">
-
-        <!-- Bottom Navigation View -->
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNavigationView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:background="@android:color/transparent"
-            android:elevation="0dp"
-            app:itemIconSize="32dp"
-            app:itemIconTint="@color/gray"
-            app:labelVisibilityMode="unlabeled"
-            app:menu="@menu/bottom_nav_menu" />
-    </com.google.android.material.bottomappbar.BottomAppBar>
-
-    <!-- Floating Action Button (Read Aloud) -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/homebutton"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/gray"
-        android:contentDescription="Text to speech button"
-        android:elevation="8dp"
-        android:src="@drawable/baseline_home_24"
-        app:layout_anchor="@id/bottomAppBar"
-        app:layout_anchorGravity="center"
-        app:maxImageSize="30dp" />
+        android:background="@color/white"
+        app:abb_selectedTabType="text"
+        app:abb_indicatorHeight="6dp"
+        app:abb_tabs="@menu/menu"
+        app:abb_selectedIndex="2"
+        app:abb_indicatorMargin="16dp"
+        app:abb_tabColor="@color/blue"
+        app:abb_tabColorSelected="@color/gray"
+        app:abb_textSize="16dp"
+        app:abb_iconSize="30dp"
+        app:abb_badgeAnimationDuration="900"
+        app:abb_indicatorColor="@color/gray"
+        app:layout_anchor="@id/scroll"
+        app:layout_anchorGravity="bottom"
+        app:abb_animationDuration="500"
+        app:abb_badgeTextSize="16sp"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

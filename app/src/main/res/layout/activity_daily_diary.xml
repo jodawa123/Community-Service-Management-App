@@ -22,7 +22,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:contentDescription="Student Daily Diary"
-            android:fontFamily="@font/open_dyslexic_bold"
+            android:fontFamily="@font/alatsi"
             android:text="STUDENT DAILY DIARY 📝"
             android:textAlignment="center"
             android:textColor="@color/blue"
@@ -172,12 +172,11 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-                <EditText
+                <TextView
                     android:id="@+id/logDate"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
                     android:fontFamily="@font/open_dyslexic_regular"
                     android:hint="3/2/2025"
                     android:inputType="date"
@@ -212,16 +211,15 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:fontFamily="@font/open_dyslexic_regular"
-                    android:hint="9:00"
+                    android:hint="11:00"
+                    android:importantForAccessibility="yes"
                     android:inputType="time"
                     android:padding="10dp"
                     android:textColor="@color/blue"
-                    android:textSize="20sp"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:importantForAccessibility="yes" />
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <!-- Time Out -->
@@ -247,9 +245,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
                     android:fontFamily="@font/open_dyslexic_regular"
-                    android:hint="12.00"
+                    android:hint="13.00"
                     android:inputType="time"
                     android:padding="10dp"
                     android:textColor="@color/blue"
@@ -282,7 +279,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
                     android:fontFamily="@font/open_dyslexic_regular"
                     android:hint="Cleaning\nSweeping"
                     android:inputType="textMultiLine"
@@ -317,7 +313,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
                     android:fontFamily="@font/open_dyslexic_regular"
                     android:hint=" hours updates automatically"
                     android:inputType="number"
