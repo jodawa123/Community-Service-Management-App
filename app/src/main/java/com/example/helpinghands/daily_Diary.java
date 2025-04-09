@@ -75,6 +75,10 @@ public class daily_Diary extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
+        // Disable page number announcements by hiding the action bar title
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
         // Ensure the title is not spoken by TalkBack
         setTitle(" ");
 

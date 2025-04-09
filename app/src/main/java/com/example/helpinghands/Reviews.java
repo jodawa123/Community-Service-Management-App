@@ -31,6 +31,13 @@ public class Reviews extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_reviews);
 
+        // Disable page number announcements by hiding the action bar title
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+        // Ensure the title is not spoken by TalkBack
+        setTitle(" ");
+
         // Initialize RecyclerView
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

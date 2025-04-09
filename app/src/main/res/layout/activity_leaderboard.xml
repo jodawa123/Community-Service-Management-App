@@ -5,19 +5,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:importantForAccessibility="yes">
 
     <!-- SwipeRefreshLayout with bottom padding for the bottom bar -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:importantForAccessibility="no">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:importantForAccessibility="no">
 
             <!-- Title -->
             <TextView
@@ -30,10 +33,12 @@
                 android:text="LEADERBOARD"
                 android:textColor="@color/blue"
                 android:textSize="48sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:importantForAccessibility="yes"
+                android:focusable="true"
+                android:contentDescription="Leaderboard" />
 
             <!-- Empty State View -->
-
             <LinearLayout
                 android:id="@+id/emptyStateView"
                 android:layout_width="match_parent"
@@ -44,13 +49,15 @@
                 android:layout_marginBottom="30dp"
                 android:visibility="gone"
                 android:orientation="vertical"
-                >
+                android:importantForAccessibility="yes"
+                android:focusable="true"
+                android:contentDescription="No students found">
 
                 <ImageView
                     android:layout_width="350dp"
                     android:layout_height="350dp"
                     android:layout_marginBottom="24dp"
-                    android:contentDescription="Empty leaderboard"
+                    android:contentDescription="Empty leaderboard illustration"
                     android:importantForAccessibility="yes"
                     android:scaleType="fitCenter"
                     android:src="@drawable/empty_cuate" />
@@ -61,7 +68,8 @@
                     android:fontFamily="@font/open_dyslexic_regular"
                     android:text="No students found"
                     android:textColor="#666666"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:importantForAccessibility="no" />
             </LinearLayout>
 
             <!-- Top 3 Students -->
@@ -71,7 +79,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:importantForAccessibility="no">
 
                 <!-- 2nd Place -->
                 <LinearLayout
@@ -82,7 +91,9 @@
                     android:background="@color/yellow"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="8dp">
+                    android:padding="8dp"
+                    android:importantForAccessibility="yes"
+                    android:focusable="true">
 
                     <ImageView
                         android:id="@+id/secondPlaceImage"
@@ -90,7 +101,9 @@
                         android:layout_height="70dp"
                         android:background="@drawable/circle_background"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/medal" />
+                        android:src="@drawable/medal"
+                        android:contentDescription=""
+                        android:importantForAccessibility="no" />
 
                     <TextView
                         android:id="@+id/secondPlaceName"
@@ -100,16 +113,18 @@
                         android:fontFamily="@font/open_dyslexic_bold"
                         android:text="Jane Doe"
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:importantForAccessibility="no" />
 
                     <TextView
                         android:id="@+id/secondPlaceHours"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/alatsi"
-                        android:hint="0 hours"
+                        android:text="0 hours"
                         android:textColor="@color/black"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:importantForAccessibility="no" />
                 </LinearLayout>
 
                 <!-- 1st Place -->
@@ -121,7 +136,9 @@
                     android:background="@color/blue"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="8dp">
+                    android:padding="8dp"
+                    android:importantForAccessibility="yes"
+                    android:focusable="true">
 
                     <ImageView
                         android:id="@+id/firstPlaceImage"
@@ -129,7 +146,9 @@
                         android:layout_height="120dp"
                         android:background="@drawable/circle_background"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/medal1" />
+                        android:src="@drawable/medal1"
+                        android:contentDescription=""
+                        android:importantForAccessibility="no" />
 
                     <TextView
                         android:id="@+id/firstPlaceName"
@@ -139,7 +158,8 @@
                         android:fontFamily="@font/open_dyslexic_bold"
                         android:text="1st Place"
                         android:textColor="@color/white"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        android:importantForAccessibility="no" />
 
                     <TextView
                         android:id="@+id/firstPlaceHours"
@@ -148,7 +168,8 @@
                         android:fontFamily="@font/alatsi"
                         android:text="0 hours"
                         android:textColor="@color/white"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:importantForAccessibility="no" />
                 </LinearLayout>
 
                 <!-- 3rd Place -->
@@ -160,7 +181,9 @@
                     android:background="@color/yellow"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="8dp">
+                    android:padding="8dp"
+                    android:importantForAccessibility="yes"
+                    android:focusable="true">
 
                     <ImageView
                         android:id="@+id/thirdPlaceImage"
@@ -168,7 +191,9 @@
                         android:layout_height="70dp"
                         android:background="@drawable/circle_background"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/medal3" />
+                        android:src="@drawable/medal3"
+                        android:contentDescription=""
+                        android:importantForAccessibility="no" />
 
                     <TextView
                         android:id="@+id/thirdPlaceName"
@@ -178,16 +203,18 @@
                         android:fontFamily="@font/open_dyslexic_bold"
                         android:textColor="@color/black"
                         android:textSize="16sp"
-                        tools:text="John Doe" />
+                        tools:text="John Doe"
+                        android:importantForAccessibility="no" />
 
                     <TextView
                         android:id="@+id/thirdPlaceHours"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/alatsi"
-                        android:hint="0 hours"
+                        android:text="0 hours"
                         android:textColor="@color/black"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:importantForAccessibility="no" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -196,7 +223,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginBottom="16dp"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:importantForAccessibility="no" />
 
             <!-- Remaining Students List -->
             <androidx.recyclerview.widget.RecyclerView
@@ -205,7 +233,8 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:clipToPadding="false"
-                android:paddingBottom="50dp" />
+                android:paddingBottom="50dp"
+                android:importantForAccessibility="yes" />
         </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -216,6 +245,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/white"
+        android:importantForAccessibility="yes"
         app:abb_animationDuration="500"
         app:abb_badgeAnimationDuration="900"
         app:abb_badgeTextSize="16sp"

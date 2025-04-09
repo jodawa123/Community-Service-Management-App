@@ -131,7 +131,7 @@ public class Profile extends AppCompatActivity {
         });
 
         track.setOnClickListener(v -> {
-            Intent targetIntent = new Intent(Profile.this, daily_Diary.class);
+            Intent targetIntent = new Intent(Profile.this, Verify.class);
             startActivity(targetIntent);
         });
        rate.setOnClickListener(v -> {

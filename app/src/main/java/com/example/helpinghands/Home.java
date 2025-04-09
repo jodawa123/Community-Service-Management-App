@@ -301,7 +301,6 @@ public class Home extends AppCompatActivity {
                 String name = snapshot.child("name").getValue(String.class);
                 if (name != null) {
                     textView6.setText(name);
-                    textView6.announceForAccessibility(name);
                 }
             } else {
                 textView6.setText("User");

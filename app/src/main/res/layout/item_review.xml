@@ -1,11 +1,10 @@
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:contentDescription="Review card for John Doe"
     android:focusable="true"
-    android:focusableInTouchMode="true"
     app:cardCornerRadius="8dp"
     app:cardElevation="5dp">
 
@@ -19,35 +18,29 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:contentDescription="Reviewer name and time"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:importantForAccessibility="no">
 
             <TextView
                 android:id="@+id/reviewerName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:contentDescription="Reviewer name: John Doe"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:fontFamily="@font/alatsi"
                 android:text="John Doe"
                 android:textColor="@color/blue"
-                android:textSize="25sp" />
+                android:textSize="25sp"
+                android:importantForAccessibility="yes"/>
 
             <TextView
                 android:id="@+id/reviewTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:contentDescription="Review time: 6 months ago"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:fontFamily="@font/alatsi"
                 android:text="6 months ago"
                 android:textColor="@color/gray"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:importantForAccessibility="yes"/>
         </LinearLayout>
 
         <!-- RatingBar -->
@@ -57,14 +50,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:contentDescription="Rating: 3 out of 3 stars"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             android:isIndicator="true"
             android:numStars="3"
             android:progressTint="#FFC107"
             android:rating="3"
-            android:stepSize="1" />
+            android:stepSize="1"
+            android:importantForAccessibility="yes"/>
 
         <!-- Comment -->
         <TextView
@@ -72,12 +63,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:contentDescription="Review comment: The booking experience was fairly seamless and until the hour before the appointment everything was perfect."
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             android:fontFamily="@font/open_dyslexic_regular"
-            android:text="The booking experience was fairly seamless and until the hour before the appointment everything was perfect."
+            android:text="The booking experience was fairly seamless..."
             android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:importantForAccessibility="yes"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
