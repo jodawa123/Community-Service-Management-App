@@ -1,194 +1,182 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:orientation="vertical"
     android:padding="16dp"
     tools:context=".Rating">
 
-    <!-- Fun Caption -->
     <TextView
-        android:id="@+id/tt"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
         android:fontFamily="@font/alatsi"
-        android:gravity="center"
         android:text="Your Opinion Matters"
         android:textColor="@color/blue"
-        android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="40sp" />
+
 
     <TextView
         android:id="@+id/funCaption"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
         android:layout_marginBottom="16dp"
-        android:fontFamily="@font/open_dyslexic_bold"
+        android:fontFamily="@font/alatsi"
         android:gravity="center"
-        android:text="Select an emoji to rate us"
+        android:text="Select an emoji to rate"
         android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tt" />
+        android:textSize="24sp" />
 
     <!-- Emojis and Progress Bar Container -->
-    <HorizontalScrollView
-        android:id="@+id/emojiScrollView"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/emojiProgressContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
-        android:scrollbars="none"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/funCaption">
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/emojiContainer"
-            android:layout_width="wrap_content"
+        <!-- Horizontal ScrollView for Emojis -->
+        <HorizontalScrollView
+            android:id="@+id/emojiScrollView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_marginTop="70dp"
+            android:layout_marginBottom="16dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:scrollbars="none">
 
-            <!-- Bad Emoji -->
             <LinearLayout
+                android:id="@+id/emojiContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:background="@android:color/transparent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/badEmoji"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_margin="16dp"
-                    android:contentDescription="Bad emoji, select to rate as bad"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true" />
-
-                <TextView
-                    android:id="@+id/badLabel"
+                <!-- Bad Emoji -->
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_dyslexic_regular"
                     android:gravity="center"
-                    android:text="Bad"
-                    android:textColor="@color/black"
-                    android:textSize="20sp" />
-            </LinearLayout>
+                    android:orientation="vertical">
 
-            <!-- Meh Emoji -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical">
+                    <ImageView
+                        android:id="@+id/badEmoji"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_margin="16dp"
+                        android:contentDescription="Bad" />
 
-                <ImageView
-                    android:id="@+id/mehEmoji"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_margin="16dp"
-                    android:contentDescription="Meh emoji, select to rate as average"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true" />
+                    <TextView
+                        android:id="@+id/badLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_dyslexic_regular"
+                        android:gravity="center"
+                        android:text="Bad"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/mehLabel"
+                <!-- Meh Emoji -->
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_dyslexic_regular"
                     android:gravity="center"
-                    android:text="Meh"
-                    android:textColor="@color/black"
-                    android:textSize="20sp" />
-            </LinearLayout>
+                    android:orientation="vertical">
 
-            <!-- Great Emoji -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical">
+                    <ImageView
+                        android:id="@+id/mehEmoji"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_margin="16dp"
+                        android:contentDescription="Meh" />
 
-                <ImageView
-                    android:id="@+id/greatEmoji"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_margin="16dp"
-                    android:contentDescription="Great emoji, select to rate as great"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true" />
+                    <TextView
+                        android:id="@+id/mehLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_dyslexic_regular"
+                        android:gravity="center"
+                        android:text="Meh"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/greatLabel"
+                <!-- Great Emoji -->
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_dyslexic_regular"
                     android:gravity="center"
-                    android:text="Great"
-                    android:textColor="@color/black"
-                    android:textSize="20sp" />
-            </LinearLayout>
-        </LinearLayout>
-    </HorizontalScrollView>
+                    android:orientation="vertical">
 
-    <!-- Progress Bar -->
-    <ProgressBar
-        android:id="@+id/ratingProgress"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:max="3"
-        android:progress="0"
-        android:progressDrawable="@drawable/custom_progress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/emojiScrollView" />
+                    <ImageView
+                        android:id="@+id/greatEmoji"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_margin="16dp"
+                        android:contentDescription="Great" />
+
+                    <TextView
+                        android:id="@+id/greatLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_dyslexic_regular"
+                        android:gravity="center"
+                        android:text="Great"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <!-- Progress Bar -->
+        <ProgressBar
+            android:id="@+id/ratingProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:max="3"
+            android:progress="0"
+            android:progressDrawable="@drawable/custom_progress" />
+    </LinearLayout>
 
     <!-- Comment Box -->
     <EditText
         android:id="@+id/commentBox"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_margin="20dp"
         android:background="@drawable/textbox"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:fontFamily="@font/alatsi"
         android:hint="Write your comment here..."
         android:inputType="textMultiLine"
-        android:labelFor="@id/commentBox"
         android:padding="7dp"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ratingProgress" />
+        android:textSize="16dp" />
 
     <!-- Submit Button -->
     <Button
         android:id="@+id/submitButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_gravity="end"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
         android:backgroundTint="@color/blue"
-        android:contentDescription="Submit your review"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:fontFamily="@font/open_dyslexic_bold"
         android:padding="10dp"
         android:text="Send"
         android:textColor="@color/white"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/commentBox" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:textSize="16sp" />
+</androidx.appcompat.widget.LinearLayoutCompat>

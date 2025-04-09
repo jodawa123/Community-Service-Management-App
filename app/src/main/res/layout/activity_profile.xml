@@ -7,374 +7,355 @@
     android:background="@drawable/blob_scene_haikei__1_"
     tools:context=".Profile">
 
-    <!-- ScrollView for Main Content -->
-    <ScrollView
+    <!-- SwipeRefreshLayout for pull-to-refresh -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp"
-        android:scrollbars="none">
+        android:paddingBottom="50dp"
+        android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <!-- ScrollView for Main Content -->
+        <ScrollView
             android:layout_width="match_parent"
-            android:clickable="false"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:id="@+id/scroll"
 
-            <!-- Profile Header -->
-            <TextView
-                android:id="@+id/user_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:fontFamily="@font/alatsi"
-                android:text="PROFILE"
-                android:textAlignment="center"
-                android:textColor="@color/gray"
-                android:textSize="48sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            android:scrollbars="none">
 
-            <!-- Back Button -->
-            <ImageView
-                android:id="@+id/imageView4"
-                android:layout_width="60dp"
-                android:layout_height="54dp"
-                android:layout_marginTop="18dp"
-                android:accessibilityTraversalBefore="@id/profile_image"
-                android:clickable="true"
-                android:contentDescription="Back button"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                app:layout_constraintBottom_toBottomOf="@id/user_name"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/baseline_arrow_forward_24" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:clickable="false"
+                android:layout_height="wrap_content">
 
-            <!-- Profile Picture -->
-            <ImageView
-                android:id="@+id/profile_image"
-                android:layout_width="175dp"
-                android:layout_height="175dp"
-                android:layout_marginTop="15dp"
-                android:contentDescription="Profile picture"
-                android:scaleType="centerCrop"
-                android:src="@drawable/user"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:accessibilityTraversalBefore="@id/countdownContainer"
-                app:layout_constraintTop_toBottomOf="@id/user_name"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <!-- Countdown Container -->
-            <LinearLayout
-                android:id="@+id/countdownContainer"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:gravity="center"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/profile_image"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-                <!-- Weeks Container -->
-                <LinearLayout
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/custom_edittext"
-                    android:elevation="4dp"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="10dp"
-                    >
-
-                    <TextView
-                        android:id="@+id/weeksText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="@color/gray"
-                        android:textSize="34sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/weeksLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/alatsi"
-                        android:text="WEEKS"
-                        android:textColor="@color/gray"
-                        android:textSize="20sp"
-                         />
-                </LinearLayout>
-
-                <!-- Days Container -->
-                <LinearLayout
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/custom_edittext"
-                    android:elevation="4dp"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="10dp"
-                    >
-
-                    <TextView
-                        android:id="@+id/daysText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="@color/gray"
-                        android:textSize="34sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/daysLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/alatsi"
-                        android:text="DAYS"
-                        android:textColor="@color/gray"
-                        android:textSize="20sp"
-                         />
-                </LinearLayout>
-
-                <!-- Hours Container -->
-                <LinearLayout
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/custom_edittext"
-                    android:elevation="4dp"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="10dp"
-                   >
-
-                    <TextView
-                        android:id="@+id/hoursText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="@color/gray"
-                        android:textSize="34sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/hoursLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/alatsi"
-                        android:text="HOURS"
-                        android:textColor="@color/gray"
-                        android:textSize="20sp"
-                         />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Site Section -->
-            <LinearLayout
-                android:id="@+id/site_section"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:background="@color/blue"
-                android:orientation="horizontal"
-                android:padding="15dp"
-                android:visibility="visible"
-                app:layout_constraintTop_toBottomOf="@id/countdownContainer"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-                <!-- Drop Site Button -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                   >
-
-                    <TextView
-                        android:id="@+id/drop_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/open_dyslexic_bold"
-                        android:text="Drop"
-                        android:textColor="@color/yellow"
-                        android:textSize="16sp" />
-
-                    <RadioButton
-                        android:id="@+id/drop_site_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/yellow"
-                        android:checked="false"
-                        android:contentDescription="Drop selected site" />
-                </LinearLayout>
-
-                <!-- Selected Site and Slots -->
+                <!-- Profile Header -->
                 <TextView
-                    android:id="@+id/picked_site_name"
+                    android:id="@+id/user_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_weight="1"
+                    android:layout_marginTop="20dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:fontFamily="@font/alatsi"
-                    android:text="Selected Site: "
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/available_slots"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:fontFamily="@font/open_dyslexic_regular"
-                    android:text="Slots: "
-                    android:textColor="@color/yellow"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <!-- Documents Section -->
-            <LinearLayout
-                android:id="@+id/documents_section"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:orientation="vertical"
-                android:padding="15dp"
-                android:background="@color/blue"
-                android:importantForAccessibility="no"
-                app:layout_constraintTop_toBottomOf="@id/site_section"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-                <TextView
-                    android:id="@+id/documents_header"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:fontFamily="@font/alatsi"
-                    android:text="What is expected of you?"
+                    android:text="PROFILE"
                     android:textAlignment="center"
-                    android:textColor="@color/yellow"
-                    android:textSize="20sp" />
+                    android:textColor="@color/blue"
+                    android:textSize="48sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
+                <!-- Back Button -->
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="60dp"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="18dp"
+                    android:accessibilityTraversalBefore="@id/profile_image"
+                    android:clickable="true"
+                    android:contentDescription="Back button"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    app:layout_constraintBottom_toBottomOf="@id/user_name"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/baseline_arrow_forward_24" />
+
+                <!-- Profile Picture -->
+                <ImageView
+                    android:id="@+id/profile_image"
+                    android:layout_width="170dp"
+                    android:layout_height="170dp"
+                    android:layout_marginTop="30dp"
+                    android:accessibilityTraversalBefore="@id/countdownContainer"
+                    android:contentDescription="Profile picture"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/user"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/user_name" />
+
+                <!-- Countdown Container -->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:id="@+id/countdownContainer"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:gravity="center"
                     android:orientation="horizontal"
-                    android:padding="8dp"
-                    android:background="@color/white"
-                    android:layout_marginBottom="8dp"
-                    android:importantForAccessibility="no">
+                    app:layout_constraintTop_toBottomOf="@id/profile_image"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
 
+                    <!-- Weeks Container -->
+                    <LinearLayout
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_margin="8dp"
+                        android:background="@color/white"
+                        android:elevation="10dp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <TextView
+                            android:id="@+id/weeksText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="@color/gray"
+                            android:textSize="34sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/weeksLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/alatsi"
+                            android:text="WEEKS"
+                            android:textColor="@color/gray"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+
+                    <!-- Days Container -->
+                    <LinearLayout
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_margin="8dp"
+                        android:background="@color/white"
+                        android:elevation="10dp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <TextView
+                            android:id="@+id/daysText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="@color/gray"
+                            android:textSize="34sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/daysLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/alatsi"
+                            android:text="DAYS"
+                            android:textColor="@color/gray"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+
+                    <!-- Hours Container -->
+                    <LinearLayout
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_margin="8dp"
+                        android:background="@color/white"
+                        android:elevation="10dp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <TextView
+                            android:id="@+id/hoursText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="@color/gray"
+                            android:textSize="34sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/hoursLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/alatsi"
+                            android:text="HOURS"
+                            android:textColor="@color/gray"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Site Section -->
+                <LinearLayout
+                    android:id="@+id/site_section"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:background="@color/white"
+                    android:elevation="10dp"
+                    android:orientation="horizontal"
+                    android:padding="15dp"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/countdownContainer">
+
+                    <!-- Drop Site Button -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/drop_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/open_dyslexic_bold"
+                            android:text="Drop"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <RadioButton
+                            android:id="@+id/drop_site_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="false"
+                            android:contentDescription="Drop selected site"
+                            android:textColor="@color/yellow" />
+                    </LinearLayout>
+
+                    <!-- Selected Site and Slots -->
                     <TextView
-                        android:id="@+id/doc1_title"
+                        android:id="@+id/picked_site_name"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
                         android:layout_weight="1"
-                        android:fontFamily="@font/open_dyslexic_regular"
-                        android:text="Community Service\n Guidelines.docx"
+                        android:fontFamily="@font/alatsi"
+                        android:text="Selected Site: "
                         android:textColor="@color/blue"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textSize="20sp" />
 
-                    <ImageView
-                        android:id="@+id/doc1_download"
-                        android:layout_width="50dp"
-                        android:layout_height="37dp"
-                        android:layout_gravity="center_vertical"
-                        android:contentDescription="Download button"
-                        app:srcCompat="@drawable/baseline_download_24" />
+                    <TextView
+                        android:id="@+id/available_slots"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:fontFamily="@font/open_dyslexic_regular"
+                        android:text="Slots: "
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
                 </LinearLayout>
-            </LinearLayout>
 
-            <!-- Pick Start Date -->
-            <TextView
-                android:id="@+id/pick"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/alatsi"
-                android:padding="20dp"
-                android:text="PICK YOUR START DATE IN THE CALENDAR"
-                android:textAlignment="center"
-                android:textColor="@color/blue"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:accessibilityTraversalBefore="@id/calendarView"
-                app:layout_constraintTop_toBottomOf="@id/documents_section"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                <!-- Documents Section -->
+                <LinearLayout
+                    android:id="@+id/documents_section"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:background="@color/white"
+                    android:elevation="10dp"
+                    android:importantForAccessibility="no"
+                    android:orientation="vertical"
+                    android:padding="15dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/site_section">
 
-            <!-- Calendar -->
-            <CalendarView
-                android:id="@+id/calendarView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:elevation="50dp"
-                app:layout_constraintWidth_max="1100dp"
-                android:firstDayOfWeek="2"
-                android:focusedMonthDateColor="@color/blue"
-                android:visibility="visible"
-                android:dateTextAppearance="@style/CalendarDateText"
-                android:weekDayTextAppearance="@style/CalendarWeekDayText"
-                android:selectedWeekBackgroundColor="@color/blue"
-                android:selectedDateVerticalBar="@color/blue"
-                android:contentDescription="Calendar to pick start date"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:accessibilityTraversalBefore="@id/bt"
-                app:layout_constraintTop_toBottomOf="@id/pick"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                    <TextView
+                        android:id="@+id/documents_header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:fontFamily="@font/alatsi"
+                        android:text="What is expected of you?"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
 
-            <!-- Reset Date Button -->
-            <Button
-                android:id="@+id/bt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="30dp"
-                android:accessibilityTraversalBefore="@id/bt1"
-                android:backgroundTint="@color/blue"
-                android:contentDescription="Reset start date"
-                android:focusable="true"
-                android:clickable="true"
-                android:focusableInTouchMode="true"
-                android:text="Reset Date"
-                android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/calendarView" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:background="@color/white"
+                        android:importantForAccessibility="no"
+                        android:orientation="horizontal"
+                        android:padding="8dp">
 
-            <!-- Track Progress Button -->
-            <Button
-                android:id="@+id/bt1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="30dp"
-                android:backgroundTint="@color/yellow"
-                android:contentDescription="Daily diary"
-                android:focusable="true"
-                android:clickable="true"
-                android:focusableInTouchMode="true"
-                android:text="Daily Diary"
-                android:textColor="@color/blue"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/calendarView" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+                        <TextView
+                            android:id="@+id/doc1_title"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/open_dyslexic_regular"
+                            android:text="Community Service\n Guidelines.docx"
+                            android:textColor="@color/blue"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/doc1_download"
+                            android:layout_width="50dp"
+                            android:layout_height="37dp"
+                            android:layout_gravity="center_vertical"
+                            android:contentDescription="Download button"
+                            app:srcCompat="@drawable/baseline_download_24" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/bt2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="50dp"
+                    android:backgroundTint="@color/blue"
+                    android:clickable="true"
+                    android:contentDescription="Rating button"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:text="Rating"
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/documents_section" />
+
+                <!-- Track Progress Button -->
+                <Button
+                    android:id="@+id/bt1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="50dp"
+                    android:backgroundTint="@color/blue"
+                    android:clickable="true"
+                    android:contentDescription="Daily diary"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:text="Daily Diary"
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/documents_section" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <nl.joery.animatedbottombar.AnimatedBottomBar
+        android:id="@+id/bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:abb_animationDuration="500"
+        app:abb_badgeAnimationDuration="900"
+        app:abb_badgeTextSize="16sp"
+        app:abb_iconSize="30dp"
+        app:abb_indicatorColor="@color/gray"
+        app:abb_indicatorHeight="6dp"
+        app:abb_indicatorMargin="16dp"
+        app:abb_selectedIndex="1"
+        app:abb_selectedTabType="text"
+        app:abb_tabColor="@color/blue"
+        app:abb_tabColorSelected="@color/gray"
+        app:abb_tabs="@menu/menu"
+        app:abb_textSize="16dp"
+        android:layout_gravity="bottom"
+         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

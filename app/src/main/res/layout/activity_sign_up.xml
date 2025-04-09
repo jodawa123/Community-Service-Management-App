@@ -41,7 +41,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="fitCenter"
-        app:layout_constraintWidth="700dp"
+        app:layout_constraintWidth_max="600dp"
         app:layout_constraintDimensionRatio="1:1"
         android:contentDescription="Sign up illustration"
         android:focusable="true"

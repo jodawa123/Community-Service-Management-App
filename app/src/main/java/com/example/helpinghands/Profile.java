@@ -5,21 +5,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import android.content.SharedPreferences;
+import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -39,32 +42,21 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import nl.joery.animatedbottombar.AnimatedBottomBar;
 
 public class Profile extends AppCompatActivity {
 
-    private TextView pickedSiteName, availableSlots, pick,documents_header,doc1_title;
+    private TextView pickedSiteName, availableSlots, documents_header, doc1_title;
     private FirebaseFirestore firestore;
-    private String selectedCategory, selectedSite,userId;
+    private String selectedCategory, selectedSite, userId;
     private int currentAvailableSlots;
     private View siteSection;
-    private CalendarView calendarView;
-    private static final int TOTAL_REQUIRED_HOURS = 90;
-    private static final int HOURS_PER_WEEK = 9;
-    private Date startDate, endDate;
     private FirebaseUser currentUser;
     private DocumentReference userRef;
     private ImageView imageView4, down;
-    private Button resetDateButton, track;
-
-    private static class TextItem {
-        View view; // Can be TextView or EditText
-        String text;
-
-        TextItem(View view, String text) {
-            this.view = view;
-            this.text = text;
-        }
-    }
+    private Button track, rate;
+    private AnimatedBottomBar bottomBar;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,30 +64,32 @@ public class Profile extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
 
+        // Initialize SwipeRefreshLayout
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            refreshData();
+            swipeRefreshLayout.setRefreshing(false);
+        });
+
         // Disable page number announcements by hiding the action bar title
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-        //Ensure the title is not spoken by TalkBack
+        // Ensure the title is not spoken by TalkBack
         setTitle(" ");
-
-
-        Animation ani = AnimationUtils.loadAnimation(this, R.anim.pulsating_animation);
-        pick = findViewById(R.id.pick);
-        pick.setAnimation(ani);
 
         // Initialize Views
         pickedSiteName = findViewById(R.id.picked_site_name);
         availableSlots = findViewById(R.id.available_slots);
         RadioButton dropSiteButton = findViewById(R.id.drop_site_button);
-        calendarView = findViewById(R.id.calendarView);
         imageView4 = findViewById(R.id.imageView4);
         down = findViewById(R.id.doc1_download);
-        resetDateButton = findViewById(R.id.bt);
         track = findViewById(R.id.bt1);
         siteSection = findViewById(R.id.site_section);
         documents_header = findViewById(R.id.documents_header);
         doc1_title = findViewById(R.id.doc1_title);
+        bottomBar = findViewById(R.id.bottom);
+        rate=findViewById(R.id.bt2);
 
         // Initialize Firebase
         firestore = FirebaseFirestore.getInstance();
@@ -128,26 +122,7 @@ public class Profile extends AppCompatActivity {
             loadStateFromFirebase();
         }
 
-        calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
-            if (startDate == null) { // Allow selection only if no date has been set
-                Calendar selectedDate = Calendar.getInstance();
-                selectedDate.set(year, month, dayOfMonth);
-                startDate = selectedDate.getTime();
-                // Save the selected date
-                initializeCountdown(startDate);
-                saveStateToFirebase();
-                // Highlight the selected date
-                calendarView.setDate(startDate.getTime(), true, true);
-                // Disable further interactions
-                calendarView.setEnabled(false);
-                showToastAndAnnounce("Start date set to: " + startDate);
-            } else {
-                showToastAndAnnounce("You already have a start date.");
-            }
-        });
-
         dropSiteButton.setOnClickListener(v -> dropSelectedSite());
-        resetDateButton.setOnClickListener(v -> resetStartDate());
 
         down.setOnClickListener(view -> {
             String fileUrl = "https://drive.google.com/uc?id=1t6YyMTxAI2IE14wcye737s2vIsde0r0H&export=download";
@@ -159,54 +134,94 @@ public class Profile extends AppCompatActivity {
             Intent targetIntent = new Intent(Profile.this, daily_Diary.class);
             startActivity(targetIntent);
         });
+       rate.setOnClickListener(v -> {
+            Intent targetIntent = new Intent(Profile.this, Rating.class);
+            startActivity(targetIntent);
+        });
+
+
         calculateTotals();
-        scheduleWeeklyNotifications();
+        scheduleNotifications(); // Set up periodic checks
+        calculateTotals();
+
+        // Set up the AnimatedBottomBar listener
+        bottomBar.setOnTabSelectListener(new AnimatedBottomBar.OnTabSelectListener() {
+            @Override
+            public void onTabSelected(int lastIndex, AnimatedBottomBar.Tab lastTab, int newIndex, AnimatedBottomBar.Tab newTab) {
+                handleTabSelection(newIndex);
+            }
+
+            @Override
+            public void onTabReselected(int index, AnimatedBottomBar.Tab tab) {
+                handleTabReselection(index);
+            }
+        });
+    }
+    private void handleTabSelection(int newIndex) {
+        switch (newIndex) {
+            case 0:
+                // Redirect to Profile page
+                Intent profileIntent = new Intent(Profile.this, Home.class);
+                startActivity(profileIntent);
+                break;
+
+            case 1:
+                // Optional: Do nothing if it's the same page
+                break;
+
+
+            case 2:
+
+                // Redirect to Maps page
+                Intent mapsIntent = new Intent(Profile.this, Mapping.class);
+                startActivity(mapsIntent);
+                break;
+
+
+            case 3:
+                // Redirect to Leaderboard page
+                Intent boardIntent = new Intent(Profile.this, LeaderboardActivity.class);
+                startActivity(boardIntent);
+                break;
+
+
+            default:
+                // Handle unexpected index
+                Toast.makeText(Profile.this, "Unknown Tab Selected", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+    private void handleTabReselection(int index) {
+        // Handle tab reselection logic if needed
+        Toast.makeText(Profile.this, "Tab Reselected: " + index, Toast.LENGTH_SHORT).show();
+    }
+
+    private void refreshData() {
+        // Refresh all data from Firebase
+        loadStateFromFirebase();
+        calculateTotals();
     }
 
     // Show Toast and announce for accessibility
     private void showToastAndAnnounce(String message) {
-        // Show Toast for all users
-        showToast(message);
-
-    }
-
-    // Show Toast message
-    private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
-
 
     // Download a file directly from a URL
     private void downloadFile(String fileUrl, String fileName) {
         try {
-            // Get the DownloadManager system service
             android.app.DownloadManager downloadManager = (android.app.DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-
-            // Create a request for the file download
             android.app.DownloadManager.Request request = new android.app.DownloadManager.Request(android.net.Uri.parse(fileUrl));
-            request.setTitle(fileName); // Title shown in notification
-            request.setDescription("Downloading file..."); // Description in notification
-            request.setNotificationVisibility(android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED); // Show notification when done
-            request.setDestinationInExternalFilesDir(this, android.os.Environment.DIRECTORY_DOWNLOADS, fileName); // Save file to downloads directory
-
-            // Enqueue the download
+            request.setTitle(fileName);
+            request.setDescription("Downloading file...");
+            request.setNotificationVisibility(android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+            request.setDestinationInExternalFilesDir(this, android.os.Environment.DIRECTORY_DOWNLOADS, fileName);
             downloadManager.enqueue(request);
-
-            // Notify the user that the download has started
             showToastAndAnnounce("Downloading file...");
         } catch (Exception e) {
             e.printStackTrace();
             showToastAndAnnounce("Download failed.");
         }
-    }
-
-    private void resetStartDate() {
-        startDate = null;
-        endDate = null;
-        calendarView.setEnabled(true);
-        showToastAndAnnounce("Start date reset. Select a new date.");
-        saveStateToFirebase(); // Save the updated state to Firestore
-        updateCountdownUI(); // Refresh the UI
     }
 
     private void loadStateFromFirebase() {
@@ -216,24 +231,10 @@ public class Profile extends AppCompatActivity {
                     selectedSite = documentSnapshot.getString("selectedSite");
                     selectedCategory = documentSnapshot.getString("selectedCategory");
                     currentAvailableSlots = documentSnapshot.getLong("currentAvailableSlots").intValue();
-                    Long startDateMillis = documentSnapshot.getLong("startDate");
-                    Long endDateMillis = documentSnapshot.getLong("endDate");
 
                     // Update UI with loaded state
                     pickedSiteName.setText("Selected Site: " + selectedSite);
                     availableSlots.setText("Slots: " + currentAvailableSlots);
-                    startDate = startDateMillis != null ? new Date(startDateMillis) : null;
-                    endDate = endDateMillis != null ? new Date(endDateMillis) : null;
-
-                    // Highlight dates
-                    if (startDate != null) {
-                        calendarView.setDate(startDate.getTime(), true, true);
-                    }
-                    if (endDate != null) {
-                        calendarView.setDate(endDate.getTime(), true, true);
-                    }
-                    initializeCountdown(startDate);
-                    updateCountdownUI();
                     showSiteDetails();
                 } else {
                     hideSiteDetails();
@@ -252,8 +253,6 @@ public class Profile extends AppCompatActivity {
         Map<String, Object> state = new HashMap<>();
         state.put("selectedSite", selectedSite);
         state.put("currentAvailableSlots", currentAvailableSlots);
-        state.put("startDate", startDate != null ? startDate.getTime() : null);
-        state.put("endDate", endDate != null ? endDate.getTime() : null);
         state.put("selectedCategory", selectedCategory);
 
         userRef.set(state)
@@ -282,7 +281,7 @@ public class Profile extends AppCompatActivity {
     }
 
     private void dropSelectedSite() {
-        if (selectedCategory != null) { // if user chooses to directly delete from the intent
+        if (selectedCategory != null) {
             firestore.collection(selectedCategory)
                     .whereEqualTo("head", selectedSite)
                     .get()
@@ -290,36 +289,29 @@ public class Profile extends AppCompatActivity {
                         if (!querySnapshot.isEmpty()) {
                             querySnapshot.getDocuments().forEach(document -> {
                                 DocumentReference siteRef = document.getReference();
-
-                                // Locate the `members` subcollection
                                 DocumentReference memberRef = siteRef
                                         .collection("members")
                                         .document(currentUser.getUid());
 
-                                // Start a Firestore batch
-                                firestore.runBatch(batch -> {
-                                    // Update site slot count
-                                    batch.update(siteRef, "availableSlots", currentAvailableSlots + 1);
-
-                                    // Delete from UserStates
-                                    batch.delete(userRef);
-
-                                    // Delete from UserSelections
-                                    DocumentReference userSelectionRef = firestore.collection("UserSelections")
-                                            .document(currentUser.getUid());
-                                    batch.delete(userSelectionRef);
-
-                                    // Delete user from the `members` subcollection
-                                    batch.delete(memberRef);
-
-                                    // Delete daily logs for the user
-                                    deleteDailyLogs(batch);
-                                }).addOnSuccessListener(aVoid -> {
-                                    showToastAndAnnounce("Deleted successfully.");
-                                    hideSiteDetails();
-                                    selectedSite = null; // Clear the current site
-                                }).addOnFailureListener(e -> {
-                                    showToastAndAnnounce("Failed to complete drop operation: " + e.getMessage());
+                                // First delete the logs, then proceed with other deletions
+                                deleteDailyLogs().addOnCompleteListener(deleteTask -> {
+                                    if (deleteTask.isSuccessful()) {
+                                        firestore.runBatch(batch -> {
+                                            batch.update(siteRef, "availableSlots", currentAvailableSlots + 1);
+                                            batch.delete(userRef);
+                                            DocumentReference userSelectionRef = firestore.collection("UserSelections")
+                                                    .document(currentUser.getUid());
+                                            batch.delete(userSelectionRef);
+                                            batch.delete(memberRef);
+                                        }).addOnSuccessListener(aVoid -> {
+                                            showToastAndAnnounce("Deleted successfully.");
+                                            recreate();
+                                        }).addOnFailureListener(e -> {
+                                            showToastAndAnnounce("Failed to complete drop operation: " + e.getMessage());
+                                        });
+                                    } else {
+                                        showToastAndAnnounce("Failed to delete logs: " + deleteTask.getException().getMessage());
+                                    }
                                 });
                             });
                         } else {
@@ -328,7 +320,6 @@ public class Profile extends AppCompatActivity {
                     })
                     .addOnFailureListener(e -> showToastAndAnnounce("Error fetching site details."));
         } else {
-            // If user deletes using loadFirebase
             firestore.collection("UserSelections")
                     .document(currentUser.getUid())
                     .get()
@@ -338,7 +329,6 @@ public class Profile extends AppCompatActivity {
                             String selectedCategory = documentSnapshot.getString("selectedCategory");
 
                             if (selectedSite != null && selectedCategory != null) {
-                                // Search for the site in the selected category
                                 firestore.collection(selectedCategory)
                                         .whereEqualTo("head", selectedSite)
                                         .get()
@@ -349,71 +339,58 @@ public class Profile extends AppCompatActivity {
                                                 Long availableSlots = document.getLong("availableSlots");
 
                                                 if (availableSlots != null) {
-                                                    // Locate the `members` subcollection
                                                     DocumentReference memberRef = siteRef
                                                             .collection("members")
                                                             .document(currentUser.getUid());
 
-                                                    // Perform batch operations
-                                                    firestore.runBatch(batch -> {
-                                                        // Increment available slots
-                                                        batch.update(siteRef, "availableSlots", availableSlots + 1);
-
-                                                        // Delete from UserSelections
-                                                        DocumentReference userSelectionsRef = firestore.collection("UserSelections")
-                                                                .document(currentUser.getUid());
-                                                        batch.delete(userSelectionsRef);
-
-                                                        // Delete from UserStates
-                                                        DocumentReference userStatesRef = firestore.collection("UserStates")
-                                                                .document(currentUser.getUid());
-                                                        batch.delete(userStatesRef);
-
-                                                        // Delete user from the `members` subcollection
-                                                        batch.delete(memberRef);
-
-                                                        // Delete daily logs for the user
-                                                        deleteDailyLogs(batch);
-                                                    }).addOnSuccessListener(batchSuccess -> {
-                                                        showToastAndAnnounce("You successfully dropped your selection.");
-                                                        hideSiteDetails();
-                                                    }).addOnFailureListener(batchFailure -> {
-                                                        showToastAndAnnounce("Failed to drop your selection: " + batchFailure.getMessage());
+                                                    // First delete the logs, then proceed with other deletions
+                                                    deleteDailyLogs().addOnCompleteListener(deleteTask -> {
+                                                        if (deleteTask.isSuccessful()) {
+                                                            firestore.runBatch(batch -> {
+                                                                batch.update(siteRef, "availableSlots", availableSlots + 1);
+                                                                DocumentReference userSelectionsRef = firestore.collection("UserSelections")
+                                                                        .document(currentUser.getUid());
+                                                                batch.delete(userSelectionsRef);
+                                                                DocumentReference userStatesRef = firestore.collection("UserStates")
+                                                                        .document(currentUser.getUid());
+                                                                batch.delete(userStatesRef);
+                                                                batch.delete(memberRef);
+                                                            }).addOnSuccessListener(batchSuccess -> {
+                                                                showToastAndAnnounce("You successfully dropped your selection.");
+                                                                recreate();
+                                                            }).addOnFailureListener(batchFailure -> {
+                                                                showToastAndAnnounce("Failed to drop your selection: " + batchFailure.getMessage());
+                                                            });
+                                                        } else {
+                                                            showToastAndAnnounce("Failed to delete logs: " + deleteTask.getException().getMessage());
+                                                        }
                                                     });
-                                                } else {
-                                                    showToastAndAnnounce("Invalid available slots data for the site.");
                                                 }
-                                            } else {
-                                                showToastAndAnnounce("No matching site found in the selected category.");
                                             }
-                                        })
-                                        .addOnFailureListener(queryFailure -> {
-                                            showToastAndAnnounce("Error querying site: " + queryFailure.getMessage());
                                         });
-                            } else {
-                                showToastAndAnnounce("No site or category found in your selection.");
                             }
-                        } else {
-                            showToastAndAnnounce("No selection found for the user.");
                         }
-                    })
-                    .addOnFailureListener(fetchFailure -> {
-                        showToastAndAnnounce("Failed to fetch user selection: " + fetchFailure.getMessage());
                     });
         }
     }
 
-    private void deleteDailyLogs(WriteBatch batch) {
-        firestore.collection("daily_logs").document(userId).collection("logs")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                        batch.delete(doc.getReference());
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error deleting daily logs: " + e.getMessage());
-                });
+    private Task<Void> deleteDailyLogs() {
+        if (userId == null) {
+            Log.e(TAG, "User ID is null. Cannot delete logs.");
+            Tasks.forException(new NullPointerException("User ID is null"));
+        }
+
+        return firestore.collection("daily_logs").document(userId)
+                .delete()
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Successfully deleted logs document"))
+                .addOnFailureListener(e -> Log.e(TAG, "Error deleting logs document", e));
+    }
+    private void showSiteDetails() {
+        siteSection.setVisibility(View.VISIBLE);
+    }
+
+    private void hideSiteDetails() {
+        siteSection.setVisibility(View.GONE);
     }
     private void calculateTotals() {
         if (userId == null) {
@@ -425,17 +402,15 @@ public class Profile extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     int totalDays = queryDocumentSnapshots.size();
-                    final int[] totalHours = {0}; // Use an array to store totalHours
+                    final int[] totalHours = {0};
                     Set<Integer> weeks = new HashSet<>();
 
                     for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                        // Calculate total hours
                         String hoursStr = doc.getString("hours");
                         if (hoursStr != null && !hoursStr.isEmpty()) {
-                            totalHours[0] += Integer.parseInt(hoursStr); // Modify the array element
+                            totalHours[0] += Integer.parseInt(hoursStr);
                         }
 
-                        // Calculate total weeks
                         String dateStr = doc.getString("date");
                         if (dateStr != null && !dateStr.isEmpty()) {
                             try {
@@ -452,6 +427,16 @@ public class Profile extends AppCompatActivity {
 
                     int totalWeeks = weeks.size();
 
+                    int notificationWeek = Math.min(totalWeeks + 1, NotificationWorker.weeklyMessages.length);
+
+                    SharedPreferences prefs = getSharedPreferences("HelpingHandsPrefs", MODE_PRIVATE);
+                    int lastNotifiedWeek = prefs.getInt("last_notified_week", 0);
+
+                    // Update week counters
+                    prefs.edit()
+                            .putInt("current_week", notificationWeek)
+                            .apply();
+
                     runOnUiThread(() -> {
                         TextView weeksDoneTextView = findViewById(R.id.weeksText);
                         TextView daysDoneTextView = findViewById(R.id.daysText);
@@ -461,10 +446,13 @@ public class Profile extends AppCompatActivity {
                             weeksDoneTextView.setText(String.valueOf(totalWeeks));
                             daysDoneTextView.setText(String.valueOf(totalDays));
                             hoursDoneTextView.setText(String.valueOf(totalHours[0]));
-                        } else {
-                            Log.e(TAG, "One or more TextViews are null.");
                         }
                     });
+                    // Trigger notification if we entered a new week
+                    if (notificationWeek > lastNotifiedWeek) {
+                        triggerNotificationCheck();
+                        prefs.edit().putInt("last_notified_week", notificationWeek).apply();
+                    }
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Error calculating totals", Toast.LENGTH_SHORT).show();
@@ -472,103 +460,28 @@ public class Profile extends AppCompatActivity {
                 });
     }
 
-    private void showSiteDetails() {
-        siteSection.setVisibility(View.VISIBLE);
-        calendarView.setVisibility(View.VISIBLE);
-        pick.setVisibility(View.VISIBLE);
-    }
 
-    private void hideSiteDetails() {
-        siteSection.setVisibility(View.GONE);
-        calendarView.setVisibility(View.GONE);
-        pick.setVisibility(View.GONE);
-    }
-
-    private void initializeCountdown(Date start) {
-        if (start == null) {
-            showToastAndAnnounce("Start date is not set.");
-            return;
-        }
-
-        this.startDate = start;
-        // Calculate end date (10 weeks = 70 days)
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(start);
-        calendar.add(Calendar.DAY_OF_MONTH, 70);
-        this.endDate = calendar.getTime();
-        // Highlight start date and end date
-        calendarView.setDate(start.getTime(), true, true);
-
-        // Set the countdown values
-        updateCountdownUI();
-
-        // Save to Firestore
-        saveStateToFirebase();
-    }
-
-    private void updateCountdownUI() {
-        if (startDate == null || endDate == null) {
-            showToastAndAnnounce("Please select a start date first.");
-            return;
-        }
-
-        Calendar currentCalendar = Calendar.getInstance();
-        Calendar startCalendar = Calendar.getInstance();
-        startCalendar.setTime(startDate);
-        Calendar endCalendar = Calendar.getInstance();
-        endCalendar.setTime(endDate);
-
-        // Calculate weeks and hours remaining
-        long timeUntilEnd = endCalendar.getTimeInMillis() - currentCalendar.getTimeInMillis();
-        int weeksRemaining = Math.max(0, (int) (timeUntilEnd / (1000 * 60 * 60 * 24 * 7)));
-
-        if (weeksRemaining <= 0) {
-            showToastAndAnnounce("Community service completed! 🏁");
-        }
-    }
-    private void scheduleWeeklyNotifications() {
-        if (startDate == null || endDate == null) {
-            showToastAndAnnounce("Start date or end date is not set.");
-            return;
-        }
-
-        // Calculate the number of weeks remaining
-        Calendar currentCalendar = Calendar.getInstance();
-        Calendar endCalendar = Calendar.getInstance();
-        endCalendar.setTime(endDate);
-        long timeUntilEnd = endCalendar.getTimeInMillis() - currentCalendar.getTimeInMillis();
-        int weeksRemaining = Math.max(0, (int) (timeUntilEnd / (1000 * 60 * 60 * 24 * 7)));
-
-        // Create input data with the number of weeks remaining
-        Data inputData = new Data.Builder()
-                .putInt("WEEKS_REMAINING", weeksRemaining)
+    private void scheduleNotifications() {
+        PeriodicWorkRequest weeklyCheck = new PeriodicWorkRequest.Builder(
+                NotificationWorker.class,
+                7, // Interval
+                TimeUnit.DAYS)
+                .setInitialDelay(1, TimeUnit.DAYS) // First check tomorrow
                 .build();
 
-        // Calculate the initial delay to 11 PM today
-        Calendar today11PM = Calendar.getInstance();
-        today11PM.set(Calendar.HOUR_OF_DAY, 23); // Set to 11 PM
-        today11PM.set(Calendar.MINUTE, 0);
-        today11PM.set(Calendar.SECOND, 0);
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "weekly_encouragement",
+                ExistingPeriodicWorkPolicy.UPDATE, // Update existing schedule
+                weeklyCheck);
+    }
 
-        // If the current time is past 11 PM, schedule for the next day
-        if (Calendar.getInstance().after(today11PM)) {
-            today11PM.add(Calendar.DAY_OF_MONTH, 1);
-        }
-
-        long initialDelay = today11PM.getTimeInMillis() - System.currentTimeMillis();
-
-        // Create a one-time work request for testing (runs once at 11 PM today)
-        OneTimeWorkRequest notificationWork = new OneTimeWorkRequest.Builder(
-                NotificationWorker.class
-        )
-                .setInputData(inputData)
-                .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS) // Initial delay to 11 PM
+    private void triggerNotificationCheck() {
+        OneTimeWorkRequest checkRequest = new OneTimeWorkRequest.Builder(
+                NotificationWorker.class)
+                .setInitialDelay(0, TimeUnit.SECONDS)
                 .build();
 
-        // Enqueue the work request
-        WorkManager.getInstance(this).enqueue(notificationWork);
-
-        showToastAndAnnounce("Test notification scheduled for 11 PM today.");
+        WorkManager.getInstance(this).enqueue(checkRequest);
     }
 
 }

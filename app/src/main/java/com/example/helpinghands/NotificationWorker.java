@@ -6,21 +6,17 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
-
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
-import androidx.work.Data;
-import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
-import androidx.work.WorkManager;
-
-import java.util.concurrent.TimeUnit;
 
 public class NotificationWorker extends Worker {
     private static final String CHANNEL_ID = "helpinghands_channel";
-    private static final String[] weeklyMessages = {
+    public static final String[] weeklyMessages = {
             "Week 1: You're just getting started! Keep up the great work!🌟",
             "Week 2: Consistency is key. You're doing amazing💪",
             "Week 3: Almost there 🚀 Keep pushing forward!",
@@ -40,64 +36,87 @@ public class NotificationWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        int weeksRemaining = getInputData().getInt("WEEKS_REMAINING", 10);
+        Context context = getApplicationContext();
+        SharedPreferences prefs = context.getSharedPreferences("HelpingHandsPrefs", Context.MODE_PRIVATE);
 
-        if (weeksRemaining >= 0 && weeksRemaining < weeklyMessages.length) {
-            // Send the notification
-            sendNotification("Weekly Update", weeklyMessages[10 - weeksRemaining]);
+        // Get both the calculated week and last notified week
+        int calculatedWeek = prefs.getInt("current_week", 1);
+        int lastNotifiedWeek = prefs.getInt("last_notified_week", 0);
 
-            // Decrement the weeks remaining and reschedule
-            Data newData = new Data.Builder()
-                    .putInt("WEEKS_REMAINING", weeksRemaining - 1)
-                    .build();
-            PeriodicWorkRequest newWork = new PeriodicWorkRequest.Builder(
-                    NotificationWorker.class,
-                    7, // Repeat interval (7 days)
-                    TimeUnit.DAYS,
-                    1, // Flex interval (1 day)
-                    TimeUnit.DAYS
-            )
-                    .setInputData(newData)
-                    .build();
-            WorkManager.getInstance(getApplicationContext()).enqueue(newWork);
+        // Don't proceed if we've completed all weeks
+        if (calculatedWeek > weeklyMessages.length) {
+            cancelNotifications(context);
+            return Result.success();
         }
+
+        // Only send notification if we haven't already notified for this week
+        if (calculatedWeek > lastNotifiedWeek) {
+            sendNotification(weeklyMessages[calculatedWeek - 1]);
+            prefs.edit()
+                    .putInt("last_notified_week", calculatedWeek)
+                    .apply();
+
+            // Special handling for final week
+            if (calculatedWeek == weeklyMessages.length) {
+                cancelNotifications(context);
+            }
+        }
+
         return Result.success();
     }
 
-    private void sendNotification(String title, String message) {
-        // Create a notification channel (required for Android 8.0 and above)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "HelpingHands Notifications",
-                    NotificationManager.IMPORTANCE_DEFAULT
-            );
-            NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-            manager.createNotificationChannel(channel);
-        }
+    private void cancelNotifications(Context context) {
+        WorkManager.getInstance(context)
+                .cancelUniqueWork("weekly_encouragement");
 
-        // Create an intent to open the app when the notification is clicked
+        // Clear notification badges if needed
+        NotificationManager manager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancelAll();
+    }
+
+    private void sendNotification(String message) {
+        createNotificationChannel();
+
         Intent intent = new Intent(getApplicationContext(), Home.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            flags |= PendingIntent.FLAG_IMMUTABLE;
-        }
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, flags);
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                getApplicationContext(),
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
 
-        // Build the notification
         Notification notification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification) // Use your app's notification icon
-                .setContentTitle(title)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setContentTitle("Community Service Update")
                 .setContentText(message)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .build();
 
-        // Display the notification
-        NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(1, notification);
+        NotificationManager manager =
+                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(createNotificationId(), notification);
+    }
+
+    private int createNotificationId() {
+        return (int) System.currentTimeMillis();
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Helping Hands Notifications",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            channel.setDescription("Weekly encouragement messages");
+            NotificationManager manager =
+                    (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.createNotificationChannel(channel);
+        }
     }
 }

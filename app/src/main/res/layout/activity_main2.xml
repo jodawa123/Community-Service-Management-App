@@ -11,9 +11,9 @@
 
     <!-- Main Content Area -->
     <ScrollView
+        android:id="@+id/scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scroll"
         android:layout_marginBottom="30dp"
         android:fillViewport="true">
 
@@ -27,9 +27,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <!-- Greeting Message -->
                 <TextView
@@ -63,12 +63,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:background="@drawable/custombutton"
+                    android:background="@drawable/editbg"
                     android:orientation="horizontal"
                     android:padding="8dp"
-                    app:layout_constraintTop_toBottomOf="@id/textView6"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent">
+                    app:layout_constraintTop_toBottomOf="@id/textView6">
 
                     <EditText
                         android:id="@+id/searchBar"
@@ -97,14 +97,14 @@
                 android:id="@+id/imageSlider"
                 android:layout_width="0dp"
                 android:layout_height="200dp"
-                app:layout_constraintHeight_max="400dp"
-                android:layout_marginTop="16dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:importantForAccessibility="no"
-                app:layout_constraintTop_toBottomOf="@id/header"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_max="400dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/header" />
 
             <!-- Dots Indicator -->
             <com.google.android.material.tabs.TabLayout
@@ -113,9 +113,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:importantForAccessibility="no"
-                app:layout_constraintTop_toBottomOf="@id/imageSlider"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/imageSlider"
                 app:tabIndicatorColor="@color/blue"
                 app:tabIndicatorHeight="4dp"
                 app:tabSelectedTextColor="@color/gray"
@@ -129,6 +129,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
+                android:accessibilityHeading="true"
                 android:contentDescription="Section title: Categories"
                 android:fontFamily="@font/open_dyslexic_bold"
                 android:text="Categories"
@@ -136,21 +137,20 @@
                 android:textColor="@color/blue"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                android:accessibilityHeading="true"
-                app:layout_constraintTop_toBottomOf="@id/dotsIndicator"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dotsIndicator" />
 
             <!-- Categories Grid -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/categoriesGrid"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                app:layout_constraintTop_toBottomOf="@id/categoriesTitle"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/categoriesTitle">
 
                 <!-- Special Needs -->
                 <LinearLayout
@@ -161,10 +161,10 @@
                     android:background="@color/yellow"
                     android:gravity="center"
                     android:orientation="vertical"
-                    app:layout_constraintWidth_default="percent"
-                    app:layout_constraintWidth_percent="0.48"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.48">
 
                     <ImageView
                         android:id="@+id/imageSpecial"
@@ -194,10 +194,10 @@
                     android:background="@color/blue"
                     android:gravity="center"
                     android:orientation="vertical"
-                    app:layout_constraintWidth_default="percent"
-                    app:layout_constraintWidth_percent="0.48"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.48">
 
                     <ImageView
                         android:id="@+id/imageHealth"
@@ -215,8 +215,8 @@
                         android:gravity="center"
                         android:text="Health centers"
                         android:textColor="@color/yellow"
-                        app:layout_constraintTop_toBottomOf="@id/rehab"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        app:layout_constraintTop_toBottomOf="@id/rehab" />
                 </LinearLayout>
 
                 <!-- Children Home -->
@@ -228,10 +228,10 @@
                     android:background="@color/blue"
                     android:gravity="center"
                     android:orientation="vertical"
-                    app:layout_constraintWidth_default="percent"
-                    app:layout_constraintWidth_percent="0.48"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/special">
+                    app:layout_constraintTop_toBottomOf="@id/special"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.48">
 
                     <ImageView
                         android:id="@+id/imageChildren"
@@ -261,10 +261,10 @@
                     android:background="@color/yellow"
                     android:gravity="center"
                     android:orientation="vertical"
-                    app:layout_constraintWidth_default="percent"
-                    app:layout_constraintWidth_percent="0.48"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/health">
+                    app:layout_constraintTop_toBottomOf="@id/health"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.48">
 
                     <ImageView
                         android:id="@+id/imageRehab"
@@ -294,10 +294,10 @@
                     android:background="@color/yellow"
                     android:gravity="center"
                     android:orientation="vertical"
-                    app:layout_constraintWidth_default="percent"
-                    app:layout_constraintWidth_percent="0.48"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/children">
+                    app:layout_constraintTop_toBottomOf="@id/children"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.48">
 
                     <ImageView
                         android:id="@+id/imageRescue"
@@ -327,10 +327,10 @@
                     android:background="@color/blue"
                     android:gravity="center"
                     android:orientation="vertical"
-                    app:layout_constraintWidth_default="percent"
-                    app:layout_constraintWidth_percent="0.48"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/rehab">
+                    app:layout_constraintTop_toBottomOf="@id/rehab"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.48">
 
                     <ImageView
                         android:id="@+id/imageHospice"
@@ -360,19 +360,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        app:abb_selectedTabType="text"
+        app:abb_animationDuration="500"
+        app:abb_badgeAnimationDuration="900"
+        app:abb_badgeTextSize="16sp"
+        app:abb_iconSize="30dp"
+        app:abb_indicatorColor="@color/gray"
         app:abb_indicatorHeight="6dp"
-        app:abb_tabs="@menu/menu"
-        app:abb_selectedIndex="2"
         app:abb_indicatorMargin="16dp"
+        app:abb_selectedIndex="0"
+        app:abb_selectedTabType="text"
         app:abb_tabColor="@color/blue"
         app:abb_tabColorSelected="@color/gray"
+        app:abb_tabs="@menu/menu"
         app:abb_textSize="16dp"
-        app:abb_iconSize="30dp"
-        app:abb_badgeAnimationDuration="900"
-        app:abb_indicatorColor="@color/gray"
         app:layout_anchor="@id/scroll"
-        app:layout_anchorGravity="bottom"
-        app:abb_animationDuration="500"
-        app:abb_badgeTextSize="16sp"/>
+        app:layout_anchorGravity="bottom" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

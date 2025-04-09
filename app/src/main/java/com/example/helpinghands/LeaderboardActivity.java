@@ -1,14 +1,12 @@
 package com.example.helpinghands;
 
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,11 +14,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import nl.joery.animatedbottombar.AnimatedBottomBar;
 
 public class LeaderboardActivity extends AppCompatActivity {
 
@@ -36,6 +37,7 @@ public class LeaderboardActivity extends AppCompatActivity {
     private LinearLayout emptyStateView;
     private LeaderboardAdapter adapter;
     private List<Student> allStudents = new ArrayList<>();
+    private AnimatedBottomBar bottomBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +45,67 @@ public class LeaderboardActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_leaderboard);
 
-        // Initialize views
+        initializeViews();
+        setupRecyclerView();
+        setupSwipeRefresh();
+        refreshLeaderboard();
+
+        bottomBar.setOnTabSelectListener(new AnimatedBottomBar.OnTabSelectListener() {
+            @Override
+            public void onTabSelected(int lastIndex, AnimatedBottomBar.Tab lastTab, int newIndex, AnimatedBottomBar.Tab newTab) {
+                handleTabSelection(newIndex);
+            }
+
+            @Override
+            public void onTabReselected(int index, AnimatedBottomBar.Tab tab) {
+                handleTabReselection(index);
+            }
+        });
+    }
+    private void handleTabSelection(int newIndex) {
+        switch (newIndex) {
+            case 0:
+            // Redirect to Home page
+            Intent boardIntent = new Intent(LeaderboardActivity.this, Home.class);
+            startActivity(boardIntent);
+            break;
+
+            case 1:
+
+                // Redirect to Profile page
+                Intent profileIntent = new Intent(LeaderboardActivity.this, Profile.class);
+                startActivity(profileIntent);
+                break;
+
+
+            case 2:
+                // Redirect to Maps page
+                Intent mapsIntent = new Intent(LeaderboardActivity.this, Mapping.class);
+                startActivity(mapsIntent);
+                break;
+
+
+            case 3:
+                // Redirect to Home page
+                // Optional: Do nothing if it's the same page
+                break;
+
+            default:
+                // Handle unexpected index
+                Toast.makeText(LeaderboardActivity.this, "Unknown Tab Selected", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void handleTabReselection(int index) {
+        // Handle tab reselection logic if needed
+        Toast.makeText(LeaderboardActivity.this, "Tab Reselected: " + index, Toast.LENGTH_SHORT).show();
+    }
+
+    private void initializeViews() {
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         emptyStateView = findViewById(R.id.emptyStateView);
 
-        // Initialize top student views
         firstPlaceLayout = findViewById(R.id.firstPlaceLayout);
         firstPlaceName = findViewById(R.id.firstPlaceName);
         firstPlaceHours = findViewById(R.id.firstPlaceHours);
@@ -60,110 +118,102 @@ public class LeaderboardActivity extends AppCompatActivity {
         thirdPlaceName = findViewById(R.id.thirdPlaceName);
         thirdPlaceHours = findViewById(R.id.thirdPlaceHours);
 
-        // Initialize RecyclerView
         remainingStudentsRecyclerView = findViewById(R.id.remainingStudentsRecyclerView);
+        bottomBar = findViewById(R.id.bottom);
+    }
+
+    private void setupRecyclerView() {
         remainingStudentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new LeaderboardAdapter(new ArrayList<>());
         remainingStudentsRecyclerView.setAdapter(adapter);
+    }
 
-        // Setup swipe refresh
+    private void setupSwipeRefresh() {
         swipeRefreshLayout.setOnRefreshListener(() -> refreshLeaderboard());
         swipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-
-        // Load initial data
-        refreshLeaderboard();
     }
 
     private void refreshLeaderboard() {
         swipeRefreshLayout.setRefreshing(true);
+        allStudents.clear();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Query all logs across all users
         db.collectionGroup("logs").get().addOnCompleteListener(task -> {
             swipeRefreshLayout.setRefreshing(false);
 
             if (task.isSuccessful()) {
-                allStudents.clear();
                 Map<String, Student> studentMap = new HashMap<>();
 
                 for (QueryDocumentSnapshot logDoc : task.getResult()) {
-                    String studentName = logDoc.getString("studentName");
-                    String hoursStr = logDoc.getString("hours");
+                    try {
+                        String studentName = logDoc.getString("studentName");
+                        String hoursStr = logDoc.getString("hours");
 
-                    if (studentName != null && hoursStr != null) {
-                        try {
+                        if (studentName != null && hoursStr != null) {
                             int hours = Integer.parseInt(hoursStr);
-                            Student existing = studentMap.get(studentName);
-                            if (existing != null) {
+
+                            // Aggregate hours by student name
+                            if (studentMap.containsKey(studentName)) {
+                                Student existing = studentMap.get(studentName);
                                 existing.setHours(existing.getHours() + hours);
                             } else {
                                 studentMap.put(studentName, new Student(studentName, hours));
                             }
-                        } catch (NumberFormatException e) {
-                            Log.e("Leaderboard", "Invalid hours format", e);
                         }
+                    } catch (NumberFormatException e) {
+                        Log.e("Leaderboard", "Error parsing log data", e);
                     }
                 }
 
                 allStudents.addAll(studentMap.values());
+                // Sort by hours descending
                 Collections.sort(allStudents, (s1, s2) -> Integer.compare(s2.getHours(), s1.getHours()));
 
                 updateUI();
             } else {
-                Toast.makeText(this, "Error loading leaderboard", Toast.LENGTH_SHORT).show();
-                updateUI(); // Still update UI to show empty state if needed
+                Log.e("Leaderboard", "Error getting logs", task.getException());
+                Toast.makeText(this, "Failed to load leaderboard", Toast.LENGTH_SHORT).show();
+                updateUI(); // Still update UI to show empty state
             }
         });
     }
 
     private void updateUI() {
-        // Always show the top 3 placeholders (empty if no data)
-        firstPlaceLayout.setVisibility(View.VISIBLE);
-        secondPlaceLayout.setVisibility(View.VISIBLE);
-        thirdPlaceLayout.setVisibility(View.VISIBLE);
+        // Update top 3 students
+        updateTopStudent(0, firstPlaceName, firstPlaceHours, "1st Place");
+        updateTopStudent(1, secondPlaceName, secondPlaceHours, "2nd Place");
+        updateTopStudent(2, thirdPlaceName, thirdPlaceHours, "3rd Place");
 
-        // Update top students with actual data if available
-        if (allStudents.size() > 0) {
-            firstPlaceName.setText(allStudents.get(0).getName());
-            firstPlaceHours.setText(allStudents.get(0).getHours() + " hours");
-
-        } else {
-            firstPlaceName.setText("1st Place");
-            firstPlaceHours.setText("0 hours");
-        }
-
-        if (allStudents.size() > 1) {
-            secondPlaceName.setText(allStudents.get(1).getName());
-            secondPlaceHours.setText(allStudents.get(1).getHours() + " hours");
-        } else {
-            secondPlaceName.setText("2nd Place");
-            secondPlaceHours.setText("0 hours");
-        }
-
-        if (allStudents.size() > 2) {
-            thirdPlaceName.setText(allStudents.get(2).getName());
-            thirdPlaceHours.setText(allStudents.get(2).getHours() + " hours");
-        } else {
-            thirdPlaceName.setText("3rd Place");
-            thirdPlaceHours.setText("0 hours");
-        }
-
-        // Update remaining students (starting from 4th position)
+        // Update remaining students (position 3+)
         List<Student> remainingStudents = allStudents.size() > 3 ?
                 allStudents.subList(3, allStudents.size()) : new ArrayList<>();
         adapter.updateData(remainingStudents);
 
-        // Show empty state if no students found
-        if (allStudents.isEmpty()) {
-            emptyStateView.setVisibility(View.VISIBLE);
-            remainingStudentsRecyclerView.setVisibility(View.GONE);
-        } else {
-            emptyStateView.setVisibility(View.GONE);
-            remainingStudentsRecyclerView.setVisibility(View.VISIBLE);
-        }
+        // Show empty state if no students, otherwise show leaderboard
+        boolean isEmpty = allStudents.isEmpty();
+        emptyStateView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+
+        // Show/hide leaderboard sections
+        firstPlaceLayout.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+        secondPlaceLayout.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+        thirdPlaceLayout.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+        remainingStudentsRecyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
     }
 
+    private void updateTopStudent(int position, TextView nameView, TextView hoursView, String placeholder) {
+        if (allStudents.size() > position) {
+            Student student = allStudents.get(position);
+            nameView.setText(student.getName());
+            hoursView.setText(student.getHours() + " hours");
+        } else {
+            nameView.setText(placeholder);
+            hoursView.setText("0 hours");
+        }
+    }
 }

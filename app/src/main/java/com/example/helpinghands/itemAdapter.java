@@ -133,8 +133,11 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
 
         //});
 
-        // Fetch and display average rating for the current site
-        fetchAverageRatingForSite(currentModel.getHead(), holder.ratingBar);
+        // Reset rating before fetching new one to prevent flickering
+        holder.ratingBar.setRating(0);
+
+        // Pass the position to the rating fetch method
+        fetchAverageRatingForSite(currentModel.getHead(), holder.ratingBar, position);
 
         // Set OnClickListener for the parent layout of RatingBar
         holder.ratingBarParent.setOnClickListener(v -> {
@@ -254,75 +257,59 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.Holder> {
         }
         notifyDataSetChanged(); // Notify the RecyclerView of the dataset change
  }
-    private void fetchAverageRatingForSite(String siteName, RatingBar ratingBar) {
-        // List of collections to search for the site
-        String[] collections = {"ChildrenHomes", "HealthCenters", "Hospice", "Rehab", "RescueCenter", "SpecialNeeds"};
+    private void fetchAverageRatingForSite(String siteName, RatingBar ratingBar, int position) {
+        // Set tag to identify this rating bar
+        ratingBar.setTag(position);
 
-        // Fetch ratings from all collections
-        for (String collection : collections) {
-            Log.d("FirestoreDebug", "Querying collection: " + collection + " for site: " + siteName);
+        if (categoryName == null || categoryName.isEmpty()) {
+            ratingBar.setRating(0);
+            return;
+        }
 
-            firestore.collection(collection)
-                    .whereEqualTo("head", siteName) // Find the document where "head" matches the site name
-                    .get()
-                    .addOnSuccessListener(queryDocumentSnapshots -> {
+        firestore.collection(categoryName)
+                .whereEqualTo("head", siteName)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    // Check if this rating bar still belongs to the same position
+                    if (ratingBar.getTag() != null && (int)ratingBar.getTag() == position) {
                         if (queryDocumentSnapshots.isEmpty()) {
-                            // No document found with the matching site name
-                            Log.d("FirestoreDebug", "No document found for site: " + siteName);
-                            ratingBar.setRating(0); // Default rating for unpicked sites
+                            ratingBar.setRating(0);
                             return;
                         }
 
-                        // Get the first matching document (assuming site names are unique)
                         DocumentSnapshot siteDocument = queryDocumentSnapshots.getDocuments().get(0);
-                        String documentId = siteDocument.getId(); // Get the document ID (e.g., "site8")
-                        Log.d("FirestoreDebug", "Found document: " + documentId + " for site: " + siteName);
+                        String documentId = siteDocument.getId();
 
-                        // Access the members subcollection
-                        firestore.collection(collection)
-                                .document(documentId) // Access the site document (e.g., "site8")
-                                .collection("members") // Access the members subcollection
+                        firestore.collection(categoryName)
+                                .document(documentId)
+                                .collection("members")
                                 .get()
                                 .addOnSuccessListener(membersQueryDocumentSnapshots -> {
-                                    if (membersQueryDocumentSnapshots.isEmpty()) {
-                                        // No members found (site hasn't been picked)
-                                        Log.d("RatingDebug", "No members found for site: " + siteName);
-                                        ratingBar.setRating(0); // Default rating for unpicked sites
-                                        return;
-                                    }
+                                    // Double-check position again
+                                    if (ratingBar.getTag() != null && (int)ratingBar.getTag() == position) {
+                                        if (membersQueryDocumentSnapshots.isEmpty()) {
+                                            ratingBar.setRating(0);
+                                            return;
+                                        }
 
-                                    List<Integer> ratings = new ArrayList<>();
-                                    for (DocumentSnapshot memberSnapshot : membersQueryDocumentSnapshots) {
-                                        // Fetch the rating field from each member document
-                                        Long rating = memberSnapshot.getLong("rating");
-                                        if (rating != null) {
-                                            ratings.add(rating.intValue()); // Convert to int
-                                            Log.d("RatingDebug", "Fetched rating: " + rating + " for user: " + memberSnapshot.getId()); // Log fetched rating and user ID
+                                        List<Integer> ratings = new ArrayList<>();
+                                        for (DocumentSnapshot memberSnapshot : membersQueryDocumentSnapshots) {
+                                            Long rating = memberSnapshot.getLong("rating");
+                                            if (rating != null) {
+                                                ratings.add(rating.intValue());
+                                            }
+                                        }
+
+                                        if (!ratings.isEmpty()) {
+                                            int averageRating = calculateAverage(ratings);
+                                            ratingBar.setRating(averageRating);
+                                        } else {
+                                            ratingBar.setRating(0);
                                         }
                                     }
-                                    if (!ratings.isEmpty()) {
-                                        // Case 2: members subcollection exists and has ratings
-                                        int averageRating = calculateAverage(ratings);
-                                        Log.d("RatingDebug", "Average rating: " + averageRating); // Log average rating
-                                        ratingBar.setRating(averageRating); // Set the rounded average rating
-                                    } else {
-                                        // Case 3: members subcollection exists but has no ratings
-                                        Log.d("RatingDebug", "No ratings found for site: " + siteName); // Log no ratings
-                                        ratingBar.setRating(0); // Default rating if no ratings are found
-                                    }
-                                })
-                                .addOnFailureListener(e -> {
-                                    Log.e("RatingDebug", "Failed to fetch members: " + e.getMessage()); // Log error
-                                    Toast.makeText(context, "Failed to fetch members: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    ratingBar.setRating(0); // Default rating on failure
                                 });
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e("FirestoreDebug", "Failed to fetch site document: " + e.getMessage()); // Log error
-                        Toast.makeText(context, "Failed to fetch site document: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        ratingBar.setRating(0); // Default rating on failure
-                    });
-        }
+                    }
+                });
     }
 
     private int calculateAverage(List<Integer> ratings) {

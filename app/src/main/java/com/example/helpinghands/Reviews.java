@@ -1,6 +1,8 @@
 package com.example.helpinghands;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -21,6 +23,7 @@ public class Reviews extends AppCompatActivity {
     private List<Reviewmodel> reviewList = new ArrayList<>();
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
+    private ImageView back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,7 @@ public class Reviews extends AppCompatActivity {
         // Initialize Firestore and Firebase Auth
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+
 
         // Retrieve the site name from the Intent
         String siteName = getIntent().getStringExtra("SITE_NAME");

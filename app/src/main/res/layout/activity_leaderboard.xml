@@ -1,195 +1,232 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
-    <LinearLayout
+    <!-- SwipeRefreshLayout with bottom padding for the bottom bar -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="match_parent">
 
-        <!-- Title -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="24dp"
-            android:fontFamily="@font/alatsi"
-            android:gravity="center"
-            android:text="LEADERBOARD"
-            android:textColor="@color/blue"
-            android:textSize="34sp"
-            android:textStyle="bold" />
-
-        <!-- Empty State View -->
         <LinearLayout
-            android:id="@+id/emptyStateView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center|bottom"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingBottom="100dp"
-            android:visibility="gone">
+            android:padding="16dp">
 
-            <ImageView
-                android:layout_width="250dp"
-                android:layout_height="250dp"
-                android:layout_marginBottom="24dp"
-                android:contentDescription="Empty leaderboard"
-                android:src="@drawable/empty_cuate" />
-
+            <!-- Title -->
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_dyslexic_regular"
-                android:text="No students found"
-                android:textColor="#666666"
-                android:textSize="18sp" />
-        </LinearLayout>
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="24dp"
+                android:fontFamily="@font/alatsi"
+                android:gravity="center"
+                android:text="LEADERBOARD"
+                android:textColor="@color/blue"
+                android:textSize="48sp"
+                android:textStyle="bold" />
 
-        <!-- Top 3 Students - Fixed Layout (No HorizontalScrollView) -->
-        <LinearLayout
-            android:id="@+id/topStudentsContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:gravity="center"
-            android:orientation="horizontal">
+            <!-- Empty State View -->
 
-            <!-- 2nd Place -->
             <LinearLayout
-                android:id="@+id/secondPlaceLayout"
-                android:layout_width="0dp"
+                android:id="@+id/emptyStateView"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="30dp"
+                android:visibility="gone"
                 android:orientation="vertical"
-                android:padding="8dp">
+                >
 
                 <ImageView
-                    android:id="@+id/secondPlaceImage"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:background="@drawable/circle_background"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/medal" />
+                    android:layout_width="350dp"
+                    android:layout_height="350dp"
+                    android:layout_marginBottom="24dp"
+                    android:contentDescription="Empty leaderboard"
+                    android:importantForAccessibility="yes"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/empty_cuate" />
 
                 <TextView
-                    android:id="@+id/secondPlaceName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="@font/open_dyslexic_bold"
-                    android:hint="Jane Doe"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/secondPlaceHours"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/alatsi"
-                    android:hint="0 hours"
-                    android:textColor="@color/blue"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <!-- 1st Place (Centered and Larger) -->
-            <LinearLayout
-                android:id="@+id/firstPlaceLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.2"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
-
-                <ImageView
-                    android:id="@+id/firstPlaceImage"
-                    android:layout_width="110dp"
-                    android:layout_height="110dp"
-                    android:background="@drawable/circle_background"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/one" />
-
-                <TextView
-                    android:id="@+id/firstPlaceName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="@font/open_dyslexic_bold"
-                    android:text="1st Place"
-                    android:textColor="@color/black"
+                    android:fontFamily="@font/open_dyslexic_regular"
+                    android:text="No students found"
+                    android:textColor="#666666"
                     android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/firstPlaceHours"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/alatsi"
-                    android:text="0 hours"
-                    android:textColor="@color/blue"
-                    android:textSize="16sp" />
             </LinearLayout>
 
-            <!-- 3rd Place -->
+            <!-- Top 3 Students -->
             <LinearLayout
-                android:id="@+id/thirdPlaceLayout"
-                android:layout_width="0dp"
+                android:id="@+id/topStudentsContainer"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginBottom="24dp"
                 android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
+                android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/thirdPlaceImage"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:background="@drawable/circle_background"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/medal3" />
-
-                <TextView
-                    android:id="@+id/thirdPlaceName"
-                    android:layout_width="wrap_content"
+                <!-- 2nd Place -->
+                <LinearLayout
+                    android:id="@+id/secondPlaceLayout"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="@font/open_dyslexic_bold"
-                    android:hint="John Doe"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
+                    android:layout_weight="1"
+                    android:background="@color/yellow"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8dp">
 
-                <TextView
-                    android:id="@+id/thirdPlaceHours"
-                    android:layout_width="wrap_content"
+                    <ImageView
+                        android:id="@+id/secondPlaceImage"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:background="@drawable/circle_background"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/medal" />
+
+                    <TextView
+                        android:id="@+id/secondPlaceName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/open_dyslexic_bold"
+                        android:text="Jane Doe"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/secondPlaceHours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/alatsi"
+                        android:hint="0 hours"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <!-- 1st Place -->
+                <LinearLayout
+                    android:id="@+id/firstPlaceLayout"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/alatsi"
-                    android:hint="0 hours"
-                    android:textColor="@color/blue"
-                    android:textSize="14sp" />
+                    android:layout_weight="1.2"
+                    android:background="@color/blue"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <ImageView
+                        android:id="@+id/firstPlaceImage"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:background="@drawable/circle_background"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/medal1" />
+
+                    <TextView
+                        android:id="@+id/firstPlaceName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/open_dyslexic_bold"
+                        android:text="1st Place"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/firstPlaceHours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/alatsi"
+                        android:text="0 hours"
+                        android:textColor="@color/white"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+                <!-- 3rd Place -->
+                <LinearLayout
+                    android:id="@+id/thirdPlaceLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/yellow"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <ImageView
+                        android:id="@+id/thirdPlaceImage"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:background="@drawable/circle_background"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/medal3" />
+
+                    <TextView
+                        android:id="@+id/thirdPlaceName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/open_dyslexic_bold"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        tools:text="John Doe" />
+
+                    <TextView
+                        android:id="@+id/thirdPlaceHours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/alatsi"
+                        android:hint="0 hours"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+                </LinearLayout>
             </LinearLayout>
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="16dp"
+                android:visibility="visible" />
+
+            <!-- Remaining Students List -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/remainingStudentsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:paddingBottom="50dp" />
         </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <!-- Divider -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="16dp"
-            android:visibility="visible" />
-
-        <!-- Remaining Students List -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/remainingStudentsRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:clipToPadding="false"
-            android:paddingBottom="16dp" />
-    </LinearLayout>
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <!-- Fixed Bottom Navigation Bar -->
+    <nl.joery.animatedbottombar.AnimatedBottomBar
+        android:id="@+id/bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/white"
+        app:abb_animationDuration="500"
+        app:abb_badgeAnimationDuration="900"
+        app:abb_badgeTextSize="16sp"
+        app:abb_iconSize="30dp"
+        app:abb_indicatorColor="@color/gray"
+        app:abb_indicatorHeight="6dp"
+        app:abb_indicatorMargin="16dp"
+        app:abb_selectedIndex="3"
+        app:abb_selectedTabType="text"
+        app:abb_tabColor="@color/blue"
+        app:abb_tabColorSelected="@color/gray"
+        app:abb_tabs="@menu/menu"
+        app:abb_textSize="16dp" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -18,23 +18,23 @@
             android:id="@+id/diaryTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="30dp"
             android:layout_marginEnd="16dp"
+            android:accessibilityTraversalBefore="@id/studentName"
             android:contentDescription="Student Daily Diary"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:fontFamily="@font/alatsi"
+            android:importantForAccessibility="yes"
             android:text="STUDENT DAILY DIARY 📝"
             android:textAlignment="center"
             android:textColor="@color/blue"
-            android:textSize="30sp"
+            android:textSize="48sp"
             android:textStyle="bold"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:importantForAccessibility="yes"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:accessibilityTraversalBefore="@id/studentName" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Student Details -->
         <EditText
@@ -407,5 +407,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/submit"
             app:layout_constraintTop_toBottomOf="@id/sign" />
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="55dp"
+            android:layout_height="45dp"
+
+            android:layout_marginTop="30dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/baseline_arrow_24" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

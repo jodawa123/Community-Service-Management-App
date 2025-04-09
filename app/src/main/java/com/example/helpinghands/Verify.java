@@ -256,62 +256,64 @@ public class Verify extends AppCompatActivity {
 
     private void showError(List<String> errors) {
         runOnUiThread(() -> {
-            // Stop the progress bar and change its color to red
-
+            // First change the progress bar color to red
             progressBar.getIndeterminateDrawable().setColorFilter(
                     ContextCompat.getColor(this, android.R.color.holo_red_light),
                     PorterDuff.Mode.SRC_IN
             );
 
-            progressBar.setVisibility(View.GONE); // Hide the progress bar
-            errorText.setVisibility(View.VISIBLE);
-            errorText.setText("\uD83D\uDEA8 ERROR"); // Display "ERROR"
-            errorText.setTextColor(ContextCompat.getColor(this, android.R.color.holo_red_dark)); // Set text color to red
+            // Add a slight delay before hiding the progress bar
+            new Handler().postDelayed(() -> {
+                progressBar.setVisibility(View.GONE); // Hide the progress bar after color change
 
-            // Build a formatted error message with all errors
-            StringBuilder errorMessage = new StringBuilder();
-            for (String error : errors) {
-                errorMessage.append("• ").append(error).append("\n");
-            }
+                errorText.setVisibility(View.VISIBLE);
+                errorText.setText("\uD83D\uDEA8 ERROR");
+                errorText.setTextColor(ContextCompat.getColor(this, android.R.color.holo_red_dark));
 
-            // Display the formatted error message in the titleText
-            titleText.setText(errorMessage.toString());
-            titleText.setTextColor(ContextCompat.getColor(this, android.R.color.holo_red_dark)); // Set text color to red
-            titleText.setVisibility(View.VISIBLE);
+                StringBuilder errorMessage = new StringBuilder();
+                for (String error : errors) {
+                    errorMessage.append("• ").append(error).append("\n");
+                }
 
-            // Show the error image
-            img.setVisibility(View.VISIBLE);
-            img.setImageResource(R.drawable.error);
-            img.setContentDescription("Error image");
+                titleText.setText(errorMessage.toString());
+                titleText.setTextColor(ContextCompat.getColor(this, android.R.color.holo_red_dark));
+                titleText.setVisibility(View.VISIBLE);
+
+                img.setVisibility(View.VISIBLE);
+                img.setImageResource(R.drawable.error);
+                img.setContentDescription("Error image");
+            }, 500); // 500ms delay to show color change
         });
     }
 
     private void showSuccess() {
         runOnUiThread(() -> {
-            // Stop the progress bar and change its color to green
+            // First change the progress bar color to green
             progressBar.getIndeterminateDrawable().setColorFilter(
                     ContextCompat.getColor(this, android.R.color.holo_green_light),
                     PorterDuff.Mode.SRC_IN
             );
 
+            // Add a slight delay before hiding the progress bar
+            new Handler().postDelayed(() -> {
+                progressBar.setVisibility(View.GONE); // Hide the progress bar after color change
 
-            progressBar.setVisibility(View.GONE); // Hide the progress bar
-            errorText.setVisibility(View.VISIBLE);
-            errorText.setText("✅ SUCCESS"); // Display "SUCCESS"
-            errorText.setTextColor(ContextCompat.getColor(this, android.R.color.holo_green_dark)); // Set text color to green
-            titleText.setText("Verification successful! Redirecting to daily diary..."); // Use titleText for success message
-            img.setVisibility(View.VISIBLE);
-            img.setImageResource(R.drawable.happy_student_cuate);
-            img.setContentDescription("Success image");
+                errorText.setVisibility(View.VISIBLE);
+                errorText.setText("✅ SUCCESS");
+                errorText.setTextColor(ContextCompat.getColor(this, android.R.color.holo_green_dark));
+                titleText.setText("Verification successful! Redirecting to daily diary...");
+                img.setVisibility(View.VISIBLE);
+                img.setImageResource(R.drawable.happy_student_cuate);
+                img.setContentDescription("Success image");
 
-            // Redirect to daily diary activity after a delay
-            handler.postDelayed(() -> {
-                startActivity(new Intent(Verify.this, daily_Diary.class));
-                finish();
-            }, 5000); // 5-second delay before redirecting
+                // Redirect to daily diary activity after another delay
+                new Handler().postDelayed(() -> {
+                    startActivity(new Intent(Verify.this, daily_Diary.class));
+                    finish();
+                }, 3000); // 3-second delay before redirecting
+            }, 500); // 500ms delay to show color change
         });
     }
-
     private void showError(String message) {
         List<String> errors = new ArrayList<>();
         errors.add(message);

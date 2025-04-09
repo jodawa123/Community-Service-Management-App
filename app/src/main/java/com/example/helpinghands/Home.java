@@ -185,31 +185,26 @@ public class Home extends AppCompatActivity {
     private void handleTabSelection(int newIndex) {
         switch (newIndex) {
             case 0:
+                // Redirect to Home page
+                // Optional: Do nothing if it's the same page
+                break;
+
+            case 1:
+
                 // Redirect to Profile page
                 Intent profileIntent = new Intent(Home.this, Profile.class);
                 startActivity(profileIntent);
                 break;
 
-            case 1:
+
+            case 2:
                 // Redirect to Maps page
                 Intent mapsIntent = new Intent(Home.this, Mapping.class);
                 startActivity(mapsIntent);
                 break;
 
 
-            case 2:
-                // Redirect to Home page
-                // Optional: Do nothing if it's the same page
-                break;
-
-
             case 3:
-                // Redirect to Discover page
-                Intent discoverIntent = new Intent(Home.this, Discover.class);
-                startActivity(discoverIntent);
-                break;
-
-            case 4:
                 // Redirect to Leaderboard page
                 Intent boardIntent = new Intent(Home.this, LeaderboardActivity.class);
                 startActivity(boardIntent);
@@ -240,8 +235,7 @@ public class Home extends AppCompatActivity {
         task.addOnCompleteListener(taskResult -> {
             try {
                 LocationSettingsResponse response = taskResult.getResult(ApiException.class);
-                // Location settings are already enabled
-                announceOrToast("Location settings are enabled");
+
             } catch (ApiException exception) {
                 switch (exception.getStatusCode()) {
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
