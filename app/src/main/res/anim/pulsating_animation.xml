@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<scale xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="500"
-    android:repeatCount="infinite"
-    android:repeatMode="reverse"
-    android:fromXScale="1.0"
-    android:toXScale="1.1"
-    android:fromYScale="1.0"
-    android:toYScale="1.1"
-    android:pivotX="50%"
-    android:pivotY="50%" />
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/linear_interpolator">
 
+    <!-- More subtle scaling -->
+    <scale
+        android:duration="800"
+        android:repeatCount="infinite"
+        android:repeatMode="reverse"
+        android:fromXScale="1.0"
+        android:toXScale="1.1"
+        android:fromYScale="1.0"
+        android:toYScale="1.1"
+        android:pivotX="50%"
+        android:pivotY="50%"/>
+
+    <!-- Add alpha for a glowing effect without excessive size change -->
+    <alpha
+        android:duration="800"
+        android:repeatCount="infinite"
+        android:repeatMode="reverse"
+        android:fromAlpha="1.0"
+        android:toAlpha="0.9"/>
+</set>

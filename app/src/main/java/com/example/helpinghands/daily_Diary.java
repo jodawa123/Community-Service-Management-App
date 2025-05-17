@@ -103,7 +103,11 @@ public class daily_Diary extends AppCompatActivity {
         fetchAndValidateSite();    // Always fetch site info
         calculateHours();          // Auto-compute worked hours
 
-        submitButton.setOnClickListener(v -> checkAndSaveLog());
+        submitButton.setOnClickListener(v -> {
+            checkAndSaveLog();  // Added semicolon and curly brace
+            Intent intent = new Intent(this, Profile.class);  
+            startActivity(intent);
+        });
         downloadReportButton.setOnClickListener(v -> generatePdfReport());
     }
 

@@ -12,6 +12,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -39,6 +45,11 @@ public class LeaderboardActivity extends AppCompatActivity {
     private List<Student> allStudents = new ArrayList<>();
     private AnimatedBottomBar bottomBar;
 
+    // Firebase
+    private FirebaseAuth firebaseAuth;
+    private DatabaseReference databaseReference;
+    private String currentUserName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,10 +63,18 @@ public class LeaderboardActivity extends AppCompatActivity {
         // Ensure the title is not spoken by TalkBack
         setTitle(" ");
 
+        //Initialize Firebase
+        firebaseAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference("users");
+
         initializeViews();
         setupRecyclerView();
         setupSwipeRefresh();
-        refreshLeaderboard();
+
+        // Get current user and refresh leaderboard
+        fetchCurrentUserAndRefresh();
+
+
 
         bottomBar.setOnTabSelectListener(new AnimatedBottomBar.OnTabSelectListener() {
             @Override
@@ -143,14 +162,29 @@ public class LeaderboardActivity extends AppCompatActivity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
     }
+    private void fetchCurrentUserAndRefresh() {
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser != null) {
+            databaseReference.child(currentUser.getUid()).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    DataSnapshot snapshot = task.getResult();
+                    currentUserName = snapshot.child("name").getValue(String.class);
+                    refreshLeaderboard();
+                } else {
+                    Log.e("Leaderboard", "Error fetching user name", task.getException());
+                    refreshLeaderboard();
+                }
+            });
+        } else {
+            refreshLeaderboard();
+        }
+    }
 
     private void refreshLeaderboard() {
         swipeRefreshLayout.setRefreshing(true);
         allStudents.clear();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        // Query all logs across all users
         db.collectionGroup("logs").get().addOnCompleteListener(task -> {
             swipeRefreshLayout.setRefreshing(false);
 
@@ -165,7 +199,6 @@ public class LeaderboardActivity extends AppCompatActivity {
                         if (studentName != null && hoursStr != null) {
                             int hours = Integer.parseInt(hoursStr);
 
-                            // Aggregate hours by student name
                             if (studentMap.containsKey(studentName)) {
                                 Student existing = studentMap.get(studentName);
                                 existing.setHours(existing.getHours() + hours);
@@ -179,14 +212,17 @@ public class LeaderboardActivity extends AppCompatActivity {
                 }
 
                 allStudents.addAll(studentMap.values());
-                // Sort by hours descending
                 Collections.sort(allStudents, (s1, s2) -> Integer.compare(s2.getHours(), s1.getHours()));
-
                 updateUI();
+
+                // Highlight current user after data loads
+                if (currentUserName != null) {
+                    adapter.setCurrentUserName(currentUserName);
+                }
             } else {
                 Log.e("Leaderboard", "Error getting logs", task.getException());
                 Toast.makeText(this, "Failed to load leaderboard", Toast.LENGTH_SHORT).show();
-                updateUI(); // Still update UI to show empty state
+                updateUI();
             }
         });
     }

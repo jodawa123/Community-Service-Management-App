@@ -42,6 +42,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Home extends AppCompatActivity {
 
@@ -317,25 +318,27 @@ public class Home extends AppCompatActivity {
 
     private void loadAllData(Runnable onDataLoaded) {
         String[] categories = {"HealthCenters", "ChildrenHomes", "Hospice", "Rehab", "RescueCenter", "SpecialNeeds"};
-        int[] remainingCategories = {categories.length};
+        AtomicInteger remainingCategories = new AtomicInteger(categories.length);
 
         for (String category : categories) {
-            firestore.collection(category).get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    List<String> sites = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        String head = document.getString("head");
-                        if (head != null) {
-                            sites.add(head.toLowerCase());
+            firestore.collection(category)
+                    .addSnapshotListener((querySnapshots, error) -> {
+                        if (error != null) return;
+
+                        List<String> sites = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : querySnapshots) {
+                            String head = document.getString("head");
+                            if (head != null) sites.add(head.toLowerCase());
                         }
-                    }
-                    categoryData.put(category, sites);
-                }
-                remainingCategories[0]--;
-                if (remainingCategories[0] == 0) {
-                    onDataLoaded.run();
-                }
-            });
+
+                        synchronized (categoryData) {
+                            categoryData.put(category, sites);
+                        }
+
+                        if (remainingCategories.decrementAndGet() == 0) {
+                            onDataLoaded.run();
+                        }
+                    });
         }
     }
 

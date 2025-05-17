@@ -68,23 +68,18 @@ public class SignUp extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             FirebaseUser user = firebaseAuth.getCurrentUser();
                             if (user != null) {
-                                user.sendEmailVerification().addOnCompleteListener(verificationTask -> {
-                                    if (verificationTask.isSuccessful()) {
-                                        databaseReference.child(user.getUid()).setValue(new User(name, id, email))
-                                                .addOnCompleteListener(dbTask -> {
-                                                    if (dbTask.isSuccessful()) {
-                                                        announceMessage("Registration successful! Check your email for verification.");
-                                                        firebaseAuth.signOut();
-                                                        startActivity(new Intent(SignUp.this, login.class));
-                                                        finish();
-                                                    } else {
-                                                        announceMessage("Error saving user data: " + dbTask.getException().getMessage());
-                                                    }
-                                                });
-                                    } else {
-                                        announceMessage("Failed to send verification email: " + verificationTask.getException().getMessage());
-                                    }
-                                });
+                                // Removed email verification sending
+                                databaseReference.child(user.getUid()).setValue(new User(name, id, email))
+                                        .addOnCompleteListener(dbTask -> {
+                                            if (dbTask.isSuccessful()) {
+                                                announceMessage("Registration successful! You can now log in.");
+                                                // Removed firebaseAuth.signOut();
+                                                startActivity(new Intent(SignUp.this, login.class));
+                                                finish();
+                                            } else {
+                                                announceMessage("Error saving user data: " + dbTask.getException().getMessage());
+                                            }
+                                        });
                             }
                         } else {
                             announceMessage("Error: " + task.getException().getMessage());
@@ -94,9 +89,7 @@ public class SignUp extends AppCompatActivity {
     }
 
     private void announceMessage(String message) {
-        StyleableToast.makeText(this, message, R.style.mytoast).show();
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        signUpButton.announceForAccessibility(message);
     }
 
     public static class User {

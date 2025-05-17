@@ -11,19 +11,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 
 public class login extends AppCompatActivity {
     private EditText editTextEmail, editTextPassword;
@@ -42,18 +41,12 @@ public class login extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        // Disable page number announcements by hiding the action bar title
+
+        // Disable page number announcements
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-        // Ensure the title is not spoken by TalkBack
         setTitle(" ");
-
-        // Only hide ActionBar if it exists
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-        }
-
 
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
@@ -63,11 +56,13 @@ public class login extends AppCompatActivity {
         Button buttonLogin = findViewById(R.id.btnLogin);
         TextView textViewSignUp = findViewById(R.id.signUpText);
         TextView textViewForgotPassword = findViewById(R.id.forgot);
-        answer="yes";
+        answer = "yes";
 
+        // Set content descriptions
         buttonLogin.setContentDescription("Tap to log in");
         textViewSignUp.setContentDescription("Tap to sign up for a new account");
         textViewForgotPassword.setContentDescription("Tap if you forgot your password");
+        checkNotificationPermission();
 
         buttonLogin.setOnClickListener(view -> {
             if (!isInternetAvailable()) {
@@ -87,13 +82,14 @@ public class login extends AppCompatActivity {
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             FirebaseUser user = firebaseAuth.getCurrentUser();
-                            if (user != null && user.isEmailVerified()) {
+                            if (user != null) {
                                 databaseReference.child(user.getUid()).get().addOnCompleteListener(dbTask -> {
                                     if (dbTask.isSuccessful() && dbTask.getResult() != null) {
                                         DataSnapshot snapshot = dbTask.getResult();
                                         String username = snapshot.child("name").getValue(String.class);
                                         if (username != null && !username.isEmpty()) {
                                             showToastAndAnnounce("Login successful. Welcome, " + username + "!");
+
                                             Intent intent = new Intent(login.this, Home.class);
                                             intent.putExtra("one", answer);
                                             startActivity(intent);
@@ -105,9 +101,6 @@ public class login extends AppCompatActivity {
                                         showToastAndAnnounce("Failed to retrieve user data: " + dbTask.getException().getMessage());
                                     }
                                 });
-                            } else {
-                                showToastAndAnnounce("Please verify your email before logging in");
-                                firebaseAuth.signOut();
                             }
                         } else {
                             showToastAndAnnounce("Login Failed: Incorrect email or password");
@@ -117,6 +110,32 @@ public class login extends AppCompatActivity {
 
         textViewSignUp.setOnClickListener(v -> startActivity(new Intent(login.this, SignUp.class)));
         textViewForgotPassword.setOnClickListener(view -> startActivity(new Intent(login.this, Mail.class)));
+    }
+
+    private void checkNotificationPermission() {
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        boolean areNotificationsEnabled = notificationManager.areNotificationsEnabled();
+
+        if (!areNotificationsEnabled) {
+            showNotificationPermissionDialog();
+        }
+    }
+
+    private void showNotificationPermissionDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Enable Notifications")
+                .setMessage("Would you like to receive important updates and notifications?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    // Open notification settings
+                    Intent intent = new Intent();
+                    intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
+                    intent.putExtra("android.provider.extra.APP_PACKAGE", getPackageName());
+                    startActivity(intent);
+                })
+                .setNegativeButton("Later", null)
+                .setCancelable(false)
+                .create()
+                .show();
     }
 
     private boolean isInternetAvailable() {
@@ -130,7 +149,7 @@ public class login extends AppCompatActivity {
 
     private void showToastAndAnnounce(String message) {
         Toast.makeText(login.this, message, Toast.LENGTH_SHORT).show();
-        View mainLayout = findViewById(R.id.main); // Use the root ConstraintLayout
+        View mainLayout = findViewById(R.id.main);
         if (mainLayout != null) {
             mainLayout.announceForAccessibility(message);
         } else {

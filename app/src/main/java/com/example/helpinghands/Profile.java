@@ -54,7 +54,7 @@ public class Profile extends AppCompatActivity {
     private FirebaseUser currentUser;
     private DocumentReference userRef;
     private ImageView imageView4, down;
-    private Button track, rate;
+    private Button track, rate, temp;
     private AnimatedBottomBar bottomBar;
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -90,6 +90,7 @@ public class Profile extends AppCompatActivity {
         doc1_title = findViewById(R.id.doc1_title);
         bottomBar = findViewById(R.id.bottom);
         rate=findViewById(R.id.bt2);
+        temp=findViewById(R.id.temp);
 
         // Initialize Firebase
         firestore = FirebaseFirestore.getInstance();
@@ -132,6 +133,10 @@ public class Profile extends AppCompatActivity {
 
         track.setOnClickListener(v -> {
             Intent targetIntent = new Intent(Profile.this, Verify.class);
+            startActivity(targetIntent);
+        });
+        temp.setOnClickListener(v -> {
+            Intent targetIntent = new Intent(Profile.this, daily_Diary.class);
             startActivity(targetIntent);
         });
        rate.setOnClickListener(v -> {
@@ -387,10 +392,14 @@ public class Profile extends AppCompatActivity {
     }
     private void showSiteDetails() {
         siteSection.setVisibility(View.VISIBLE);
+        rate.setVisibility(View.VISIBLE);
+        temp.setVisibility(View.VISIBLE);
     }
 
     private void hideSiteDetails() {
         siteSection.setVisibility(View.GONE);
+        rate.setVisibility(View.GONE);
+        temp.setVisibility(View.GONE);
     }
     private void calculateTotals() {
         if (userId == null) {
@@ -426,6 +435,21 @@ public class Profile extends AppCompatActivity {
                     }
 
                     int totalWeeks = weeks.size();
+
+                    // DEMO MODE - COMMENT THIS OUT FOR PRODUCTION
+                    // For demo purposes, we'll keep the rate button visible
+
+                    // PRODUCTION CODE - UNCOMMENT THIS FOR FINAL VERSION
+                    /*
+                    // Show rate button only if user has completed 10+ weeks
+                    runOnUiThread(() -> {
+                        if (totalWeeks = 10) {
+                            rate.setVisibility(View.VISIBLE);
+                        } else {
+                            rate.setVisibility(View.GONE);
+                        }
+                    });
+                    */
 
                     int notificationWeek = Math.min(totalWeeks + 1, NotificationWorker.weeklyMessages.length);
 
