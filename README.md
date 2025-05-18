@@ -6,10 +6,10 @@
 ## 📱 Key Features  
 | Feature | Description | Screenshot |  
 |---------|------------|------------|  
-| **Home Page (Categorized Sites)** | Displays service sites grouped by type (Education, Environment, etc.) with quick search. | <img src="https://github.com/user-attachments/assets/a8799147-4964-4d11-9abf-a14c3a11de25" height="350" alt="Homepage with categorized service sites"> |  
-| **Google Maps Integration** | Real-time navigation to service sites with distance estimates. | <img src="https://github.com/user-attachments/assets/839b25e8-dfcd-4f61-8deb-66bd1ef07f5a" height="350" alt="Google Maps navigation to a service site"> |  
-| **Daily Diary (PDF Generator)** | Students log hours/activities and export as a shareable PDF report. | <img src="https://github.com/user-attachments/assets/24a7bddb-4476-41e4-9daa-9cae49ff4024" height="350" alt="Generated PDF daily log"> |  
-| **Review & Rating System** | Students rate sites and read peer reviews to make informed choices. | <img src="https://github.com/user-attachments/assets/8d81b1da-dac8-4716-851f-2d889a4e1b2f" height="350" alt="Service site review interface"> |  
+| **Home Page (Categorized Sites)** | Displays service sites grouped by type (Education, Environment, etc.) with quick search. | <img src="https://github.com/user-attachments/assets/a8799147-4964-4d11-9abf-a14c3a11de25" height="400" alt="Homepage with categorized service sites"> |  
+| **Google Maps Integration** | Real-time navigation to service sites with distance estimates. | <img src="https://github.com/user-attachments/assets/839b25e8-dfcd-4f61-8deb-66bd1ef07f5a" height="400" alt="Google Maps navigation to a service site"> |  
+| **Daily Diary (PDF Generator)** | Students log hours/activities and export as a shareable PDF report. | <img src="https://github.com/user-attachments/assets/24a7bddb-4476-41e4-9daa-9cae49ff4024" height="400" alt="Generated PDF daily log"> |  
+| **Review & Rating System** | Students rate sites and read peer reviews to make informed choices. | <img src="https://github.com/user-attachments/assets/8d81b1da-dac8-4716-851f-2d889a4e1b2f" height="400" alt="Service site review interface"> |  
 
 
 
