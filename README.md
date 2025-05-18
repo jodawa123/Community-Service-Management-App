@@ -1,4 +1,4 @@
-# USIU-Africa Community Service App (Phase 1)  
+# USIU-Africa Community Service App🤝 (Phase 1)  
 **A mobile application to streamline student community service tracking**  
 
 ---
@@ -32,8 +32,8 @@
 
 
 
-
-##🌟 Transformational Impact
+----
+## 🌟 Transformational Impact
 1. Process Efficiency
 - 82% reduction in manual errors (validated by pre/post-audit of 500 logs)
 - 75% decrease in paperwork (from 20 physical forms/week to 5 digital submissions)
