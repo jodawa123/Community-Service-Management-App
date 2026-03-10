@@ -2,6 +2,13 @@
 **A mobile application to streamline student community service tracking**  
 
 ---
+## 📲 Download APK
+
+[![Download APK]([https://img.shields.io/badge/Download-APK-brightgreen)](https://github.com/yourusername/rentanbo/releases/download/v1.0.0/app-debug.apk](https://github.com/jodawa123/Community-Service-Management-App/releases/download/v.2/app-release.apk))
+
+**Latest Version:** v2.0.0  
+**Size:** 32.4 MB  
+**Minimum Android:** 8.0 (API 26)
 
 ## 📱 Key Features  
 | Feature | Description | Screenshot |  
